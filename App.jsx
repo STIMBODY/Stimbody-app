@@ -53,12 +53,12 @@ const FV = {rassasie:1,moyen:2,faim:3};
 const MOODS = [{v:"super",e:"😄",l:"Super"},{v:"bien",e:"😊",l:"Bien"},{v:"moyen",e:"😐",l:"Moyen"},{v:"fatigue",e:"😔",l:"Fatigué"},{v:"frustre",e:"😤",l:"Frustré"}];
 const FAIM = [{v:"rassasie",e:"🙂",l:"Rassasié"},{v:"moyen",e:"😑",l:"Moyen"},{v:"faim",e:"😩",l:"Faim"}];
 const RECETTES = [
-  {id:1,titre:"Bowl saumon & avocat",emoji:"🍣",cat:"midi",temps:10,kcal:420,macros:{p:38,l:22,g:8},formules:["sucre","equilibre"],photo:"https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=75",tags:["poisson","rapide"],ingredients:["150g saumon fumé","1/2 avocat","100g concombre","50g edamame","1 cas tamari","Citron","Sésame"],etapes:["Trancher le saumon et l'avocat","Disposer le concombre et les edamame","Arroser de tamari et citron","Parsemer de sésame grillé"],conseil:"Idéal en lunch box. Prépare tout la veille sauf l'avocat."},
-  {id:2,titre:"Omelette épinards feta",emoji:"🍳",cat:"matin",temps:8,kcal:280,macros:{p:24,l:18,g:4},formules:["sucre","equilibre"],photo:"https://images.unsplash.com/photo-1510693206972-df098062cb71?w=400&q=75",tags:["oeufs","rapide"],ingredients:["3 oeufs","80g épinards","30g feta allégée","Herbes de Provence","1 cac huile olive"],etapes:["Faire suer les épinards","Battre les oeufs et verser","Émietter la feta, plier l'omelette"],conseil:"Les épinards peuvent être remplacés par du kale."},
-  {id:3,titre:"Vapeur poulet légumes",emoji:"🥦",cat:"soir",temps:20,kcal:310,macros:{p:35,l:6,g:12},formules:["sucre","equilibre"],photo:"https://images.unsplash.com/photo-1567620905-c37a0e8f6278?w=400&q=75",tags:["viande","léger"],ingredients:["150g blanc de poulet","Brocolis","Courgettes","Citron","Curcuma"],etapes:["Couper les légumes en morceaux égaux","Cuire vapeur 20 min","Assaisonner citron et curcuma"],conseil:"La vapeur préserve 90% des vitamines."},
-  {id:4,titre:"Skyr bowl fruits rouges",emoji:"🍓",cat:"matin",temps:5,kcal:195,macros:{p:18,l:3,g:22},formules:["equilibre"],photo:"https://images.unsplash.com/photo-1484980859-5988d72e47ee?w=400&q=75",tags:["laitage"],ingredients:["200g skyr nature","80g fruits rouges","1 cas graines de chia","Amandes effilées"],etapes:["Verser le skyr dans un bol","Disposer les fruits rouges","Saupoudrer graines et amandes"],conseil:"Prépare-le la veille, les graines gonflent."},
-  {id:5,titre:"Salade crevettes thai",emoji:"🦐",cat:"midi",temps:15,kcal:340,macros:{p:32,l:10,g:18},formules:["sucre","equilibre"],photo:"https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=400&q=75",tags:["fruits de mer","exotique"],ingredients:["200g crevettes cuites","Salade iceberg","Mangue","Concombre","Coriandre","Citron vert"],etapes:["Préparer la sauce citron vert","Couper mangue et concombre","Assembler avec la salade","Arroser de sauce"],conseil:"Remplace la sauce poisson par du tamari."},
-  {id:6,titre:"Bowl quinoa poulet",emoji:"🥙",cat:"midi",temps:25,kcal:450,macros:{p:36,l:10,g:40},formules:["equilibre"],photo:"https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&q=75",tags:["complet","meal prep"],ingredients:["80g quinoa cuit","150g blanc de poulet","Poivrons rotis","Courgettes","Huile olive"],etapes:["Cuire le quinoa 15 min","Rotir les légumes au four","Griller le poulet","Assembler en bowl"],conseil:"Prépare en grande quantité le dimanche."}
+  {id:1,titre:"Bowl saumon & avocat",emoji:"🍣",cat:"midi",temps:10,kcal:420,macros:{p:38,l:22,g:8},formules:["sucre","equilibre"],photo:"https://images.unsplash.com/photo-1580822184713-fc5400e7fe10?w=400&q=75",tags:["poisson","rapide"],ingredients:["150g saumon fumé","1/2 avocat","100g concombre","50g edamame","1 cas tamari","Citron","Sésame"],etapes:["Trancher le saumon et l'avocat","Disposer le concombre et les edamame","Arroser de tamari et citron","Parsemer de sésame grillé"],conseil:"Idéal en lunch box. Prépare tout la veille sauf l'avocat."},
+  {id:2,titre:"Omelette épinards feta",emoji:"🍳",cat:"matin",temps:8,kcal:280,macros:{p:24,l:18,g:4},formules:["sucre","equilibre"],photo:"https://images.unsplash.com/photo-1525351484163-7529414344d8?w=400&q=75",tags:["oeufs","rapide"],ingredients:["3 oeufs","80g épinards","30g feta allégée","Herbes de Provence","1 cac huile olive"],etapes:["Faire suer les épinards","Battre les oeufs et verser","Émietter la feta, plier l'omelette"],conseil:"Les épinards peuvent être remplacés par du kale."},
+  {id:3,titre:"Vapeur poulet légumes",emoji:"🥦",cat:"soir",temps:20,kcal:310,macros:{p:35,l:6,g:12},formules:["sucre","equilibre"],photo:"https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=400&q=75",tags:["viande","léger"],ingredients:["150g blanc de poulet","Brocolis","Courgettes","Citron","Curcuma"],etapes:["Couper les légumes en morceaux égaux","Cuire vapeur 20 min","Assaisonner citron et curcuma"],conseil:"La vapeur préserve 90% des vitamines."},
+  {id:4,titre:"Skyr bowl fruits rouges",emoji:"🍓",cat:"matin",temps:5,kcal:195,macros:{p:18,l:3,g:22},formules:["equilibre"],photo:"https://images.unsplash.com/photo-1488477181946-6428a0291777?w=400&q=75",tags:["laitage"],ingredients:["200g skyr nature","80g fruits rouges","1 cas graines de chia","Amandes effilées"],etapes:["Verser le skyr dans un bol","Disposer les fruits rouges","Saupoudrer graines et amandes"],conseil:"Prépare-le la veille, les graines gonflent."},
+  {id:5,titre:"Salade crevettes thai",emoji:"🦐",cat:"midi",temps:15,kcal:340,macros:{p:32,l:10,g:18},formules:["sucre","equilibre"],photo:"https://images.unsplash.com/photo-1547592180-85f173990554?w=400&q=75",tags:["fruits de mer","exotique"],ingredients:["200g crevettes cuites","Salade iceberg","Mangue","Concombre","Coriandre","Citron vert"],etapes:["Préparer la sauce citron vert","Couper mangue et concombre","Assembler avec la salade","Arroser de sauce"],conseil:"Remplace la sauce poisson par du tamari."},
+  {id:6,titre:"Bowl quinoa poulet",emoji:"🥙",cat:"midi",temps:25,kcal:450,macros:{p:36,l:10,g:40},formules:["equilibre"],photo:"https://images.unsplash.com/photo-1547592180-85f173990554?w=400&q=75",tags:["complet","meal prep"],ingredients:["80g quinoa cuit","150g blanc de poulet","Poivrons rotis","Courgettes","Huile olive"],etapes:["Cuire le quinoa 15 min","Rotir les légumes au four","Griller le poulet","Assembler en bowl"],conseil:"Prépare en grande quantité le dimanche."}
 ];
 const CONSEILS = [
   {id:1,titre:"Protéines au petit-déjeuner",emoji:"💪",cat:"nutrition",temps:"3 min",niveau:"Essentiel",couleur:"#1A9050",bg:"#E8FFF2",formules:["sucre","equilibre"],intro:"La plupart des femmes actives démarrent leur journée avec des glucides rapides. Résultat : fringale à 10h, coup de barre à 14h.",points:[{titre:"Satiété durable",texte:"Les protéines stimulent la GLP-1 et la PYY, deux hormones coupe-faim. Effet rassasiant jusqu'à 4-5h."},{titre:"Stabilisation glycémique",texte:"Sans pic d'insuline le matin, ton énergie reste stable toute la journée."},{titre:"Préservation musculaire",texte:"20g de protéines le matin protège ta masse maigre après une nuit de jeûne."}],action:"Cette semaine : remplace ta tartine par un skyr + 2 oeufs brouillés."},
@@ -556,34 +556,6 @@ function ReequilibrageTab() {
     <div style={{padding:"14px 14px 40px"}}>
       <div style={{background:"linear-gradient(135deg,#1A5C38,#2E8B57)",borderRadius:16,padding:"20px 16px",marginBottom:16,color:C.white}}><div style={{fontSize:28,marginBottom:6}}>⚖️</div><div style={{fontSize:18,fontWeight:900,marginBottom:6}}>Rééquilibrage Alimentaire</div><div style={{fontSize:12,color:"rgba(255,255,255,0.75)",lineHeight:1.6}}>Programme progressif sur 4 semaines pour transformer durablement ton rapport à l'alimentation.</div></div>
       <div style={{background:"#FFF8D6",border:"1px solid "+C.yellow,borderRadius:12,padding:"12px 14px",marginBottom:14}}><div style={{fontSize:11,fontWeight:700,color:"#7A5000",marginBottom:4}}>💡 La différence avec le plan 25 jours</div><div style={{fontSize:11,color:"#7A5000",lineHeight:1.6}}>Le plan 25j te dit quoi manger chaque jour. Le rééquilibrage t'apprend pourquoi et comment construire une alimentation qui te ressemble sur le long terme.</div></div>
-
-      <div style={{background:C.white,borderRadius:14,padding:13,marginBottom:14,boxShadow:"0 2px 10px rgba(13,27,75,0.07)",border:"1px solid "+C.border}}>
-        <div style={{fontSize:12,fontWeight:700,color:C.navy,marginBottom:12}}>🥗 Guide alimentaire par catégorie</div>
-        {REEQUILIBRAGE_ALIMENTS.map(cat=>{
-          const isO=ouvertAlim===cat.key;
-          return(
-            <div key={cat.key} style={{marginBottom:6,borderRadius:10,overflow:"hidden",border:"1px solid "+C.border}}>
-              <div onClick={()=>setOuvertAlim(isO?null:cat.key)} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 12px",background:isO?cat.bg:C.white,cursor:"pointer"}}>
-                <span style={{fontSize:12,fontWeight:600,color:cat.couleur}}>{cat.label}</span>
-                <div style={{display:"flex",alignItems:"center",gap:6}}>
-                  <span style={{fontSize:10,color:C.muted}}>{cat.items.length} aliments</span>
-                  <span style={{fontSize:12,color:C.muted}}>{isO?"▲":"▼"}</span>
-                </div>
-              </div>
-              {isO&&(
-                <div style={{padding:"8px 12px 12px",background:"#FAFBFF"}}>
-                  <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
-                    {cat.items.map((item,i)=>(
-                      <span key={i} style={{fontSize:11,background:cat.bg,color:cat.couleur,padding:"4px 10px",borderRadius:20,border:"1px solid "+cat.couleur+"30"}}>{item}</span>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </div>
-
       <div style={{fontSize:12,fontWeight:700,color:C.navy,marginBottom:10,paddingLeft:2}}>📅 Programme 4 semaines</div>
       {REEQUILIBRAGE.map((etape,idx)=>{
         const isOpen=ouvert===idx;
@@ -824,7 +796,7 @@ export default function App() {
     );
   }
 
-  const TABS=[{k:"profil",l:"👤 Profil"},{k:"repas",l:"🍽 Repas"},{k:"recettes",l:"🍳 Recettes"},{k:"conseils",l:"📚 Conseils"},...(formule==="equilibre"?[{k:"reequilibrage",l:"⚖️ Rééquilibrage"},{k:"pdj",l:"🥐 Petit-déj"},{k:"exemple",l:"🍽️ Exemple menu"}]:[]),{k:"analytics",l:"📊 Suivi"},{k:"courses",l:"🛒 Courses"},{k:"coach",l:"👩‍💼 Coach"}];
+  const TABS=[{k:"profil",l:"👤 Profil"},{k:"repas",l:"🍽 Repas"},{k:"recettes",l:"🍳 Recettes"},{k:"conseils",l:"📚 Conseils"},...(formule==="equilibre"?[{k:"reequilibrage",l:"⚖️ Rééquilibrage"},{k:"exemple",l:"🍽️ Exemple menu"}]:[]),{k:"analytics",l:"📊 Suivi"},{k:"courses",l:"🛒 Courses"}];
 
   return(
     <div style={{fontFamily:"sans-serif",minHeight:"100vh",background:C.bg,color:C.text,maxWidth:480,margin:"0 auto"}}>
@@ -884,9 +856,7 @@ export default function App() {
           ))}
         </div>
       )}
-      {tab==="pdj"&&<PdjEquilibreTab/>}
       {tab==="exemple"&&<ExempleMenu/>}
-      {tab==="coach"&&<EspaceCoach/>}
     </div>
   );
 }
