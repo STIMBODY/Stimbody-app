@@ -43,20 +43,7 @@ const ALI = {poulet:["poulet","blanc de poulet"],steak5:["steak","boeuf"],veau:[
 const nr = s => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
 function fk(name) { const n=nr(name.trim()); for(const[k,l]of Object.entries(ALI))for(const a of l)if(n===nr(a)||n.includes(nr(a))||nr(a).includes(n))return k; return"legumes"; }
 function parseMeal(txt) { if(!txt.trim())return[]; return txt.split(/\s*\+\s*/).map(p=>{ const m=p.trim().match(/^(\d+)\s*g?\s+(?:de\s+|d[' ])?(.+)$/i); if(!m)return null; const g=parseInt(m[1]),foodRaw=m[2].trim(),k=fk(foodRaw); return{n:`${g}g de ${foodRaw}`,k,g,foodRaw}; }).filter(Boolean); }
-async function compressImage(file) {
-  return new Promise(resolve => {
-    const canvas=document.createElement("canvas"), img=new Image(), url=URL.createObjectURL(file);
-    img.onload = () => {
-      const MAX=800; let w=img.width, h=img.height;
-      if(w>MAX||h>MAX){ if(w>h){h=Math.round(h*MAX/w);w=MAX;}else{w=Math.round(w*MAX/h);h=MAX;} }
-      canvas.width=w; canvas.height=h;
-      canvas.getContext("2d").drawImage(img,0,0,w,h);
-      canvas.toBlob(blob=>{ const reader=new FileReader(); reader.onload=e=>resolve(e.target.result.split(",")[1]); reader.readAsDataURL(blob); URL.revokeObjectURL(url); },"image/jpeg",0.75);
-    };
-    img.onerror = () => { URL.revokeObjectURL(url); resolve(null); };
-    img.src = url;
-  });
-}
+
 
 function generatePlan(prefs) {
   const {breakfast,proteins,legumes} = prefs;
@@ -248,53 +235,7 @@ function ProfilTab({prefs,setPrefs,onGenerate}) {
   );
 }
 
-function PhotoIA() {
-  const [photo,setPhoto]=useState(null);
-  const [b64,setB64]=useState(null);
-  const [analyse,setAnalyse]=useState(null);
-  const [loading,setLoading]=useState(false);
-  const [error,setError]=useState(null);
-  const fileRef=useRef();
-  const processFile=async(file)=>{
-    if(!file||!file.type.startsWith("image/"))return;
-    setPhoto(URL.createObjectURL(file)); setAnalyse(null); setError(null);
-    const compressed=await compressImage(file);
-    if(compressed) setB64(compressed);
-    else setError("Impossible de lire cette image.");
-  };
-  const analyser=async()=>{
-    if(!b64)return;
-    setLoading(true); setError(null); setAnalyse(null);
-    try {
-      const resp=await fetch("/api/analyze",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({image:b64})});
-      if(!resp.ok) throw new Error("HTTP "+resp.status);
-      const data=await resp.json();
-      const txt=(data.content?.[0]?.text||"").replace(/```[\w]*/g,"").replace(/```/g,"").trim();
-      const match=txt.match(/\{[\s\S]*\}/);
-      if(!match) throw new Error("Réponse invalide");
-      setAnalyse(JSON.parse(match[0]));
-    } catch(e) { setError("Analyse impossible. Vérifie ta connexion et réessaie."); }
-    setLoading(false);
-  };
-  const reset=()=>{ setPhoto(null); setB64(null); setAnalyse(null); setError(null); };
-  return(
-    <div style={{padding:"16px 14px 40px"}}>
-      <div style={{background:"linear-gradient(135deg,#0D1B4B,#1A2B6B)",borderRadius:16,padding:"18px 16px",marginBottom:16,color:"#fff"}}><div style={{fontSize:28,marginBottom:6}}>📸</div><div style={{fontSize:16,fontWeight:900,marginBottom:4}}>Analyse IA de ton assiette</div><div style={{fontSize:11,color:"rgba(255,255,255,0.65)",lineHeight:1.6}}>Prends une photo de ton repas — l'IA détecte les aliments et calcule automatiquement tes macros et calories.</div></div>
-      <div onClick={()=>fileRef.current?.click()} style={{border:"2px dashed "+(photo?C.green:C.border),borderRadius:14,background:photo?C.greenBg:"#F8F9FF",padding:photo?0:"32px 20px",textAlign:"center",cursor:"pointer",marginBottom:12,overflow:"hidden",minHeight:140,display:"flex",alignItems:"center",justifyContent:"center"}}>{photo?<img src={photo} alt="Assiette" style={{width:"100%",maxHeight:260,objectFit:"cover",display:"block"}}/>:<div><div style={{fontSize:36,marginBottom:8}}>🍽️</div><div style={{fontSize:13,color:C.soft,fontWeight:600}}>Clique pour prendre une photo</div><div style={{fontSize:11,color:C.muted,marginTop:4}}>ou dépose une image ici</div></div>}</div>
-      <input ref={fileRef} type="file" accept="image/*" capture="environment" style={{display:"none"}} onChange={e=>processFile(e.target.files[0])}/>
-      {photo&&!analyse&&(<div style={{display:"flex",gap:8,marginBottom:16}}><button onClick={analyser} disabled={loading} style={{flex:1,padding:"14px",background:loading?"#8A9ABB":C.navy,border:"none",borderRadius:12,color:C.yellow,fontSize:14,fontWeight:900,cursor:loading?"not-allowed":"pointer"}}>{loading?"⏳ Analyse en cours...":"⚡ Analyser avec l'IA"}</button><button onClick={reset} style={{padding:"14px 16px",background:"#FFF0F0",border:"1px solid #FFCCCC",borderRadius:12,color:C.red,fontSize:18,cursor:"pointer"}}>✕</button></div>)}
-      {error&&<div style={{background:"#FFF0F0",border:"1px solid #FFCCCC",borderRadius:12,padding:"12px 14px",color:C.red,fontSize:12,marginBottom:12}}>⚠️ {error}</div>}
-      {analyse&&(
-        <div>
-          <div style={{background:C.navy,borderRadius:14,padding:"14px 16px",marginBottom:12}}><div style={{fontSize:9,letterSpacing:3,color:C.yellow,textTransform:"uppercase",marginBottom:10,textAlign:"center"}}>Estimation IA — Ce repas</div><div style={{display:"flex"}}>{[{v:analyse.total.kcal,l:"kcal",c:C.yellow},{v:analyse.total.proteines_g,l:"Prot.",c:"#6EF0A0",u:"g"},{v:analyse.total.lipides_g,l:"Lip.",c:"#6EC8FF",u:"g"},{v:analyse.total.glucides_g,l:"Gluc.",c:"#C0A0FF",u:"g"}].map((x,i,arr)=>(<div key={i} style={{flex:1,textAlign:"center",borderRight:i<arr.length-1?"1px solid rgba(255,255,255,0.1)":"none"}}><div style={{fontSize:20,fontWeight:900,color:x.c}}>{x.v}{x.u||""}</div><div style={{fontSize:8,color:"rgba(255,255,255,0.5)",textTransform:"uppercase"}}>{x.l}</div></div>))}</div></div>
-          <div style={{background:C.white,borderRadius:14,border:"1px solid "+C.border,overflow:"hidden",marginBottom:10}}><div style={{background:"#F5F7FF",padding:"8px 14px",fontSize:10,fontWeight:700,color:C.navy}}>DÉTAIL PAR ALIMENT</div>{analyse.plats.map((p,i)=>(<div key={i} style={{padding:"10px 14px",borderBottom:i<analyse.plats.length-1?"1px solid "+C.border:"none",background:i%2===0?C.white:"#FAFBFF"}}><div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}><span style={{fontSize:12,fontWeight:600,color:C.navy}}>{p.nom}</span><span style={{fontSize:10,color:C.muted,background:C.bg,padding:"2px 8px",borderRadius:6}}>{p.quantite}</span></div><div style={{display:"flex",gap:10}}><span style={{fontSize:9,color:"#8A5A00"}}><strong>{p.kcal}</strong> kcal</span><span style={{fontSize:9,color:"#1A6B3A"}}><strong>P</strong> {p.proteines_g}g</span><span style={{fontSize:9,color:"#1A4B8A"}}><strong>L</strong> {p.lipides_g}g</span><span style={{fontSize:9,color:"#5A3A9A"}}><strong>G</strong> {p.glucides_g}g</span></div></div>))}</div>
-          <div style={{background:C.greenBg,border:"1px solid "+C.green+"40",borderRadius:12,padding:"12px 14px",marginBottom:10}}><div style={{fontSize:10,fontWeight:700,color:C.green,marginBottom:4}}>⚖️ {analyse.equilibre}</div><div style={{fontSize:12,color:"#1A4B2A",lineHeight:1.5}}>💡 {analyse.conseil}</div></div>
-          <button onClick={reset} style={{width:"100%",padding:"11px",background:"#F5F7FF",border:"1px dashed "+C.border,borderRadius:10,fontSize:12,color:C.navyL,cursor:"pointer"}}>📸 Analyser un autre repas</button>
-        </div>
-      )}
-    </div>
-  );
-}
+
 
 function BiblioRecettes({formule}) {
   const [filtre,setFiltre]=useState("tous");
@@ -598,7 +539,7 @@ export default function App() {
     );
   }
 
-  const TABS=[{k:"profil",l:"👤 Profil"},{k:"repas",l:"🍽 Repas"},{k:"photo",l:"📸 Photo IA"},{k:"recettes",l:"🍳 Recettes"},{k:"conseils",l:"📚 Conseils"},...(formule==="equilibre"?[{k:"reequilibrage",l:"⚖️ Rééquilibrage"},{k:"exemple",l:"🍽️ Exemple menu"}]:[]),{k:"analytics",l:"📊 Suivi"},{k:"courses",l:"🛒 Courses"},{k:"coach",l:"👩‍💼 Coach"}];
+  const TABS=[{k:"profil",l:"👤 Profil"},{k:"repas",l:"🍽 Repas"},{k:"recettes",l:"🍳 Recettes"},{k:"conseils",l:"📚 Conseils"},...(formule==="equilibre"?[{k:"reequilibrage",l:"⚖️ Rééquilibrage"},{k:"exemple",l:"🍽️ Exemple menu"}]:[]),{k:"analytics",l:"📊 Suivi"},{k:"courses",l:"🛒 Courses"},{k:"coach",l:"👩‍💼 Coach"}];
 
   return(
     <div style={{fontFamily:"sans-serif",minHeight:"100vh",background:C.bg,color:C.text,maxWidth:480,margin:"0 auto"}}>
@@ -642,7 +583,6 @@ export default function App() {
           <button onClick={()=>setTab("profil")} style={{width:"100%",marginTop:16,padding:"10px",background:"#F5F7FF",border:"1px dashed "+C.border,borderRadius:10,fontSize:11,color:C.navyL,cursor:"pointer"}}>Modifier les préférences et régénérer</button>
         </div>
       ))}
-      {tab==="photo"&&<PhotoIA/>}
       {tab==="recettes"&&<BiblioRecettes formule={formule}/>}
       {tab==="conseils"&&<ConseilsTab formule={formule}/>}
       {tab==="reequilibrage"&&<ReequilibrageTab/>}
