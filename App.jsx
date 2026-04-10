@@ -2,14 +2,51 @@ import { useState, useEffect, useRef } from "react";
 import { ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
 const C = { bg:"#EEF1FA", navy:"#0D1B4B", navyL:"#1A2B6B", yellow:"#F5C200", white:"#FFFFFF", text:"#0D1B4B", soft:"#4A5A8A", muted:"#8A9ABB", border:"#DDE3F5", green:"#1A9050", greenBg:"#E8FFF2", greenBdr:"#A0DDB8", red:"#E53935", orange:"#E65100", orangeBg:"#FFF3E0" };
-const DB = { poulet:{p:23,f:1.5,c:0,cal:110}, steak5:{p:19,f:5,c:0,cal:125}, veau:{p:21,f:3,c:0,cal:115}, cabillaud:{p:18,f:0.7,c:0,cal:82}, saumon:{p:20,f:13,c:0,cal:200}, maquereau:{p:19,f:14,c:0,cal:205}, daurade:{p:19,f:2,c:0,cal:97}, crevettes:{p:18,f:1,c:0,cal:85}, thon:{p:26,f:0.5,c:0,cal:110}, moules:{p:12,f:2,c:3,cal:80}, stJacques:{p:15,f:1,c:3,cal:82}, oeuf:{p:13,f:11,c:0.6,cal:155}, jambonDinde:{p:19,f:2,c:1,cal:100}, fromageBlanc0:{p:8,f:0.1,c:4,cal:48}, blancsOeuf:{p:11,f:0,c:0.7,cal:52}, saumonFume:{p:21,f:12,c:0,cal:185}, entremets:{p:69,f:4,c:13,cal:372}, barreHP:{p:24,f:12,c:41,cal:380}, legumes:{p:2.5,f:0,c:5,cal:30}, huileOlive:{p:0,f:100,c:0,cal:900}, skyr:{p:10,f:0,c:3.5,cal:54}, yaourtGrec:{p:10,f:0,c:4,cal:56}, cottageCheese:{p:11,f:1,c:3,cal:65}, konjac:{p:0.2,f:0,c:0,cal:7} };
+const DB = { patesBlanches:{p:5,f:1,c:27,cal:131}, semoule:{p:3.8,f:0.6,c:23,cal:112}, epeautre:{p:5.5,f:1,c:25,cal:127}, seigle:{p:3,f:0.5,c:22,cal:104}, avoine:{p:13,f:7,c:67,cal:389}, sarrasin:{p:3.4,f:0.6,c:20,cal:92}, amarante:{p:4,f:1.5,c:22,cal:102}, polenta:{p:2,f:0.3,c:18,cal:80}, manioc:{p:1.4,f:0.3,c:38,cal:160}, igname:{p:1.5,f:0.2,c:28,cal:116}, haricotNoir:{p:8.9,f:0.5,c:23,cal:132}, flageolets:{p:7,f:0.5,c:18,cal:95}, poisVerts:{p:5,f:0.4,c:14,cal:81}, gnocchis:{p:2,f:1,c:30,cal:130}, couscous:{p:3.8,f:0.6,c:23,cal:112}, boulgour:{p:3.1,f:0.2,c:19,cal:83}, orge:{p:2.3,f:0.4,c:22,cal:100}, millet:{p:3.5,f:1.3,c:23,cal:119}, riz:{p:2.7,f:0.3,c:28,cal:130}, rizComplet:{p:2.5,f:1,c:23,cal:112}, patesCompletes:{p:5,f:1,c:31,cal:157}, patates:{p:2,f:0.1,c:17,cal:77}, patateDouce:{p:1.6,f:0.1,c:20,cal:86}, poisCasses:{p:8,f:0.4,c:17,cal:100}, feves:{p:8,f:0.6,c:13,cal:88}, edamame:{p:11,f:5,c:8,cal:121}, sojaHaricot:{p:13,f:5,c:11,cal:141}, lentilles:{p:9,f:0.4,c:20,cal:116}, poisChiches:{p:9,f:2.6,c:27,cal:164}, haricotsBlancs:{p:8,f:0.5,c:17,cal:105}, haricotRouges:{p:8.7,f:0.5,c:22,cal:127}, nutella:{p:6,f:31,c:58,cal:530}, carreFrais:{p:8,f:11,c:3,cal:140}, emmental:{p:28,f:30,c:0,cal:380}, jambon:{p:18,f:4,c:1,cal:110}, celeri:{p:0.7,f:0.2,c:3,cal:16}, betterave:{p:1.6,f:0.1,c:10,cal:43}, chouRouge:{p:1.4,f:0.2,c:7,cal:31}, avocat:{p:2,f:15,c:9,cal:160}, fenouil:{p:1.2,f:0.2,c:7,cal:31}, maiz:{p:3.3,f:1.4,c:19,cal:97}, banane:{p:1.1,f:0.3,c:23,cal:95}, pomme:{p:0.3,f:0.2,c:14,cal:55}, fraises:{p:0.8,f:0.3,c:8,cal:35}, fruitsRouges:{p:1,f:0.5,c:12,cal:55}, kiwi:{p:1.1,f:0.5,c:15,cal:65}, orange:{p:1,f:0.2,c:12,cal:50}, mangue:{p:0.8,f:0.4,c:17,cal:70}, pain:{p:8,f:1,c:50,cal:250}, painComplet:{p:9,f:2,c:45,cal:235}, biscottes:{p:10,f:3,c:70,cal:350}, galetteRiz:{p:7,f:1,c:80,cal:380}, beurre:{p:1,f:81,c:0,cal:740}, beurreCacahuete:{p:25,f:50,c:20,cal:600}, pureAmande:{p:21,f:55,c:10,cal:600}, confiture:{p:0,f:0,c:65,cal:260}, miel:{p:0,f:0,c:80,cal:310}, muesli:{p:10,f:7,c:65,cal:370}, lait:{p:3.5,f:3.5,c:5,cal:65}, jusOrange:{p:0.7,f:0,c:10,cal:45}, poulet:{p:23,f:1.5,c:0,cal:110}, steak5:{p:19,f:5,c:0,cal:125}, veau:{p:21,f:3,c:0,cal:115}, cabillaud:{p:18,f:0.7,c:0,cal:82}, saumon:{p:20,f:13,c:0,cal:200}, maquereau:{p:19,f:14,c:0,cal:205}, daurade:{p:19,f:2,c:0,cal:97}, crevettes:{p:18,f:1,c:0,cal:85}, thon:{p:26,f:0.5,c:0,cal:110}, moules:{p:12,f:2,c:3,cal:80}, stJacques:{p:15,f:1,c:3,cal:82}, oeuf:{p:13,f:11,c:0.6,cal:155}, jambonDinde:{p:19,f:2,c:1,cal:100}, fromageBlanc0:{p:8,f:0.1,c:4,cal:48}, blancsOeuf:{p:11,f:0,c:0.7,cal:52}, saumonFume:{p:21,f:12,c:0,cal:185}, entremets:{p:69,f:4,c:13,cal:372}, barreHP:{p:24,f:12,c:41,cal:380}, legumes:{p:2.5,f:0,c:5,cal:30}, huileOlive:{p:0,f:100,c:0,cal:900}, skyr:{p:10,f:0,c:3.5,cal:54}, yaourtGrec:{p:10,f:0,c:4,cal:56}, cottageCheese:{p:11,f:1,c:3,cal:65}, konjac:{p:0.2,f:0,c:0,cal:7} };
 const FORMULES = {
-  sucre: { label:"Sans Sucre", emoji:"🚫🍬", desc:"Programme strict zéro sucre. Protéines + légumes uniquement.", prefs:{ breakfast:["oeuf","jambonDinde","saumonFume","cottageCheese","skyr","fromageBlanc0"], proteins:["poulet","steak5","saumon","cabillaud","daurade","crevettes","thon","jambonDinde","oeuf","fromageBlanc0"], legumes:["salade","tomate","concombre","radis","brocoli","epinard","champignon","courgette","haricotVert","poivron","aubergine","chouFleur","konjac"], condiments:["huileOlive","vinaigre","citron","moutarde","herbes","curcuma"] } },
+  sucre: { label:"Sans Sucre", emoji:"🚫🍬", desc:"Programme strict zéro sucre. Protéines + légumes uniquement.", prefs:{ breakfast:["oeuf","jambonDinde","saumonFume","cottageCheese","skyr","fromageBlanc0"], proteins:["poulet","steak5","saumon","cabillaud","daurade","crevettes","thon","jambonDinde","oeuf","fromageBlanc0"], nutella:["nutella","pate a tartiner"], carreFrais:["carre frais"], emmental:["emmental"], jambon:["jambon"], banane:["banane"], pomme:["pomme"], fraises:["fraises"], fruitsRouges:["fruits rouges","myrtilles","framboises"], kiwi:["kiwi"], orange:["orange"], mangue:["mangue"], pain:["pain blanc","baguette","pain de mie"], painComplet:["pain complet","cereales"], biscottes:["biscottes"], galetteRiz:["galette riz"], beurre:["beurre"], beurreCacahuete:["beurre cacahuete"], pureAmande:["puree amande","noisette"], confiture:["confiture"], miel:["miel"], muesli:["muesli","granola","corn flakes"], lait:["lait"], jusOrange:["jus orange"], legumes:["salade","tomate","concombre","radis","brocoli","epinard","champignon","courgette","haricotVert","poivron","aubergine","chouFleur","konjac"], condiments:["huileOlive","vinaigre","citron","moutarde","herbes","curcuma"] } },
   equilibre: { label:"Rééquilibrage Alimentaire", emoji:"⚖️", desc:"Programme progressif d'équilibre global. Variété, plaisir, durabilité.", prefs:{ breakfast:["entremets","barreHP","oeuf","jambonDinde","skyr","fromageBlanc0","yaourtGrec"], proteins:["poulet","steak5","saumon","cabillaud","daurade","crevettes","thon","jambonDinde","oeuf","fromageBlanc0","maquereau","moules"], legumes:["salade","tomate","concombre","radis","brocoli","epinard","champignon","courgette","haricotVert","poivron","aubergine","chouFleur","chou","konjac"], condiments:["huileOlive","huileColza","vinaigre","citron","moutarde","herbes","curcuma","epices"] } }
 };
-const PDJ_LIST = [{k:"entremets",label:"Entremets HP Levovia",emoji:"🍮",g:25},{k:"barreHP",label:"Barre HP Choco Cacahuète",emoji:"🍫",g:35},{k:"oeuf",label:"Oeufs (2 entiers)",emoji:"🥚",g:120},{k:"blancsOeuf",label:"Blancs d'oeufs (150ml)",emoji:"🥛",g:150},{k:"skyr",label:"Skyr nature",emoji:"🫙",g:150},{k:"siggis",label:"Siggi's 0%",emoji:"🫙",g:150},{k:"yaourtGrec",label:"Yaourt grec 0%",emoji:"🍶",g:150},{k:"fromageBlanc0",label:"Fromage blanc 0%",emoji:"🥛",g:200},{k:"cottageCheese",label:"Cottage cheese",emoji:"🥛",g:150},{k:"jambonDinde",label:"Jambon de dinde",emoji:"🥓",g:60},{k:"saumonFume",label:"Saumon fumé",emoji:"🐟",g:60},{k:"thon",label:"Thon naturel",emoji:"🥫",g:100}];
+const PDJ_LIST = [    {k:"banane",label:"Banane",emoji:"🍌",g:120,cat:"fruits"},
+  {k:"pomme",label:"Pomme",emoji:"🍎",g:150,cat:"fruits"},
+  {k:"fraises",label:"Fraises",emoji:"🍓",g:150,cat:"fruits"},
+  {k:"fruitsRouges",label:"Fruits rouges",emoji:"🫐",g:100,cat:"fruits"},
+  {k:"kiwi",label:"Kiwi",emoji:"🥝",g:100,cat:"fruits"},
+  {k:"orange",label:"Orange",emoji:"🍊",g:150,cat:"fruits"},
+  {k:"mangue",label:"Mangue",emoji:"🥭",g:100,cat:"fruits"},
+  {k:"painComplet",label:"Pain complet / aux céréales",emoji:"🍞",g:50,cat:"cereales"},
+  {k:"pain",label:"Pain blanc / baguette",emoji:"🥖",g:50,cat:"cereales"},
+  {k:"biscottes",label:"Biscottes",emoji:"🫓",g:20,cat:"cereales"},
+  {k:"galetteRiz",label:"Galettes de riz",emoji:"🍘",g:20,cat:"cereales"},
+  {k:"beurre",label:"Beurre",emoji:"🧈",g:10,cat:"matieres"},
+  {k:"beurreCacahuete",label:"Beurre de cacahuète",emoji:"🥜",g:20,cat:"matieres"},
+  {k:"pureAmande",label:"Purée d'amande / noisette",emoji:"🌰",g:20,cat:"matieres"},
+  {k:"confiture",label:"Confiture",emoji:"🍓",g:20,cat:"sucres"},
+  {k:"miel",label:"Miel",emoji:"🍯",g:15,cat:"sucres"},
+  {k:"muesli",label:"Muesli / granola",emoji:"🥣",g:50,cat:"cereales"},
+  {k:"lait",label:"Lait (demi-écrémé)",emoji:"🥛",g:200,cat:"cereales"},
+  {k:"jusOrange",label:"Jus d'orange pressé",emoji:"🍊",g:200,cat:"cereales"},
+  {k:"entremets",label:"Entremets HP Levovia",emoji:"🍮",g:25,cat:"proteines"},{k:"barreHP",label:"Barre HP Choco Cacahuète",emoji:"🍫",g:35,cat:"proteines"},{k:"oeuf",label:"Oeufs (2 entiers)",emoji:"🥚",g:120,cat:"proteines"},{k:"blancsOeuf",label:"Blancs d'oeufs (150ml)",emoji:"🥛",g:150,cat:"proteines"},{k:"skyr",label:"Skyr nature",emoji:"🫙",g:150,cat:"proteines"},{k:"siggis",label:"Siggi's 0%",emoji:"🫙",g:150,cat:"proteines"},{k:"yaourtGrec",label:"Yaourt grec 0%",emoji:"🍶",g:150,cat:"proteines"},{k:"fromageBlanc0",label:"Fromage blanc 0%",emoji:"🥛",g:200,cat:"proteines"},  {k:"nutella",label:"Nutella / pâte à tartiner",emoji:"🍫",g:20,cat:"sucres"},
+  {k:"carreFrais",label:"Carré frais",emoji:"🧀",g:60,cat:"proteines"},
+  {k:"emmental",label:"Emmental",emoji:"🧀",g:30,cat:"proteines"},
+  {k:"jambon",label:"Jambon",emoji:"🥓",g:60,cat:"proteines"},
+{k:"cottageCheese",label:"Cottage cheese",emoji:"🥛",g:150,cat:"proteines"},{k:"jambonDinde",label:"Jambon de dinde",emoji:"🥓",g:60,cat:"proteines"},{k:"saumonFume",label:"Saumon fumé",emoji:"🐟",g:60,cat:"proteines"},{k:"thon",label:"Thon naturel",emoji:"🥫",g:100,cat:"proteines"}];
 const PROTO_LIST = [{k:"poulet",label:"Blanc de poulet",emoji:"🍗",g:150,cat:"viande"},{k:"steak5",label:"Steak haché 5%",emoji:"🥩",g:150,cat:"viande"},{k:"veau",label:"Veau escalope",emoji:"🥩",g:150,cat:"viande"},{k:"saumon",label:"Saumon",emoji:"🐟",g:150,cat:"poisson"},{k:"cabillaud",label:"Cabillaud",emoji:"🐟",g:150,cat:"poisson"},{k:"daurade",label:"Daurade",emoji:"🐟",g:150,cat:"poisson"},{k:"maquereau",label:"Maquereau",emoji:"🐟",g:150,cat:"poisson"},{k:"crevettes",label:"Crevettes",emoji:"🦐",g:150,cat:"fruitsmer"},{k:"moules",label:"Moules",emoji:"🦪",g:200,cat:"fruitsmer"},{k:"stJacques",label:"Saint-Jacques",emoji:"🐚",g:150,cat:"fruitsmer"},{k:"thon",label:"Thon naturel",emoji:"🥫",g:100,cat:"leger"},{k:"jambonDinde",label:"Jambon de dinde",emoji:"🥓",g:60,cat:"leger"},{k:"saumonFume",label:"Saumon fumé",emoji:"🐟",g:60,cat:"leger"},{k:"oeuf",label:"Oeufs (2)",emoji:"🥚",g:120,cat:"laitage"},{k:"fromageBlanc0",label:"Fromage blanc 0%",emoji:"🥛",g:150,cat:"laitage"},{k:"skyr",label:"Skyr nature",emoji:"🫙",g:150,cat:"laitage"}];
-const LEG_LIST = [{k:"salade",label:"Salade / mesclun",emoji:"🥬",tag:"cru"},{k:"tomate",label:"Tomate",emoji:"🍅",tag:"cru"},{k:"concombre",label:"Concombre",emoji:"🥒",tag:"cru"},{k:"radis",label:"Radis rouges",emoji:"🔴",tag:"cru"},{k:"endive",label:"Endives",emoji:"🥬",tag:"cru"},{k:"carotte",label:"Carotte râpée",emoji:"🥕",tag:"cru"},{k:"brocoli",label:"Brocolis",emoji:"🥦",tag:"cuit"},{k:"epinard",label:"Épinards",emoji:"🌿",tag:"cuit"},{k:"champignon",label:"Champignons",emoji:"🍄",tag:"cuit"},{k:"courgette",label:"Courgettes",emoji:"🟢",tag:"cuit"},{k:"haricotVert",label:"Haricots verts",emoji:"🫘",tag:"cuit"},{k:"poivron",label:"Poivrons",emoji:"🫑",tag:"cuit"},{k:"aubergine",label:"Aubergines",emoji:"🍆",tag:"cuit"},{k:"chouFleur",label:"Chou-fleur",emoji:"⚪",tag:"cuit"},{k:"chou",label:"Chou vert",emoji:"🥬",tag:"cuit"},{k:"potiron",label:"Potiron",emoji:"🎃",tag:"cuit"},{k:"konjac",label:"Riz/spaghetti konjac",emoji:"🍜",tag:"cuit"}];
+const LEG_LIST = [{k:"salade",label:"Salade / mesclun",emoji:"🥬",tag:"cru"},{k:"tomate",label:"Tomate",emoji:"🍅",tag:"cru"},{k:"concombre",label:"Concombre",emoji:"🥒",tag:"cru"},{k:"radis",label:"Radis rouges",emoji:"🔴",tag:"cru"},{k:"endive",label:"Endives",emoji:"🥬",tag:"cru"},{k:"carotte",label:"Carotte râpée",emoji:"🥕",tag:"cru"},
+  {k:"celeri",label:"Céleri branche",emoji:"🥬",tag:"cru"},
+  {k:"betterave",label:"Betterave crue",emoji:"🟣",tag:"cru"},
+  {k:"chouRouge",label:"Chou rouge cru",emoji:"🥬",tag:"cru"},
+  {k:"avocat",label:"Avocat",emoji:"🥑",tag:"cru"},
+  {k:"fenouil",label:"Fenouil cru",emoji:"🌿",tag:"cru"},
+  {k:"maiz",label:"Maïs (modération)",emoji:"🌽",tag:"cru"},{k:"brocoli",label:"Brocolis",emoji:"🥦",tag:"cuit"},{k:"epinard",label:"Épinards",emoji:"🌿",tag:"cuit"},{k:"champignon",label:"Champignons",emoji:"🍄",tag:"cuit"},{k:"courgette",label:"Courgettes",emoji:"🟢",tag:"cuit"},{k:"haricotVert",label:"Haricots verts",emoji:"🫘",tag:"cuit"},{k:"poivron",label:"Poivrons",emoji:"🫑",tag:"cuit"},{k:"aubergine",label:"Aubergines",emoji:"🍆",tag:"cuit"},{k:"chouFleur",label:"Chou-fleur",emoji:"⚪",tag:"cuit"},{k:"chou",label:"Chou vert",emoji:"🥬",tag:"cuit"},{k:"potiron",label:"Potiron",emoji:"🎃",tag:"cuit"},{k:"konjac",label:"Riz/spaghetti konjac",emoji:"🍜",tag:"cuit"},{k:"riz",label:"Riz blanc",emoji:"🍚",tag:"feculent"},{k:"rizComplet",label:"Riz complet",emoji:"🍚",tag:"feculent"},{k:"patesCompletes",label:"Pâtes complètes",emoji:"🍝",tag:"feculent"},{k:"patates",label:"Pomme de terre",emoji:"🥔",tag:"feculent"},{k:"patateDouce",label:"Patate douce",emoji:"🍠",tag:"feculent"},
+  {k:"couscous",label:"Couscous",emoji:"🍚",tag:"feculent"},
+  {k:"boulgour",label:"Boulgour",emoji:"🌾",tag:"feculent"},
+  {k:"orge",label:"Orge perlé",emoji:"🌾",tag:"feculent"},
+  {k:"millet",label:"Millet",emoji:"🌾",tag:"feculent"},{k:"lentilles",label:"Lentilles",emoji:"🫘",tag:"legumineuse"},{k:"poisChiches",label:"Pois chiches",emoji:"🫘",tag:"legumineuse"},{k:"haricotsBlancs",label:"Haricots blancs",emoji:"🫘",tag:"legumineuse"},{k:"haricotRouges",label:"Haricots rouges",emoji:"🔴",tag:"legumineuse"},
+  {k:"poisCasses",label:"Pois cassés",emoji:"🫘",tag:"legumineuse"},
+  {k:"feves",label:"Fèves",emoji:"🫘",tag:"legumineuse"},
+  {k:"edamame",label:"Edamame",emoji:"🫘",tag:"legumineuse"},
+  {k:"sojaHaricot",label:"Haricots de soja",emoji:"🫘",tag:"legumineuse"}];
 const COND_LIST = [{k:"huileOlive",label:"Huile d'olive",emoji:"🫒"},{k:"huileColza",label:"Huile de colza",emoji:"🌻"},{k:"vinaigre",label:"Vinaigre de cidre",emoji:"🍶"},{k:"citron",label:"Citron",emoji:"🍋"},{k:"moutarde",label:"Moutarde",emoji:"🟡"},{k:"ail",label:"Ail",emoji:"🧄"},{k:"echalote",label:"Échalote",emoji:"🧅"},{k:"herbes",label:"Herbes de Provence",emoji:"🌿"},{k:"curcuma",label:"Curcuma",emoji:"🟡"},{k:"epices",label:"Épices variées",emoji:"🌶️"},{k:"cremeLight",label:"Crème liquide 4%",emoji:"🥛"}];
 const MV = {super:5,bien:4,moyen:3,fatigue:2,frustre:1};
 const FV = {rassasie:1,moyen:2,faim:3};
@@ -29,6 +66,72 @@ const CONSEILS = [
   {id:3,titre:"Intuition alimentaire vs comptage",emoji:"🧠",cat:"comportement",temps:"5 min",niveau:"Avancé",couleur:"#6A1B9A",bg:"#F3E5F5",formules:["equilibre"],intro:"Le programme STIMBODY ne repose pas sur le comptage calorique. Voici pourquoi.",points:[{titre:"Le paradoxe du contrôle",texte:"Plus on se restreint, plus le cerveau déclenche des envies compulsives. C'est du biologique."},{titre:"L'échelle faim/satiété",texte:"Manger entre 3 et 7 sur l'échelle synchronise mieux ton apport avec tes besoins réels."},{titre:"Pourquoi les macros restent utiles",texte:"Connaître les aliments riches en protéines vs glucides guide des choix qualitatifs sans compter."}],action:"Pendant 3 jours : note ton niveau de faim avant et après chaque repas."},
   {id:4,titre:"Hydratation : plus que boire",emoji:"💧",cat:"bien-être",temps:"4 min",niveau:"Pratique",couleur:"#1565C0",bg:"#E3F2FD",formules:["sucre","equilibre"],intro:"Tu bois 2L par jour et tu penses que c'est suffisant ? La qualité et le timing comptent autant.",points:[{titre:"Rozana vs Evian",texte:"Rozana (gazeuse) riche en bicarbonates : parfaite le jour. Evian/Volvic riches en magnésium : idéales le soir."},{titre:"Le test de l'urine",texte:"Jaune paille = bien hydratée. Jaune foncé = bois maintenant. Incolore = tu surhydrates."},{titre:"Boire AVANT de manger",texte:"Un grand verre d'eau 15 min avant chaque repas réduit les portions de 13% en moyenne."}],action:"Teste 1 semaine : verre d'eau dès le réveil, avant chaque repas, et Hépar le soir."}
 ];
+
+const PDJ_EQUILIBRE = {
+  supports: [
+    {nom:"Pain complet / aux céréales",emoji:"🍞"},
+    {nom:"Pain blanc / baguette",emoji:"🥖"},
+    {nom:"Pain de mie",emoji:"🍞"},
+    {nom:"Brioche",emoji:"🥐"},
+    {nom:"Croissant / pain au chocolat",emoji:"🥐"},
+    {nom:"Biscottes",emoji:"🫓"},
+    {nom:"Galettes de riz",emoji:"🍘"},
+  ],
+  graisses: [
+    {nom:"Beurre doux / demi-sel",emoji:"🧈"},
+    {nom:"Margarine",emoji:"🧈"},
+    {nom:"Beurre de cacahuète",emoji:"🥜"},
+    {nom:"Purée d'amande / noisette",emoji:"🌰"},
+  ],
+  sucres: [
+    {nom:"Confiture (fraise, abricot, framboise...)",emoji:"🍓"},
+    {nom:"Miel",emoji:"🍯"},
+    {nom:"Nutella / pâte à tartiner",emoji:"🍫"},
+    {nom:"Caramel au beurre salé",emoji:"🍮"},
+    {nom:"Sirop d'érable",emoji:"🍁"},
+    {nom:"Crème de marron",emoji:"🌰"},
+  ],
+  cereales: [
+    {nom:"Corn flakes / muesli / granola",emoji:"🥣"},
+    {nom:"Chocolat chaud / cacao",emoji:"☕"},
+    {nom:"Lait (entier, demi-écrémé)",emoji:"🥛"},
+    {nom:"Jus d'orange pressé",emoji:"🍊"},
+  ],
+  proteines: [
+    {nom:"Oeufs entiers (omelette, pochés, brouillés, durs)",emoji:"🥚"},
+    {nom:"Blancs d'oeufs",emoji:"🥚"},
+    {nom:"Yaourt grec 0%",emoji:"🍶"},
+    {nom:"Skyr nature",emoji:"🫙"},
+    {nom:"Fromage blanc 0%",emoji:"🥛"},
+    {nom:"Cottage cheese",emoji:"🧀"},
+    {nom:"Jambon blanc (0% MG)",emoji:"🥓"},
+    {nom:"Saumon fumé (en petite quantité)",emoji:"🐟"},
+    {nom:"Thon en boîte (eau)",emoji:"🥫"},
+  ],
+  legumes: [
+    {nom:"Épinards frais / sautés",emoji:"🌿"},
+    {nom:"Tomates",emoji:"🍅"},
+    {nom:"Champignons",emoji:"🍄"},
+    {nom:"Poivrons",emoji:"🫑"},
+    {nom:"Concombre",emoji:"🥒"},
+    {nom:"Radis",emoji:"🔴"},
+    {nom:"Courgettes",emoji:"🟢"},
+    {nom:"Asperges vertes",emoji:"🌱"},
+  ],
+  ajouts: [
+    {nom:"Feta (20g max)",emoji:"🧀"},
+    {nom:"Graines de chia ou de lin (10-15g)",emoji:"🌱"},
+    {nom:"Avocat (50g max)",emoji:"🥑"},
+    {nom:"Herbes fraîches : basilic, ciboulette, menthe, persil",emoji:"🌿"},
+    {nom:"Épices : curcuma, paprika, poivre",emoji:"🌶️"},
+  ],
+  eviter: [
+    {nom:"Pain blanc, céréales sucrées, jus de fruits industriels",emoji:"❌"},
+    {nom:"Fromages gras, charcuteries grasses",emoji:"❌"},
+    {nom:"Confiture, miel, viennoiseries en excès",emoji:"❌"},
+  ],
+};
+
 const REEQUILIBRAGE = [
   {semaine:1,titre:"Nettoyage & Fondations",couleur:"#1A9050",bg:"#E8FFF2",objectif:"Éliminer les aliments ultra-transformés et identifier tes habitudes.",actions:["Supprimer les sodas, jus industriels, bonbons","Réduire les plats préparés à 0","Introduire 1 portion de légumes à chaque repas","Boire 1,5L d'eau minimum par jour","Tenir un journal alimentaire simple"],conseil:"Ne cherche pas la perfection. Observe sans juger."},
   {semaine:2,titre:"Protéines & Énergie",couleur:"#1565C0",bg:"#E3F2FD",objectif:"Stabiliser l'énergie en optimisant l'apport protéique.",actions:["Ajouter une source de protéines à chaque repas","Petit-déjeuner protéiné (objectif 20g minimum)","Réduire les glucides rapides du matin","Maintenir les légumes à chaque repas","Atteindre 2L d'eau par jour"],conseil:"Si tu as faim entre les repas, ajoute 30g de protéines."},
@@ -203,10 +306,69 @@ function CheckRow({item,cat,prefs,toggle}) {
   return(<div onClick={()=>toggle(cat,item.k)} style={{display:"flex",alignItems:"center",gap:10,padding:"9px 10px",background:on?"#FFF8D6":"#FAFBFF",borderRadius:9,marginBottom:5,cursor:"pointer",border:"1px solid "+(on?C.yellow:C.border),transition:"all 0.2s"}}><div style={{width:22,height:22,borderRadius:6,border:"2px solid "+(on?C.yellow:C.muted),background:on?C.yellow:"transparent",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>{on&&<span style={{color:C.navy,fontSize:13,fontWeight:"900",lineHeight:1}}>✓</span>}</div><span style={{fontSize:16}}>{item.emoji}</span><span style={{fontSize:13,color:on?C.navy:C.soft,fontWeight:on?"600":"normal",flex:1}}>{item.label}</span>{item.cat&&<span style={{fontSize:8,color:C.muted,background:"#EEF1FA",padding:"2px 6px",borderRadius:6}}>{item.cat==="viande"?"🥩 viande":item.cat==="poisson"?"🐟 poisson":item.cat==="fruitsmer"?"🦐 mer":item.cat==="leger"?"✨ complément":item.cat==="laitage"?"🥛 laitage":""}</span>}</div>);
 }
 
+
+const PROTO_CATS = [
+  {key:"viande", label:"🥩 Viandes", color:"#C62828"},
+  {key:"poisson", label:"🐟 Poissons", color:"#1565C0"},
+  {key:"fruitsmer", label:"🦐 Fruits de mer", color:"#00695C"},
+  {key:"leger", label:"✨ Protéines légères", color:"#E65100"},
+  {key:"laitage", label:"🥛 Laitages protéinés", color:"#6A1B9A"},
+];
+
 function ProfilTab({prefs,setPrefs,onGenerate}) {
   const toggle=(cat,k)=>setPrefs(p=>({...p,[cat]:p[cat]?.includes(k)?p[cat].filter(x=>x!==k):[...(p[cat]||[]),k]}));
   const selectAll=(cat,list)=>setPrefs(p=>({...p,[cat]:list.map(x=>x.k)}));
   const clearAll=cat=>setPrefs(p=>({...p,[cat]:[]}));
+
+  const PDJ_CATS = [
+    {key:"proteines", label:"🥚 Protéines", color:"#1A9050"},
+    {key:"fruits", label:"🍎 Fruits", color:"#E53935"},
+    {key:"cereales", label:"🍞 Céréales & Pain", color:"#E65100"},
+    {key:"matieres", label:"🧈 Matières grasses", color:"#7A5000"},
+    {key:"sucres", label:"🍓 Sucrés à tartiner", color:"#C2185B"},
+  ];
+  const [openCat, setOpenCat] = useState(null);
+
+  const SectionGrouped = ({title,emoji,cat,list}) => {
+    const toggle2 = (c) => setOpenCat(openCat===c?null:c);
+    const totalSelected = (prefs[cat]||[]).length;
+    return(
+      <div style={{background:C.white,borderRadius:14,padding:13,marginBottom:10,boxShadow:"0 2px 10px rgba(13,27,75,0.07)",border:"1px solid "+C.border}}>
+        <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:12}}>
+          <span style={{fontSize:16}}>{emoji}</span>
+          <span style={{fontSize:11,fontWeight:"bold",color:C.navy,flex:1}}>{title}</span>
+          <span style={{fontSize:9,background:C.navy,color:C.yellow,padding:"2px 8px",borderRadius:8,fontWeight:"bold"}}>{totalSelected}/{list.length}</span>
+        </div>
+        {PDJ_CATS.map(catObj=>{
+          const items = list.filter(x=>x.cat===catObj.key);
+          if(!items.length) return null;
+          const isOpen = openCat===catObj.key;
+          const selectedCount = items.filter(x=>(prefs[cat]||[]).includes(x.k)).length;
+          return(
+            <div key={catObj.key} style={{marginBottom:6,borderRadius:10,overflow:"hidden",border:"1px solid "+C.border}}>
+              <div onClick={()=>toggle2(catObj.key)} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 12px",background:isOpen?"#F5F7FF":C.white,cursor:"pointer"}}>
+                <span style={{fontSize:12,fontWeight:600,color:catObj.color}}>{catObj.label}</span>
+                <div style={{display:"flex",alignItems:"center",gap:8}}>
+                  {selectedCount>0&&<span style={{fontSize:10,background:catObj.color,color:"white",padding:"1px 7px",borderRadius:10,fontWeight:700}}>{selectedCount}</span>}
+                  <span style={{fontSize:12,color:C.muted}}>{isOpen?"▲":"▼"}</span>
+                </div>
+              </div>
+              {isOpen&&(
+                <div style={{padding:"6px 8px 8px",background:"#FAFBFF"}}>
+                  {items.map(item=><CheckRow key={item.k} item={item} cat={cat} prefs={prefs} toggle={toggle}/>)}
+                  <div style={{display:"flex",gap:6,marginTop:6}}>
+                    <button onClick={()=>setPrefs(p=>({...p,[cat]:[...(p[cat]||[]).filter(k=>!items.map(i=>i.k).includes(k)),...items.map(i=>i.k)]}))} style={{flex:1,padding:"5px 0",background:"#F5F7FF",border:"1px solid "+C.border,borderRadius:7,fontSize:10,color:C.navyL,cursor:"pointer"}}>Tout cocher</button>
+                    <button onClick={()=>setPrefs(p=>({...p,[cat]:(p[cat]||[]).filter(k=>!items.map(i=>i.k).includes(k))}))} style={{flex:1,padding:"5px 0",background:"#FFF5F5",border:"1px solid #FFCCCC",borderRadius:7,fontSize:10,color:"#CC3333",cursor:"pointer"}}>Tout effacer</button>
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
   const Section=({title,emoji,info,cat,list,groupBy})=>(
     <div style={{background:C.white,borderRadius:14,padding:13,marginBottom:10,boxShadow:"0 2px 10px rgba(13,27,75,0.07)",border:"1px solid "+C.border}}>
       <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:info?4:12}}><span style={{fontSize:16}}>{emoji}</span><span style={{fontSize:11,fontWeight:"bold",color:C.navy,flex:1}}>{title}</span><span style={{fontSize:9,background:C.navy,color:C.yellow,padding:"2px 8px",borderRadius:8,fontWeight:"bold"}}>{(prefs[cat]||[]).length}/{list.length}</span></div>
@@ -215,6 +377,34 @@ function ProfilTab({prefs,setPrefs,onGenerate}) {
       <div style={{display:"flex",gap:6,marginTop:10}}><button onClick={()=>selectAll(cat,list)} style={{flex:1,padding:"6px 0",background:"#F5F7FF",border:"1px solid "+C.border,borderRadius:8,fontSize:11,color:C.navyL,cursor:"pointer"}}>Tout cocher</button><button onClick={()=>clearAll(cat)} style={{flex:1,padding:"6px 0",background:"#FFF5F5",border:"1px solid #FFCCCC",borderRadius:8,fontSize:11,color:"#CC3333",cursor:"pointer"}}>Tout effacer</button></div>
     </div>
   );
+
+  const [openCat2, setOpenCat2] = useState(null);
+  const CatSection = ({label, catKey, color, items, prefs, cat, toggle, setPrefs}) => {
+    const isOpen = openCat2 === catKey;
+    const selectedCount = items.filter(x=>(prefs[cat]||[]).includes(x.k)).length;
+    return(
+      <div style={{marginBottom:6,borderRadius:12,overflow:"hidden",border:"1px solid "+(isOpen?color:C.border),boxShadow:"0 1px 6px rgba(13,27,75,0.06)"}}>
+        <div onClick={()=>setOpenCat2(isOpen?null:catKey)} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"12px 14px",background:isOpen?"#F5F7FF":C.white,cursor:"pointer"}}>
+          <span style={{fontSize:13,fontWeight:700,color:color}}>{label}</span>
+          <div style={{display:"flex",alignItems:"center",gap:8}}>
+            <span style={{fontSize:10,color:C.muted}}>{items.length} aliments</span>
+            {selectedCount>0&&<span style={{fontSize:10,background:color,color:"white",padding:"2px 8px",borderRadius:10,fontWeight:700}}>{selectedCount} ✓</span>}
+            <span style={{fontSize:14,color:C.muted,transform:isOpen?"rotate(90deg)":"none",transition:"transform 0.2s"}}>›</span>
+          </div>
+        </div>
+        {isOpen&&(
+          <div style={{padding:"6px 10px 10px",background:"#FAFBFF"}}>
+            {items.map(item=><CheckRow key={item.k} item={item} cat={cat} prefs={prefs} toggle={toggle}/>)}
+            <div style={{display:"flex",gap:6,marginTop:8}}>
+              <button onClick={()=>setPrefs(p=>({...p,[cat]:[...(p[cat]||[]).filter(k=>!items.map(i=>i.k).includes(k)),...items.map(i=>i.k)]}))} style={{flex:1,padding:"6px 0",background:"#F5F7FF",border:"1px solid "+C.border,borderRadius:8,fontSize:11,color:C.navyL,cursor:"pointer"}}>Tout cocher</button>
+              <button onClick={()=>setPrefs(p=>({...p,[cat]:(p[cat]||[]).filter(k=>!items.map(i=>i.k).includes(k))}))} style={{flex:1,padding:"6px 0",background:"#FFF5F5",border:"1px solid #FFCCCC",borderRadius:8,fontSize:11,color:"#CC3333",cursor:"pointer"}}>Tout effacer</button>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   const nPdj=(prefs.breakfast||[]).length;
   const nMain=PROTO_LIST.filter(p=>["viande","poisson","fruitsmer"].includes(p.cat)&&(prefs.proteins||[]).includes(p.k)).length;
   const nComp=PROTO_LIST.filter(p=>["leger","laitage"].includes(p.cat)&&(prefs.proteins||[]).includes(p.k)).length;
@@ -224,11 +414,14 @@ function ProfilTab({prefs,setPrefs,onGenerate}) {
   return(
     <div style={{padding:"14px 12px 30px"}}>
       <div style={{background:"#FFF8D6",border:"1px solid "+C.yellow,borderRadius:12,padding:"12px 14px",marginBottom:14}}><div style={{fontSize:11,fontWeight:"bold",color:"#7A5000",marginBottom:6}}>Comment ça marche</div><div style={{fontSize:11,color:"#7A5000",lineHeight:1.6}}>Coche tes aliments dans chaque catégorie. L'app génère 25 jours sur mesure avec les bonnes associations.</div></div>
-      <Section title="Petit-déjeuner" emoji="🌅" cat="breakfast" list={PDJ_LIST} info="Choisis tes options du matin : laitage HP, oeufs, entremets, barres…"/>
-      <Section title="Protéines plat principal" emoji="🥩" cat="proteins" list={PROTO_LIST.filter(p=>["viande","poisson","fruitsmer"].includes(p.cat))} info="Le plat central du midi (viande OU poisson). Jamais 2 ensemble."/>
-      <Section title="Protéines complément" emoji="🥚" cat="proteins" list={PROTO_LIST.filter(p=>["leger","laitage"].includes(p.cat))} info="L'accompagnement protéiné du midi + la protéine du soir."/>
-      <Section title="Légumes et crudités" emoji="🥦" cat="legumes" list={LEG_LIST} groupBy/>
-      <Section title="Condiments" emoji="🫒" cat="condiments" list={COND_LIST}/>
+      <SectionGrouped title="Petit-déjeuner" emoji="🌅" cat="breakfast" list={PDJ_LIST}/>
+      <CatSection label="🥩 Protéines" catKey="proteines" color="#C62828" items={PROTO_LIST} prefs={prefs} cat="proteins" toggle={toggle} setPrefs={setPrefs}/>
+      <CatSection label="🍚 Féculents" catKey="feculents" color="#E65100" items={LEG_LIST.filter(x=>x.tag==="feculent")} prefs={prefs} cat="legumes" toggle={toggle} setPrefs={setPrefs}/>
+      <CatSection label="🥦 Légumes cuits" catKey="legcuits" color="#1565C0" items={LEG_LIST.filter(x=>x.tag==="cuit")} prefs={prefs} cat="legumes" toggle={toggle} setPrefs={setPrefs}/>
+      <CatSection label="🫘 Légumineuses" catKey="legumineuses" color="#6A1B9A" items={LEG_LIST.filter(x=>x.tag==="legumineuse")} prefs={prefs} cat="legumes" toggle={toggle} setPrefs={setPrefs}/>
+      <CatSection label="🥗 Crudités" catKey="crudites" color="#1A9050" items={LEG_LIST.filter(x=>x.tag==="cru")} prefs={prefs} cat="legumes" toggle={toggle} setPrefs={setPrefs}/>
+      <CatSection label="🫒 Assaisonnement" catKey="assaiso" color="#4A148C" items={COND_LIST} prefs={prefs} cat="condiments" toggle={toggle} setPrefs={setPrefs}/>
+
       <div style={{background:"#EEF1FA",borderRadius:10,padding:"10px 14px",marginBottom:14,fontSize:11,color:C.soft,lineHeight:1.6}}>🌅 Petit-déj : {nPdj} · 🥩 Plat principal : {nMain} · 🥚 Complément : {nComp} · 🥬 Crudités : {nCru} · 🥦 Légumes cuits : {nCuit}</div>
       <button onClick={onGenerate} disabled={!ready} style={{width:"100%",padding:"16px",background:ready?C.navy:"#C0C8D8",border:"none",borderRadius:14,color:ready?C.yellow:C.white,fontSize:15,fontWeight:"900",cursor:ready?"pointer":"not-allowed",transition:"all 0.3s"}}>{ready?"⚡ Générer mon plan personnalisé":"Sélectionne les aliments pour continuer"}</button>
     </div>
@@ -292,14 +485,106 @@ function ConseilsTab({formule}) {
   );
 }
 
+
+function PdjEquilibreTab() {
+  const categories = [
+    {key:"proteines", label:"🥚 Protéines", items:PDJ_EQUILIBRE.proteines, bg:C.greenBg, border:C.green, color:C.green},
+    {key:"supports", label:"🍞 Supports", items:PDJ_EQUILIBRE.supports, bg:"#FFF8D6", border:C.yellow, color:"#7A5000"},
+    {key:"graisses", label:"🧈 Matières grasses", items:PDJ_EQUILIBRE.graisses, bg:"#FFF3E0", border:"#E65100", color:"#E65100"},
+    {key:"sucres", label:"🍓 Sucrés à tartiner", items:PDJ_EQUILIBRE.sucres, bg:"#FCE4EC", border:"#C2185B", color:"#C2185B"},
+    {key:"cereales", label:"🥣 Céréales & accompagnements", items:PDJ_EQUILIBRE.cereales, bg:"#E3F2FD", border:"#1565C0", color:"#1565C0"},
+    {key:"legumes", label:"🥦 Légumes du matin", items:PDJ_EQUILIBRE.legumes, bg:"#F3E5F5", border:"#6A1B9A", color:"#6A1B9A"},
+    {key:"ajouts", label:"🧀 Petits ajouts (modération)", items:PDJ_EQUILIBRE.ajouts, bg:"#FFF8D6", border:C.yellow, color:"#7A5000"},
+    {key:"eviter", label:"❌ À éviter le matin", items:PDJ_EQUILIBRE.eviter, bg:"#FFEBEE", border:"#E53935", color:"#E53935"},
+  ];
+  return(
+    <div style={{padding:"14px 14px 40px"}}>
+      <div style={{background:"linear-gradient(135deg,"+C.navy+","+C.navyL+")",borderRadius:16,padding:"18px 16px",marginBottom:16,color:C.white}}>
+        <div style={{fontSize:28,marginBottom:6}}>🥐</div>
+        <div style={{fontSize:16,fontWeight:900,marginBottom:4}}>Petit-déjeuner équilibré</div>
+        <div style={{fontSize:11,color:"rgba(255,255,255,0.65)",lineHeight:1.6}}>Les classiques du matin pour un rééquilibrage alimentaire durable. Associe un support + une matière grasse + un accompagnement.</div>
+      </div>
+      <div style={{background:"#FFF8D6",border:"1px solid "+C.yellow,borderRadius:12,padding:"12px 14px",marginBottom:14}}>
+        <div style={{fontSize:11,fontWeight:700,color:"#7A5000",marginBottom:4}}>💡 La règle d'or</div>
+        <div style={{fontSize:11,color:"#7A5000",lineHeight:1.6}}>Toujours associer une source de protéines (oeuf, skyr, fromage blanc) à ces aliments pour stabiliser la glycémie et tenir jusqu'au déjeuner.</div>
+      </div>
+      {categories.map((cat,ci)=>(
+        <div key={ci} style={{background:C.white,borderRadius:14,padding:14,marginBottom:10,boxShadow:"0 2px 10px rgba(13,27,75,0.07)",border:"1px solid "+C.border}}>
+          <div style={{fontSize:12,fontWeight:700,color:cat.color,marginBottom:10,background:cat.bg,padding:"6px 10px",borderRadius:8,display:"inline-block"}}>{cat.label}</div>
+          <div style={{display:"flex",flexDirection:"column",gap:6}}>
+            {cat.items.map((item,i)=>(
+              <div key={i} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 10px",background:"#FAFBFF",borderRadius:9,border:"1px solid "+C.border}}>
+                <span style={{fontSize:18}}>{item.emoji}</span>
+                <span style={{fontSize:13,color:C.soft}}>{item.nom}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+
+const REEQUILIBRAGE_ALIMENTS = [
+  {key:"proteines", label:"🥩 Protéines", couleur:"#1A9050", bg:"#E8FFF2", items:[
+    "Blanc de poulet","Escalope de dinde","Steak haché 5%","Veau","Saumon","Cabillaud","Daurade","Maquereau","Thon en boite (eau)","Crevettes","Moules","Saint-Jacques","Oeufs entiers","Blancs d'oeufs","Jambon blanc 0%","Saumon fumé","Skyr nature","Yaourt grec 0%","Fromage blanc 0%","Cottage cheese"
+  ]},
+  {key:"feculents", label:"🍚 Féculents", couleur:"#E65100", bg:"#FFF3E0", items:[
+    "Riz basmati","Riz complet","Quinoa","Pâtes complètes","Pâtes blanches","Pomme de terre","Patate douce","Pain complet","Pain blanc","Biscottes","Galettes de riz","Avoine / flocons d'avoine","Couscous complet","Boulgour"
+  ]},
+  {key:"legumes", label:"🥦 Légumes cuits", couleur:"#1565C0", bg:"#E3F2FD", items:[
+    "Brocolis","Épinards","Champignons","Courgettes","Haricots verts","Poivrons","Aubergines","Chou-fleur","Chou vert","Potiron","Asperges vertes","Poireaux","Fenouil","Endives","Pak-choï","Artichaut","Bette"
+  ]},
+  {key:"legumineuses", label:"🫘 Légumineuses", couleur:"#6A1B9A", bg:"#F3E5F5", items:[
+    "Lentilles vertes / corail","Pois chiches","Haricots rouges","Haricots blancs","Fèves","Pois cassés","Edamame","Soja"
+  ]},
+  {key:"crudites", label:"🥗 Crudités", couleur:"#C62828", bg:"#FFEBEE", items:[
+    "Salade verte / mesclun","Tomates","Concombre","Radis","Carottes râpées","Endives crues","Céleri","Betterave crue","Chou rouge cru","Maïs (modération)","Avocat"
+  ]},
+  {key:"assaisonnement", label:"🫒 Assaisonnement", couleur:"#4A148C", bg:"#EDE7F6", items:[
+    "Huile d'olive","Huile de colza","Vinaigre de cidre","Jus de citron","Moutarde","Sauce soja light","Herbes de Provence","Curcuma","Paprika","Cumin","Curry","Ail","Échalote","Gingembre frais","Poivre","Piment doux"
+  ]},
+];
+
 function ReequilibrageTab() {
   const [ouvert,setOuvert]=useState(null);
   const [coches,setCoches]=useState({});
+  const [ouvertAlim,setOuvertAlim]=useState(null);
   const toggle=(s,i)=>setCoches(p=>({...p,[s+"-"+i]:!p[s+"-"+i]}));
   return(
     <div style={{padding:"14px 14px 40px"}}>
       <div style={{background:"linear-gradient(135deg,#1A5C38,#2E8B57)",borderRadius:16,padding:"20px 16px",marginBottom:16,color:C.white}}><div style={{fontSize:28,marginBottom:6}}>⚖️</div><div style={{fontSize:18,fontWeight:900,marginBottom:6}}>Rééquilibrage Alimentaire</div><div style={{fontSize:12,color:"rgba(255,255,255,0.75)",lineHeight:1.6}}>Programme progressif sur 4 semaines pour transformer durablement ton rapport à l'alimentation.</div></div>
       <div style={{background:"#FFF8D6",border:"1px solid "+C.yellow,borderRadius:12,padding:"12px 14px",marginBottom:14}}><div style={{fontSize:11,fontWeight:700,color:"#7A5000",marginBottom:4}}>💡 La différence avec le plan 25 jours</div><div style={{fontSize:11,color:"#7A5000",lineHeight:1.6}}>Le plan 25j te dit quoi manger chaque jour. Le rééquilibrage t'apprend pourquoi et comment construire une alimentation qui te ressemble sur le long terme.</div></div>
+
+      <div style={{background:C.white,borderRadius:14,padding:13,marginBottom:14,boxShadow:"0 2px 10px rgba(13,27,75,0.07)",border:"1px solid "+C.border}}>
+        <div style={{fontSize:12,fontWeight:700,color:C.navy,marginBottom:12}}>🥗 Guide alimentaire par catégorie</div>
+        {REEQUILIBRAGE_ALIMENTS.map(cat=>{
+          const isO=ouvertAlim===cat.key;
+          return(
+            <div key={cat.key} style={{marginBottom:6,borderRadius:10,overflow:"hidden",border:"1px solid "+C.border}}>
+              <div onClick={()=>setOuvertAlim(isO?null:cat.key)} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 12px",background:isO?cat.bg:C.white,cursor:"pointer"}}>
+                <span style={{fontSize:12,fontWeight:600,color:cat.couleur}}>{cat.label}</span>
+                <div style={{display:"flex",alignItems:"center",gap:6}}>
+                  <span style={{fontSize:10,color:C.muted}}>{cat.items.length} aliments</span>
+                  <span style={{fontSize:12,color:C.muted}}>{isO?"▲":"▼"}</span>
+                </div>
+              </div>
+              {isO&&(
+                <div style={{padding:"8px 12px 12px",background:"#FAFBFF"}}>
+                  <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
+                    {cat.items.map((item,i)=>(
+                      <span key={i} style={{fontSize:11,background:cat.bg,color:cat.couleur,padding:"4px 10px",borderRadius:20,border:"1px solid "+cat.couleur+"30"}}>{item}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      <div style={{fontSize:12,fontWeight:700,color:C.navy,marginBottom:10,paddingLeft:2}}>📅 Programme 4 semaines</div>
       {REEQUILIBRAGE.map((etape,idx)=>{
         const isOpen=ouvert===idx;
         const total=etape.actions.length;
@@ -539,7 +824,7 @@ export default function App() {
     );
   }
 
-  const TABS=[{k:"profil",l:"👤 Profil"},{k:"repas",l:"🍽 Repas"},{k:"recettes",l:"🍳 Recettes"},{k:"conseils",l:"📚 Conseils"},...(formule==="equilibre"?[{k:"reequilibrage",l:"⚖️ Rééquilibrage"},{k:"exemple",l:"🍽️ Exemple menu"}]:[]),{k:"analytics",l:"📊 Suivi"},{k:"courses",l:"🛒 Courses"},{k:"coach",l:"👩‍💼 Coach"}];
+  const TABS=[{k:"profil",l:"👤 Profil"},{k:"repas",l:"🍽 Repas"},{k:"recettes",l:"🍳 Recettes"},{k:"conseils",l:"📚 Conseils"},...(formule==="equilibre"?[{k:"reequilibrage",l:"⚖️ Rééquilibrage"},{k:"pdj",l:"🥐 Petit-déj"},{k:"exemple",l:"🍽️ Exemple menu"}]:[]),{k:"analytics",l:"📊 Suivi"},{k:"courses",l:"🛒 Courses"},{k:"coach",l:"👩‍💼 Coach"}];
 
   return(
     <div style={{fontFamily:"sans-serif",minHeight:"100vh",background:C.bg,color:C.text,maxWidth:480,margin:"0 auto"}}>
@@ -599,6 +884,7 @@ export default function App() {
           ))}
         </div>
       )}
+      {tab==="pdj"&&<PdjEquilibreTab/>}
       {tab==="exemple"&&<ExempleMenu/>}
       {tab==="coach"&&<EspaceCoach/>}
     </div>
