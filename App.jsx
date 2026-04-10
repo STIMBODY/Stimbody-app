@@ -266,7 +266,7 @@ function PhotoIA() {
     if(!b64)return;
     setLoading(true); setError(null); setAnalyse(null);
     try {
-      const resp=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,messages:[{role:"user",content:[{type:"image",source:{type:"base64",media_type:"image/jpeg",data:b64}},{type:"text",text:'Analyse cette assiette. Réponds UNIQUEMENT en JSON valide:\n{"plats":[{"nom":"...","quantite":"...","kcal":0,"proteines_g":0,"lipides_g":0,"glucides_g":0}],"total":{"kcal":0,"proteines_g":0,"lipides_g":0,"glucides_g":0},"equilibre":"...","conseil":"..."}'}]}]})});
+      const resp=await fetch("/api/analyze",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({image:b64})});
       if(!resp.ok) throw new Error("HTTP "+resp.status);
       const data=await resp.json();
       const txt=(data.content?.[0]?.text||"").replace(/```[\w]*/g,"").replace(/```/g,"").trim();
@@ -390,6 +390,98 @@ function ReequilibrageTab() {
   );
 }
 
+
+const MENU_DAYS = [
+  {day:1,meals:{breakfast:{name:"Omelette épinards-feta",emoji:"🥚",ingredients:[{name:"Oeufs entiers",qty:"2 (100g)",p:13,g:1,l:10},{name:"Épinards frais",qty:"80g",p:2,g:1,l:0},{name:"Feta",qty:"20g",p:3,g:0,l:4}],kcal:210},lunch:{name:"Bowl poulet + légumes rôtis",emoji:"🍗",ingredients:[{name:"Blanc de poulet",qty:"150g",p:35,g:0,l:3},{name:"Courgettes",qty:"150g",p:2,g:4,l:0},{name:"Poivrons",qty:"100g",p:1,g:6,l:0},{name:"Brocoli",qty:"100g",p:3,g:5,l:0},{name:"Huile d'olive",qty:"10g",p:0,g:0,l:10}],kcal:340},dinner:{name:"Saumon + haricots verts",emoji:"🐟",ingredients:[{name:"Saumon",qty:"120g",p:25,g:0,l:10},{name:"Haricots verts",qty:"150g",p:3,g:7,l:0},{name:"Champignons",qty:"100g",p:3,g:3,l:0}],kcal:260}}},
+  {day:2,meals:{breakfast:{name:"Yaourt grec + graines de chia",emoji:"🥣",ingredients:[{name:"Yaourt grec 0%",qty:"200g",p:20,g:8,l:0},{name:"Graines de chia",qty:"15g",p:2,g:5,l:4},{name:"Concombre",qty:"80g",p:1,g:2,l:0}],kcal:195},lunch:{name:"Thon + salade nicoise legere",emoji:"🥗",ingredients:[{name:"Thon en boite (eau)",qty:"150g",p:33,g:0,l:2},{name:"Haricots verts cuits",qty:"150g",p:3,g:7,l:0},{name:"Tomates cerises",qty:"100g",p:1,g:4,l:0},{name:"Oeuf dur",qty:"1 (50g)",p:6,g:0,l:5},{name:"Huile d'olive",qty:"8g",p:0,g:0,l:8}],kcal:340},dinner:{name:"Dinde + poelee de legumes",emoji:"🦃",ingredients:[{name:"Escalope de dinde",qty:"130g",p:30,g:0,l:2},{name:"Aubergine",qty:"150g",p:2,g:6,l:0},{name:"Tomates",qty:"100g",p:1,g:4,l:0},{name:"Courgettes",qty:"100g",p:1,g:3,l:0}],kcal:220}}},
+  {day:3,meals:{breakfast:{name:"Blanc d'oeuf brouille + tomates",emoji:"🍳",ingredients:[{name:"Blancs d'oeufs",qty:"4 (120g)",p:14,g:1,l:0},{name:"Tomates",qty:"150g",p:1,g:5,l:0},{name:"Herbes de Provence",qty:"—",p:0,g:0,l:0}],kcal:110},lunch:{name:"Cabillaud + ratatouille",emoji:"🐠",ingredients:[{name:"Cabillaud",qty:"180g",p:37,g:0,l:2},{name:"Aubergine",qty:"100g",p:1,g:4,l:0},{name:"Courgette",qty:"100g",p:1,g:3,l:0},{name:"Poivron",qty:"100g",p:1,g:6,l:0},{name:"Tomate",qty:"100g",p:1,g:4,l:0},{name:"Huile d'olive",qty:"10g",p:0,g:0,l:10}],kcal:350},dinner:{name:"Poulet marine + epinards sautes",emoji:"🥬",ingredients:[{name:"Blanc de poulet",qty:"120g",p:28,g:0,l:2},{name:"Epinards",qty:"200g",p:5,g:4,l:0},{name:"Ail",qty:"5g",p:0,g:1,l:0},{name:"Citron",qty:"—",p:0,g:1,l:0}],kcal:215}}},
+  {day:4,meals:{breakfast:{name:"Omelette poivrons-jambon blanc",emoji:"🫑",ingredients:[{name:"Oeufs entiers",qty:"2 (100g)",p:13,g:1,l:10},{name:"Jambon blanc (0% MG)",qty:"50g",p:8,g:0,l:1},{name:"Poivron rouge",qty:"80g",p:1,g:5,l:0}],kcal:220},lunch:{name:"Crevettes + brocoli + champignons",emoji:"🦐",ingredients:[{name:"Crevettes decortiquees",qty:"200g",p:38,g:0,l:2},{name:"Brocoli",qty:"200g",p:5,g:8,l:0},{name:"Champignons",qty:"100g",p:3,g:3,l:0},{name:"Sauce soja (light)",qty:"15ml",p:1,g:2,l:0},{name:"Huile de sesame",qty:"5g",p:0,g:0,l:5}],kcal:310},dinner:{name:"Cabillaud vapeur + asperges",emoji:"🌿",ingredients:[{name:"Cabillaud",qty:"150g",p:30,g:0,l:1},{name:"Asperges vertes",qty:"200g",p:4,g:6,l:0},{name:"Citron + capres",qty:"—",p:0,g:2,l:0}],kcal:200}}},
+  {day:5,meals:{breakfast:{name:"Fromage blanc + concombre + menthe",emoji:"🥒",ingredients:[{name:"Fromage blanc 0%",qty:"200g",p:16,g:8,l:0},{name:"Concombre",qty:"100g",p:1,g:3,l:0},{name:"Menthe fraiche",qty:"—",p:0,g:0,l:0}],kcal:130},lunch:{name:"Steak hache 5% + ratatouille",emoji:"🥩",ingredients:[{name:"Steak hache 5%MG",qty:"150g",p:30,g:0,l:8},{name:"Aubergine",qty:"150g",p:2,g:6,l:0},{name:"Tomate",qty:"150g",p:1,g:5,l:0},{name:"Courgette",qty:"100g",p:1,g:3,l:0},{name:"Huile d'olive",qty:"8g",p:0,g:0,l:8}],kcal:380},dinner:{name:"Poulet citron + chou-fleur roti",emoji:"🌸",ingredients:[{name:"Blanc de poulet",qty:"120g",p:28,g:0,l:2},{name:"Chou-fleur",qty:"200g",p:4,g:8,l:0},{name:"Citron + curcuma",qty:"—",p:0,g:1,l:0}],kcal:230}}},
+  {day:6,meals:{breakfast:{name:"Omelette champignons-persil",emoji:"🍄",ingredients:[{name:"Oeufs entiers",qty:"2 (100g)",p:13,g:1,l:10},{name:"Champignons",qty:"100g",p:3,g:3,l:0},{name:"Persil frais",qty:"—",p:0,g:0,l:0}],kcal:195},lunch:{name:"Thon + salade verte + avocat",emoji:"🥑",ingredients:[{name:"Thon en boite (eau)",qty:"130g",p:29,g:0,l:1},{name:"Salade verte",qty:"80g",p:1,g:2,l:0},{name:"Avocat",qty:"50g",p:1,g:2,l:7},{name:"Tomates cerises",qty:"80g",p:1,g:3,l:0},{name:"Citron",qty:"—",p:0,g:1,l:0}],kcal:280},dinner:{name:"Lieu noir + poireaux vapeur",emoji:"🫛",ingredients:[{name:"Lieu noir",qty:"180g",p:34,g:0,l:2},{name:"Poireaux",qty:"200g",p:4,g:10,l:0},{name:"Moutarde (sauce)",qty:"10g",p:0,g:1,l:1}],kcal:250}}},
+  {day:7,meals:{breakfast:{name:"Skyr + graines de lin + concombre",emoji:"🌱",ingredients:[{name:"Skyr nature",qty:"200g",p:22,g:10,l:0},{name:"Graines de lin",qty:"10g",p:2,g:2,l:3},{name:"Concombre",qty:"80g",p:1,g:2,l:0}],kcal:195},lunch:{name:"Dinde + endives braisees",emoji:"🥗",ingredients:[{name:"Escalope de dinde",qty:"150g",p:34,g:0,l:2},{name:"Endives",qty:"200g",p:2,g:6,l:0},{name:"Tomate",qty:"100g",p:1,g:4,l:0},{name:"Huile d'olive",qty:"8g",p:0,g:0,l:8}],kcal:300},dinner:{name:"Saumon + epinards + tomates",emoji:"🍃",ingredients:[{name:"Saumon",qty:"100g",p:20,g:0,l:8},{name:"Epinards",qty:"200g",p:5,g:4,l:0},{name:"Tomates cerises",qty:"100g",p:1,g:4,l:0}],kcal:235}}},
+  {day:8,meals:{breakfast:{name:"Oeufs poches + asperges",emoji:"🥚",ingredients:[{name:"Oeufs poches",qty:"2 (100g)",p:13,g:1,l:10},{name:"Asperges vertes",qty:"150g",p:3,g:5,l:0},{name:"Citron",qty:"—",p:0,g:1,l:0}],kcal:195},lunch:{name:"Poulet tikka + chou-fleur",emoji:"🌶",ingredients:[{name:"Blanc de poulet",qty:"150g",p:35,g:0,l:3},{name:"Chou-fleur",qty:"200g",p:4,g:8,l:0},{name:"Yaourt 0% (marinade)",qty:"50g",p:5,g:2,l:0},{name:"Epices (curry, cumin)",qty:"—",p:0,g:1,l:0},{name:"Huile d'olive",qty:"8g",p:0,g:0,l:8}],kcal:355},dinner:{name:"Crevettes + pak-choi + ail",emoji:"🥬",ingredients:[{name:"Crevettes",qty:"150g",p:28,g:0,l:2},{name:"Pak-choi",qty:"200g",p:3,g:4,l:0},{name:"Ail + gingembre",qty:"—",p:0,g:2,l:0},{name:"Sauce soja light",qty:"15ml",p:1,g:2,l:0}],kcal:210}}},
+  {day:9,meals:{breakfast:{name:"Cottage cheese + radis + ciboulette",emoji:"🧀",ingredients:[{name:"Cottage cheese",qty:"200g",p:22,g:6,l:4},{name:"Radis",qty:"80g",p:1,g:2,l:0},{name:"Ciboulette",qty:"—",p:0,g:0,l:0}],kcal:185},lunch:{name:"Thon + courgettes farcies",emoji:"🥒",ingredients:[{name:"Thon en boite (eau)",qty:"150g",p:33,g:0,l:2},{name:"Courgettes",qty:"200g",p:2,g:6,l:0},{name:"Tomates cerises",qty:"100g",p:1,g:4,l:0},{name:"Feta",qty:"20g",p:3,g:0,l:4},{name:"Herbes + citron",qty:"—",p:0,g:1,l:0}],kcal:310},dinner:{name:"Blanc de poulet + fenouil roti",emoji:"🌿",ingredients:[{name:"Blanc de poulet",qty:"130g",p:30,g:0,l:2},{name:"Fenouil",qty:"200g",p:2,g:10,l:0},{name:"Citron + aneth",qty:"—",p:0,g:1,l:0},{name:"Huile d'olive",qty:"8g",p:0,g:0,l:8}],kcal:280}}},
+  {day:10,meals:{breakfast:{name:"Omelette tomates-basilic",emoji:"🍅",ingredients:[{name:"Oeufs entiers",qty:"2 (100g)",p:13,g:1,l:10},{name:"Tomates",qty:"100g",p:1,g:4,l:0},{name:"Basilic frais",qty:"—",p:0,g:0,l:0}],kcal:185},lunch:{name:"Cabillaud + epinards + poivrons",emoji:"🐟",ingredients:[{name:"Cabillaud",qty:"180g",p:37,g:0,l:2},{name:"Epinards",qty:"150g",p:4,g:3,l:0},{name:"Poivrons",qty:"150g",p:2,g:9,l:0},{name:"Huile d'olive",qty:"10g",p:0,g:0,l:10}],kcal:355},dinner:{name:"Dinde + chou romanesco",emoji:"🥦",ingredients:[{name:"Escalope de dinde",qty:"130g",p:30,g:0,l:2},{name:"Chou romanesco",qty:"200g",p:4,g:8,l:0},{name:"Ail + curcuma",qty:"—",p:0,g:1,l:0},{name:"Huile d'olive",qty:"5g",p:0,g:0,l:5}],kcal:245}}}
+];
+
+const MEAL_LABELS = {breakfast:{label:"Petit-déjeuner",icon:"🌅"},lunch:{label:"Déjeuner",icon:"☀️"},dinner:{label:"Dîner",icon:"🌙"}};
+function getMealTotals(meal){return meal.ingredients.reduce((acc,i)=>({p:acc.p+i.p,g:acc.g+i.g,l:acc.l+i.l}),{p:0,g:0,l:0});}
+function getDayTotals(meals){const all=Object.values(meals);return{p:all.reduce((s,m)=>s+getMealTotals(m).p,0),g:all.reduce((s,m)=>s+getMealTotals(m).g,0),l:all.reduce((s,m)=>s+getMealTotals(m).l,0),kcal:all.reduce((s,m)=>s+m.kcal,0)};}
+
+function ExempleMenu() {
+  const [activeDay,setActiveDay]=useState(0);
+  const [expandedMeal,setExpandedMeal]=useState(null);
+  const day=MENU_DAYS[activeDay];
+  const totals=getDayTotals(day.meals);
+  return(
+    <div style={{fontFamily:"Georgia, serif",background:"#0d1f0f",minHeight:"100vh",color:"#e8f5e9",padding:"0 0 40px 0"}}>
+      <div style={{background:"linear-gradient(135deg,#1a3d1f 0%,#0d1f0f 100%)",padding:"28px 20px 20px",borderBottom:"1px solid #2e5c35"}}>
+        <div style={{fontSize:11,letterSpacing:4,color:"#5a9e65",textTransform:"uppercase",marginBottom:6}}>Exemple de menu · 10 jours</div>
+        <div style={{fontSize:22,fontWeight:"bold",color:"#b8e6be",letterSpacing:1}}>Légumes & Protéines</div>
+        <div style={{fontSize:13,color:"#5a9e65",marginTop:2}}>Faible en glucides · Programme rééquilibrage</div>
+      </div>
+      <div style={{overflowX:"auto",padding:"14px 16px 0",display:"flex",gap:8,scrollbarWidth:"none"}}>
+        {MENU_DAYS.map((d,i)=>(
+          <button key={i} onClick={()=>{setActiveDay(i);setExpandedMeal(null);}} style={{flexShrink:0,background:activeDay===i?"#2e8b57":"#1a3d1f",border:activeDay===i?"1.5px solid #5aad6e":"1.5px solid #2a4d2e",borderRadius:12,padding:"8px 14px",cursor:"pointer",color:activeDay===i?"#fff":"#7abd87",transition:"all 0.2s"}}>
+            <div style={{fontSize:11,letterSpacing:1,opacity:0.7}}>J{d.day}</div>
+            <div style={{fontSize:13,fontWeight:"bold"}}>{getDayTotals(d.meals).kcal}</div>
+            <div style={{fontSize:9,opacity:0.6}}>kcal</div>
+          </button>
+        ))}
+      </div>
+      <div style={{margin:"14px 16px",background:"#1a3d1f",borderRadius:14,padding:"14px 18px",display:"flex",justifyContent:"space-between",alignItems:"center",border:"1px solid #2e5c35"}}>
+        <div style={{textAlign:"center"}}><div style={{fontSize:20,fontWeight:"bold",color:"#6dd87c"}}>{totals.kcal}</div><div style={{fontSize:10,color:"#5a9e65",letterSpacing:1}}>KCAL</div></div>
+        <div style={{width:1,height:36,background:"#2e5c35"}}/>
+        <div style={{textAlign:"center"}}><div style={{fontSize:18,fontWeight:"bold",color:"#82c9f5"}}>{totals.p}g</div><div style={{fontSize:10,color:"#5a9e65",letterSpacing:1}}>PROT.</div></div>
+        <div style={{width:1,height:36,background:"#2e5c35"}}/>
+        <div style={{textAlign:"center"}}><div style={{fontSize:18,fontWeight:"bold",color:"#f5d782"}}>{totals.g}g</div><div style={{fontSize:10,color:"#5a9e65",letterSpacing:1}}>GLUC.</div></div>
+        <div style={{width:1,height:36,background:"#2e5c35"}}/>
+        <div style={{textAlign:"center"}}><div style={{fontSize:18,fontWeight:"bold",color:"#f5a442"}}>{totals.l}g</div><div style={{fontSize:10,color:"#5a9e65",letterSpacing:1}}>LIP.</div></div>
+      </div>
+      <div style={{padding:"0 16px",display:"flex",flexDirection:"column",gap:12}}>
+        {Object.entries(day.meals).map(([mealKey,meal])=>{
+          const mt=getMealTotals(meal);
+          const isOpen=expandedMeal===mealKey;
+          return(
+            <div key={mealKey} style={{background:"#132b16",borderRadius:16,border:"1px solid #2a4d2e",overflow:"hidden"}}>
+              <button onClick={()=>setExpandedMeal(isOpen?null:mealKey)} style={{width:"100%",background:"none",border:"none",padding:"14px 16px",cursor:"pointer",display:"flex",alignItems:"center",gap:12}}>
+                <div style={{fontSize:28}}>{meal.emoji}</div>
+                <div style={{flex:1,textAlign:"left"}}>
+                  <div style={{fontSize:10,color:"#5a9e65",letterSpacing:2,textTransform:"uppercase"}}>{MEAL_LABELS[mealKey].icon} {MEAL_LABELS[mealKey].label}</div>
+                  <div style={{fontSize:15,fontWeight:"bold",color:"#c8e6ca",marginTop:2}}>{meal.name}</div>
+                </div>
+                <div style={{textAlign:"right"}}><div style={{fontSize:16,fontWeight:"bold",color:"#6dd87c"}}>{meal.kcal}</div><div style={{fontSize:10,color:"#5a9e65"}}>kcal</div></div>
+                <div style={{color:"#5a9e65",fontSize:14,marginLeft:4}}>{isOpen?"▲":"▼"}</div>
+              </button>
+              <div style={{display:"flex",gap:10,padding:"0 16px 12px",fontSize:11}}>
+                <span style={{color:"#82c9f5"}}>P {mt.p}g</span>
+                <span style={{color:"#4d8c55"}}>·</span>
+                <span style={{color:"#f5d782"}}>G {mt.g}g</span>
+                <span style={{color:"#4d8c55"}}>·</span>
+                <span style={{color:"#f5a442"}}>L {mt.l}g</span>
+              </div>
+              {isOpen&&(
+                <div style={{borderTop:"1px solid #1e4a22",padding:"12px 16px 16px"}}>
+                  <table style={{width:"100%",borderCollapse:"collapse",fontSize:12}}>
+                    <thead><tr style={{color:"#5a9e65",fontSize:10,letterSpacing:1}}><th style={{textAlign:"left",paddingBottom:8,fontWeight:"normal"}}>ALIMENT</th><th style={{textAlign:"right",paddingBottom:8,fontWeight:"normal"}}>QTÉ</th><th style={{textAlign:"right",paddingBottom:8,fontWeight:"normal",color:"#82c9f5"}}>P</th><th style={{textAlign:"right",paddingBottom:8,fontWeight:"normal",color:"#f5d782"}}>G</th><th style={{textAlign:"right",paddingBottom:8,fontWeight:"normal",color:"#f5a442"}}>L</th></tr></thead>
+                    <tbody>
+                      {meal.ingredients.map((ing,idx)=>(<tr key={idx} style={{borderTop:"1px solid #1e3d22"}}><td style={{padding:"7px 0",color:"#a5d6a7"}}>{ing.name}</td><td style={{textAlign:"right",color:"#5a9e65",padding:"7px 0"}}>{ing.qty}</td><td style={{textAlign:"right",color:"#82c9f5",padding:"7px 0"}}>{ing.p}g</td><td style={{textAlign:"right",color:"#f5d782",padding:"7px 0"}}>{ing.g}g</td><td style={{textAlign:"right",color:"#f5a442",padding:"7px 0"}}>{ing.l}g</td></tr>))}
+                      <tr style={{borderTop:"1px solid #2e5c35"}}><td colSpan={2} style={{padding:"8px 0",color:"#6dd87c",fontWeight:"bold",fontSize:11}}>TOTAL REPAS</td><td style={{textAlign:"right",color:"#82c9f5",fontWeight:"bold",padding:"8px 0"}}>{mt.p}g</td><td style={{textAlign:"right",color:"#f5d782",fontWeight:"bold",padding:"8px 0"}}>{mt.g}g</td><td style={{textAlign:"right",color:"#f5a442",fontWeight:"bold",padding:"8px 0"}}>{mt.l}g</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+      <div style={{margin:"18px 16px 0",background:"#0f2912",border:"1px solid #1e4a22",borderRadius:12,padding:"12px 16px",fontSize:12,color:"#5a9e65",lineHeight:1.7}}>
+        💧 1,5 à 2L d'eau par jour · Assaisonnement libre (herbes, épices, citron) · En collation si besoin : yaourt grec 0%
+      </div>
+    </div>
+  );
+}
+
 function EspaceCoach() {
   const [subtab,setSubtab]=useState("dashboard");
   const clientes=[{nom:"Sophie M.",formule:"equilibre",age:34,jour:12,derniere:"Hier 20h",mood:"😊",water:true,done:8,total:9,objectif:"Équilibre et énergie",alerte:false},{nom:"Marie L.",formule:"sucre",age:41,jour:7,derniere:"Auj. 13h",mood:"😐",water:false,done:5,total:9,objectif:"Perte de poids douce",alerte:true},{nom:"Clara B.",formule:"equilibre",age:28,jour:20,derniere:"Hier 22h",mood:"😄",water:true,done:9,total:9,objectif:"Performance sportive",alerte:false},{nom:"Anne D.",formule:"sucre",age:52,jour:3,derniere:"Auj. 8h",mood:"😔",water:false,done:3,total:9,objectif:"Ménopause et bien-être",alerte:true}];
@@ -506,7 +598,7 @@ export default function App() {
     );
   }
 
-  const TABS=[{k:"profil",l:"👤 Profil"},{k:"repas",l:"🍽 Repas"},{k:"photo",l:"📸 Photo IA"},{k:"recettes",l:"🍳 Recettes"},{k:"conseils",l:"📚 Conseils"},...(formule==="equilibre"?[{k:"reequilibrage",l:"⚖️ Rééquilibrage"}]:[]),{k:"analytics",l:"📊 Suivi"},{k:"courses",l:"🛒 Courses"},{k:"coach",l:"👩‍💼 Coach"}];
+  const TABS=[{k:"profil",l:"👤 Profil"},{k:"repas",l:"🍽 Repas"},{k:"photo",l:"📸 Photo IA"},{k:"recettes",l:"🍳 Recettes"},{k:"conseils",l:"📚 Conseils"},...(formule==="equilibre"?[{k:"reequilibrage",l:"⚖️ Rééquilibrage"},{k:"exemple",l:"🍽️ Exemple menu"}]:[]),{k:"analytics",l:"📊 Suivi"},{k:"courses",l:"🛒 Courses"},{k:"coach",l:"👩‍💼 Coach"}];
 
   return(
     <div style={{fontFamily:"sans-serif",minHeight:"100vh",background:C.bg,color:C.text,maxWidth:480,margin:"0 auto"}}>
@@ -567,6 +659,7 @@ export default function App() {
           ))}
         </div>
       )}
+      {tab==="exemple"&&<ExempleMenu/>}
       {tab==="coach"&&<EspaceCoach/>}
     </div>
   );
