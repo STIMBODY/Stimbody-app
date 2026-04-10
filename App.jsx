@@ -355,59 +355,59 @@ function ExempleMenu() {
   const day=MENU_DAYS[activeDay];
   const totals=getDayTotals(day.meals);
   return(
-    <div style={{fontFamily:"Georgia, serif",background:"#0d1f0f",minHeight:"100vh",color:"#e8f5e9",padding:"0 0 40px 0"}}>
-      <div style={{background:"linear-gradient(135deg,#1a3d1f 0%,#0d1f0f 100%)",padding:"28px 20px 20px",borderBottom:"1px solid #2e5c35"}}>
-        <div style={{fontSize:11,letterSpacing:4,color:"#5a9e65",textTransform:"uppercase",marginBottom:6}}>Exemple de menu · 10 jours</div>
-        <div style={{fontSize:22,fontWeight:"bold",color:"#b8e6be",letterSpacing:1}}>Légumes & Protéines</div>
-        <div style={{fontSize:13,color:"#5a9e65",marginTop:2}}>Faible en glucides · Programme rééquilibrage</div>
+    <div style={{fontFamily:"Georgia, serif",background:C.bg,minHeight:"100vh",color:C.text,padding:"0 0 40px 0"}}>
+      <div style={{background:"linear-gradient(135deg,"+C.navy+","+C.navyL+")",padding:"28px 20px 20px",borderBottom:"1px solid "+C.border}}>
+        <div style={{fontSize:11,letterSpacing:4,color:C.soft,textTransform:"uppercase",marginBottom:6}}>Exemple de menu · 10 jours</div>
+        <div style={{fontSize:22,fontWeight:"bold",color:C.white,letterSpacing:1}}>Légumes & Protéines</div>
+        <div style={{fontSize:13,color:C.soft,marginTop:2}}>Faible en glucides · Programme rééquilibrage</div>
       </div>
       <div style={{overflowX:"auto",padding:"14px 16px 0",display:"flex",gap:8,scrollbarWidth:"none"}}>
         {MENU_DAYS.map((d,i)=>(
-          <button key={i} onClick={()=>{setActiveDay(i);setExpandedMeal(null);}} style={{flexShrink:0,background:activeDay===i?"#2e8b57":"#1a3d1f",border:activeDay===i?"1.5px solid #5aad6e":"1.5px solid #2a4d2e",borderRadius:12,padding:"8px 14px",cursor:"pointer",color:activeDay===i?"#fff":"#7abd87",transition:"all 0.2s"}}>
+          <button key={i} onClick={()=>{setActiveDay(i);setExpandedMeal(null);}} style={{flexShrink:0,background:activeDay===i?C.navy:C.white,border:activeDay===i?"1.5px solid #5aad6e":"1.5px solid #2a4d2e",borderRadius:12,padding:"8px 14px",cursor:"pointer",color:activeDay===i?C.yellow:C.soft,transition:"all 0.2s"}}>
             <div style={{fontSize:11,letterSpacing:1,opacity:0.7}}>J{d.day}</div>
             <div style={{fontSize:13,fontWeight:"bold"}}>{getDayTotals(d.meals).kcal}</div>
             <div style={{fontSize:9,opacity:0.6}}>kcal</div>
           </button>
         ))}
       </div>
-      <div style={{margin:"14px 16px",background:"#1a3d1f",borderRadius:14,padding:"14px 18px",display:"flex",justifyContent:"space-between",alignItems:"center",border:"1px solid #2e5c35"}}>
-        <div style={{textAlign:"center"}}><div style={{fontSize:20,fontWeight:"bold",color:"#6dd87c"}}>{totals.kcal}</div><div style={{fontSize:10,color:"#5a9e65",letterSpacing:1}}>KCAL</div></div>
-        <div style={{width:1,height:36,background:"#2e5c35"}}/>
-        <div style={{textAlign:"center"}}><div style={{fontSize:18,fontWeight:"bold",color:"#82c9f5"}}>{totals.p}g</div><div style={{fontSize:10,color:"#5a9e65",letterSpacing:1}}>PROT.</div></div>
-        <div style={{width:1,height:36,background:"#2e5c35"}}/>
-        <div style={{textAlign:"center"}}><div style={{fontSize:18,fontWeight:"bold",color:"#f5d782"}}>{totals.g}g</div><div style={{fontSize:10,color:"#5a9e65",letterSpacing:1}}>GLUC.</div></div>
-        <div style={{width:1,height:36,background:"#2e5c35"}}/>
-        <div style={{textAlign:"center"}}><div style={{fontSize:18,fontWeight:"bold",color:"#f5a442"}}>{totals.l}g</div><div style={{fontSize:10,color:"#5a9e65",letterSpacing:1}}>LIP.</div></div>
+      <div style={{margin:"14px 16px",background:C.navy,borderRadius:14,padding:"14px 18px",display:"flex",justifyContent:"space-between",alignItems:"center",border:"1px solid "+C.border}}>
+        <div style={{textAlign:"center"}}><div style={{fontSize:20,fontWeight:"bold",color:C.green}}>{totals.kcal}</div><div style={{fontSize:10,color:C.soft,letterSpacing:1}}>KCAL</div></div>
+        <div style={{width:1,height:36,background:C.border}}/>
+        <div style={{textAlign:"center"}}><div style={{fontSize:18,fontWeight:"bold",color:"#82c9f5"}}>{totals.p}g</div><div style={{fontSize:10,color:C.soft,letterSpacing:1}}>PROT.</div></div>
+        <div style={{width:1,height:36,background:C.border}}/>
+        <div style={{textAlign:"center"}}><div style={{fontSize:18,fontWeight:"bold",color:"#f5d782"}}>{totals.g}g</div><div style={{fontSize:10,color:C.soft,letterSpacing:1}}>GLUC.</div></div>
+        <div style={{width:1,height:36,background:C.border}}/>
+        <div style={{textAlign:"center"}}><div style={{fontSize:18,fontWeight:"bold",color:"#f5a442"}}>{totals.l}g</div><div style={{fontSize:10,color:C.soft,letterSpacing:1}}>LIP.</div></div>
       </div>
       <div style={{padding:"0 16px",display:"flex",flexDirection:"column",gap:12}}>
         {Object.entries(day.meals).map(([mealKey,meal])=>{
           const mt=getMealTotals(meal);
           const isOpen=expandedMeal===mealKey;
           return(
-            <div key={mealKey} style={{background:"#132b16",borderRadius:16,border:"1px solid #2a4d2e",overflow:"hidden"}}>
+            <div key={mealKey} style={{background:C.white,borderRadius:16,border:"1px solid "+C.border,overflow:"hidden"}}>
               <button onClick={()=>setExpandedMeal(isOpen?null:mealKey)} style={{width:"100%",background:"none",border:"none",padding:"14px 16px",cursor:"pointer",display:"flex",alignItems:"center",gap:12}}>
                 <div style={{fontSize:28}}>{meal.emoji}</div>
                 <div style={{flex:1,textAlign:"left"}}>
-                  <div style={{fontSize:10,color:"#5a9e65",letterSpacing:2,textTransform:"uppercase"}}>{MEAL_LABELS[mealKey].icon} {MEAL_LABELS[mealKey].label}</div>
-                  <div style={{fontSize:15,fontWeight:"bold",color:"#c8e6ca",marginTop:2}}>{meal.name}</div>
+                  <div style={{fontSize:10,color:C.soft,letterSpacing:2,textTransform:"uppercase"}}>{MEAL_LABELS[mealKey].icon} {MEAL_LABELS[mealKey].label}</div>
+                  <div style={{fontSize:15,fontWeight:"bold",color:C.navy,marginTop:2}}>{meal.name}</div>
                 </div>
-                <div style={{textAlign:"right"}}><div style={{fontSize:16,fontWeight:"bold",color:"#6dd87c"}}>{meal.kcal}</div><div style={{fontSize:10,color:"#5a9e65"}}>kcal</div></div>
-                <div style={{color:"#5a9e65",fontSize:14,marginLeft:4}}>{isOpen?"▲":"▼"}</div>
+                <div style={{textAlign:"right"}}><div style={{fontSize:16,fontWeight:"bold",color:C.green}}>{meal.kcal}</div><div style={{fontSize:10,color:C.soft}}>kcal</div></div>
+                <div style={{color:C.soft,fontSize:14,marginLeft:4}}>{isOpen?"▲":"▼"}</div>
               </button>
               <div style={{display:"flex",gap:10,padding:"0 16px 12px",fontSize:11}}>
                 <span style={{color:"#82c9f5"}}>P {mt.p}g</span>
-                <span style={{color:"#4d8c55"}}>·</span>
+                <span style={{color:C.muted}}>·</span>
                 <span style={{color:"#f5d782"}}>G {mt.g}g</span>
-                <span style={{color:"#4d8c55"}}>·</span>
+                <span style={{color:C.muted}}>·</span>
                 <span style={{color:"#f5a442"}}>L {mt.l}g</span>
               </div>
               {isOpen&&(
-                <div style={{borderTop:"1px solid #1e4a22",padding:"12px 16px 16px"}}>
+                <div style={{borderTop:"1px solid "+C.border,padding:"12px 16px 16px"}}>
                   <table style={{width:"100%",borderCollapse:"collapse",fontSize:12}}>
-                    <thead><tr style={{color:"#5a9e65",fontSize:10,letterSpacing:1}}><th style={{textAlign:"left",paddingBottom:8,fontWeight:"normal"}}>ALIMENT</th><th style={{textAlign:"right",paddingBottom:8,fontWeight:"normal"}}>QTÉ</th><th style={{textAlign:"right",paddingBottom:8,fontWeight:"normal",color:"#82c9f5"}}>P</th><th style={{textAlign:"right",paddingBottom:8,fontWeight:"normal",color:"#f5d782"}}>G</th><th style={{textAlign:"right",paddingBottom:8,fontWeight:"normal",color:"#f5a442"}}>L</th></tr></thead>
+                    <thead><tr style={{color:C.soft,fontSize:10,letterSpacing:1}}><th style={{textAlign:"left",paddingBottom:8,fontWeight:"normal"}}>ALIMENT</th><th style={{textAlign:"right",paddingBottom:8,fontWeight:"normal"}}>QTÉ</th><th style={{textAlign:"right",paddingBottom:8,fontWeight:"normal",color:"#82c9f5"}}>P</th><th style={{textAlign:"right",paddingBottom:8,fontWeight:"normal",color:"#f5d782"}}>G</th><th style={{textAlign:"right",paddingBottom:8,fontWeight:"normal",color:"#f5a442"}}>L</th></tr></thead>
                     <tbody>
-                      {meal.ingredients.map((ing,idx)=>(<tr key={idx} style={{borderTop:"1px solid #1e3d22"}}><td style={{padding:"7px 0",color:"#a5d6a7"}}>{ing.name}</td><td style={{textAlign:"right",color:"#5a9e65",padding:"7px 0"}}>{ing.qty}</td><td style={{textAlign:"right",color:"#82c9f5",padding:"7px 0"}}>{ing.p}g</td><td style={{textAlign:"right",color:"#f5d782",padding:"7px 0"}}>{ing.g}g</td><td style={{textAlign:"right",color:"#f5a442",padding:"7px 0"}}>{ing.l}g</td></tr>))}
-                      <tr style={{borderTop:"1px solid #2e5c35"}}><td colSpan={2} style={{padding:"8px 0",color:"#6dd87c",fontWeight:"bold",fontSize:11}}>TOTAL REPAS</td><td style={{textAlign:"right",color:"#82c9f5",fontWeight:"bold",padding:"8px 0"}}>{mt.p}g</td><td style={{textAlign:"right",color:"#f5d782",fontWeight:"bold",padding:"8px 0"}}>{mt.g}g</td><td style={{textAlign:"right",color:"#f5a442",fontWeight:"bold",padding:"8px 0"}}>{mt.l}g</td></tr>
+                      {meal.ingredients.map((ing,idx)=>(<tr key={idx} style={{borderTop:"1px solid "+C.border}}><td style={{padding:"7px 0",color:C.soft}}>{ing.name}</td><td style={{textAlign:"right",color:C.soft,padding:"7px 0"}}>{ing.qty}</td><td style={{textAlign:"right",color:"#82c9f5",padding:"7px 0"}}>{ing.p}g</td><td style={{textAlign:"right",color:"#f5d782",padding:"7px 0"}}>{ing.g}g</td><td style={{textAlign:"right",color:"#f5a442",padding:"7px 0"}}>{ing.l}g</td></tr>))}
+                      <tr style={{borderTop:"1px solid "+C.border}}><td colSpan={2} style={{padding:"8px 0",color:C.green,fontWeight:"bold",fontSize:11}}>TOTAL REPAS</td><td style={{textAlign:"right",color:"#82c9f5",fontWeight:"bold",padding:"8px 0"}}>{mt.p}g</td><td style={{textAlign:"right",color:"#f5d782",fontWeight:"bold",padding:"8px 0"}}>{mt.g}g</td><td style={{textAlign:"right",color:"#f5a442",fontWeight:"bold",padding:"8px 0"}}>{mt.l}g</td></tr>
                     </tbody>
                   </table>
                 </div>
@@ -416,7 +416,7 @@ function ExempleMenu() {
           );
         })}
       </div>
-      <div style={{margin:"18px 16px 0",background:"#0f2912",border:"1px solid #1e4a22",borderRadius:12,padding:"12px 16px",fontSize:12,color:"#5a9e65",lineHeight:1.7}}>
+      <div style={{margin:"18px 16px 0",background:"#F5F7FF",border:"1px solid "+C.border,borderRadius:12,padding:"12px 16px",fontSize:12,color:C.soft,lineHeight:1.7}}>
         💧 1,5 à 2L d'eau par jour · Assaisonnement libre (herbes, épices, citron) · En collation si besoin : yaourt grec 0%
       </div>
     </div>
