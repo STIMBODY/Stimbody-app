@@ -2261,21 +2261,30 @@ export default function App() {
   const [selectedRecette,setSelectedRecette]=useState(null); // Le Défi 3 Semaines : modal détail recette
 
   useEffect(()=>{
-    // === MIGRATION V3 : Méthode Coach STIMBODY ===
+    // === MIGRATION V4 : Composition corporelle (poids cible + muscle + gras) ===
     try{
       const r=localStorage.getItem("sb-info");
       if(r){
         const info=JSON.parse(r);
-        // Si le profil existe SANS les nouveaux champs coach → reset propre
-        if(!info.bmr || !info.protObjectif || !info.kcalObjectif){
+        // V3 → V4 : Si le profil n'a PAS la composition corporelle complète → reset forcé
+        const isV4Complete = info.poidsCible && info.masseMuscle && info.masseGrasseKg && info.version===4;
+        const isV3Profile = info.bmr && info.protObjectif && info.kcalObjectif;
+        if(!isV4Complete){
           // Reset complet des données
           localStorage.removeItem("sb-info");
           localStorage.removeItem("sb-e");
           localStorage.removeItem("sb-c");
           localStorage.removeItem("sb-j");
+          localStorage.removeItem("sb-fj");
           localStorage.removeItem("sb-p");
           setTimeout(()=>{
-            alert("✨ Nouvelle version STIMBODY !\n\nTon app utilise maintenant TA méthode coach Dominique :\n\n🔬 Pesée impédancemètre\n🔥 Objectif perte de gras\n🥩 Protéines 1g/kg\n\n📝 Quelques infos à re-renseigner pour que l'app calcule ton plan personnalisé.\n\nDemande à Dominique ton métabolisme de base (BMR) lors de ta prochaine pesée !");
+            if(isV3Profile){
+              // Migration V3 → V4 : message spécifique aux clientes existantes
+              alert("✨ Nouvelle version STIMBODY !\n\nTon app intègre maintenant le suivi de ta composition corporelle :\n\n💪 Masse musculaire\n🍖 Masse grasse\n🏁 Poids cible à atteindre\n\n📝 Quelques infos à re-renseigner.\n\nDemande à Dominique tes valeurs d'impédancemètre lors de ta prochaine pesée !");
+            }else{
+              // Première utilisation
+              alert("✨ Bienvenue dans l'app nutrition STIMBODY !\n\nTon app utilise la méthode coach Dominique :\n\n🔬 Pesée impédancemètre\n💪 Suivi composition corporelle\n🥩 Protéines 1g/kg\n🏁 Poids cible personnalisé\n\n📝 Demande à Dominique tes valeurs lors de ta pesée !");
+            }
           },300);
           setLoaded(true);
           return;
@@ -2418,28 +2427,59 @@ export default function App() {
     if(step==="impedance") {
       const poidsCur=parseFloat(form.poids)||0;
       const bmrCur=parseInt(form.bmr)||0;
+      const poidsCibleCur=parseFloat(form.poidsCible)||0;
+      const masseMuscleCur=parseFloat(form.masseMuscle)||0;
+      const masseGrasseCur=parseFloat(form.masseGrasseKg)||0;
       const objCur=form.objectifKcal||"gras";
       const ratCur=form.ratioProt||"1";
       const kcalCalc=bmrCur>0?calcObjectifKcal(bmrCur,objCur):0;
       const protCalc=poidsCur>0?calcObjectifProteines(poidsCur,ratCur):0;
+      // Calculs composition corporelle
+      const masseMaigre=poidsCur>0&&masseGrasseCur>0?+(poidsCur-masseGrasseCur).toFixed(1):0;
+      const pctGras=poidsCur>0&&masseGrasseCur>0?Math.round(masseGrasseCur/poidsCur*100):0;
+      const aPerdre=poidsCur>0&&poidsCibleCur>0?+(poidsCur-poidsCibleCur).toFixed(1):0;
       return(
         <div style={{fontFamily:"sans-serif",minHeight:"100vh",background:C.navy,color:C.white,maxWidth:480,margin:"0 auto",padding:"30px 20px"}}>
           <div style={{marginBottom:20,textAlign:"center"}}><div style={{display:"flex",justifyContent:"center",alignItems:"baseline"}}><span style={{fontSize:28,fontWeight:"900",color:C.white}}>STIM</span><span style={{fontSize:28,fontWeight:"900",color:C.yellow}}>BODY</span><span style={{fontSize:16,color:C.yellow,marginLeft:3}}>⚡</span></div></div>
           <div style={{display:"flex",gap:4,marginBottom:18}}>{[1,2,3].map(n=>(<div key={n} style={{flex:1,height:3,borderRadius:2,background:n<=2?C.yellow:"rgba(255,255,255,0.15)"}}/>))}</div>
-          <div style={{fontSize:10,color:C.yellow,letterSpacing:2,marginBottom:6,textTransform:"uppercase"}}>Étape 2 / 3 · Pesée & Objectif</div>
+          <div style={{fontSize:10,color:C.yellow,letterSpacing:2,marginBottom:6,textTransform:"uppercase"}}>Étape 2 / 3 · Pesée & Composition</div>
           <div style={{fontSize:20,fontWeight:900,color:C.white,marginBottom:6}}>Ta pesée STIMBODY 🔬</div>
-          <div style={{fontSize:12,color:"rgba(255,255,255,0.6)",marginBottom:18,lineHeight:1.6,background:"rgba(245,194,0,0.08)",border:"1px solid rgba(245,194,0,0.2)",borderRadius:10,padding:"10px 12px"}}>💡 Valeurs données par Dominique lors de ta pesée mensuelle à l'impédancemètre STIMBODY.</div>
-          <div style={{background:"rgba(255,255,255,0.05)",borderRadius:16,padding:"16px 16px",marginBottom:14}}>
-            <div style={{marginBottom:14}}>
-              <div style={{fontSize:10,color:"rgba(255,255,255,0.5)",marginBottom:5,letterSpacing:1,textTransform:"uppercase"}}>⚖️ Ton poids (kg)</div>
-              <input type="number" step="0.1" value={form.poids||""} onChange={e=>setForm(p=>({...p,poids:e.target.value}))} placeholder="Ex: 65.5" style={{width:"100%",padding:"14px",borderRadius:10,border:"1.5px solid rgba(255,255,255,0.2)",background:"rgba(255,255,255,0.08)",color:C.white,fontSize:16,outline:"none",boxSizing:"border-box",fontFamily:"sans-serif"}}/>
+          <div style={{fontSize:12,color:"rgba(255,255,255,0.6)",marginBottom:18,lineHeight:1.6,background:"rgba(245,194,0,0.08)",border:"1px solid rgba(245,194,0,0.2)",borderRadius:10,padding:"10px 12px"}}>💡 Toutes les valeurs sont données par Dominique lors de ta pesée mensuelle à l'impédancemètre STIMBODY.</div>
+
+          {/* SECTION 1 : POIDS & MÉTABOLISME */}
+          <div style={{fontSize:10,fontWeight:700,color:C.yellow,letterSpacing:2,textTransform:"uppercase",marginBottom:8}}>📐 Poids & Métabolisme</div>
+          <div style={{background:"rgba(255,255,255,0.05)",borderRadius:16,padding:"14px 16px",marginBottom:14}}>
+            <div style={{marginBottom:12}}>
+              <div style={{fontSize:10,color:"rgba(255,255,255,0.5)",marginBottom:5,letterSpacing:1,textTransform:"uppercase"}}>⚖️ Poids actuel (kg)</div>
+              <input type="number" step="0.1" value={form.poids||""} onChange={e=>setForm(p=>({...p,poids:e.target.value}))} placeholder="Ex: 65.5" style={{width:"100%",padding:"12px",borderRadius:10,border:"1.5px solid rgba(255,255,255,0.2)",background:"rgba(255,255,255,0.08)",color:C.white,fontSize:15,outline:"none",boxSizing:"border-box",fontFamily:"sans-serif"}}/>
+            </div>
+            <div style={{marginBottom:12}}>
+              <div style={{fontSize:10,color:"rgba(255,255,255,0.5)",marginBottom:5,letterSpacing:1,textTransform:"uppercase"}}>🔥 Métabolisme de base (kcal)</div>
+              <input type="number" value={form.bmr||""} onChange={e=>setForm(p=>({...p,bmr:e.target.value}))} placeholder="Ex: 1400" style={{width:"100%",padding:"12px",borderRadius:10,border:"1.5px solid rgba(255,255,255,0.2)",background:"rgba(255,255,255,0.08)",color:C.white,fontSize:15,outline:"none",boxSizing:"border-box",fontFamily:"sans-serif"}}/>
             </div>
             <div>
-              <div style={{fontSize:10,color:"rgba(255,255,255,0.5)",marginBottom:5,letterSpacing:1,textTransform:"uppercase"}}>🔥 Ton métabolisme de base (kcal)</div>
-              <input type="number" value={form.bmr||""} onChange={e=>setForm(p=>({...p,bmr:e.target.value}))} placeholder="Ex: 1400" style={{width:"100%",padding:"14px",borderRadius:10,border:"1.5px solid rgba(255,255,255,0.2)",background:"rgba(255,255,255,0.08)",color:C.white,fontSize:16,outline:"none",boxSizing:"border-box",fontFamily:"sans-serif"}}/>
-              <div style={{fontSize:9,color:"rgba(255,255,255,0.4)",marginTop:5,fontStyle:"italic"}}>📊 Valeur mesurée par impédancemètre (kcal au repos)</div>
+              <div style={{fontSize:10,color:"rgba(255,255,255,0.5)",marginBottom:5,letterSpacing:1,textTransform:"uppercase"}}>🏁 Poids cible (kg)</div>
+              <input type="number" step="0.1" value={form.poidsCible||""} onChange={e=>setForm(p=>({...p,poidsCible:e.target.value}))} placeholder="Ex: 60.0" style={{width:"100%",padding:"12px",borderRadius:10,border:"1.5px solid rgba(255,255,255,0.2)",background:"rgba(255,255,255,0.08)",color:C.white,fontSize:15,outline:"none",boxSizing:"border-box",fontFamily:"sans-serif"}}/>
+              {aPerdre>0&&<div style={{fontSize:10,color:"#6EF0A0",marginTop:5,fontWeight:600}}>🎯 Reste {aPerdre} kg à perdre — Tu peux le faire {form.prenom||""} ! 💪</div>}
+              {aPerdre<0&&<div style={{fontSize:10,color:"#FFB870",marginTop:5}}>📈 Objectif prise de poids : +{Math.abs(aPerdre)} kg</div>}
             </div>
           </div>
+
+          {/* SECTION 2 : COMPOSITION CORPORELLE */}
+          <div style={{fontSize:10,fontWeight:700,color:C.yellow,letterSpacing:2,textTransform:"uppercase",marginBottom:8}}>🧪 Composition corporelle</div>
+          <div style={{background:"rgba(255,255,255,0.05)",borderRadius:16,padding:"14px 16px",marginBottom:14}}>
+            <div style={{marginBottom:12}}>
+              <div style={{fontSize:10,color:"rgba(255,255,255,0.5)",marginBottom:5,letterSpacing:1,textTransform:"uppercase"}}>💪 Masse musculaire (kg)</div>
+              <input type="number" step="0.1" value={form.masseMuscle||""} onChange={e=>setForm(p=>({...p,masseMuscle:e.target.value}))} placeholder="Ex: 28.5" style={{width:"100%",padding:"12px",borderRadius:10,border:"1.5px solid rgba(255,255,255,0.2)",background:"rgba(255,255,255,0.08)",color:C.white,fontSize:15,outline:"none",boxSizing:"border-box",fontFamily:"sans-serif"}}/>
+            </div>
+            <div>
+              <div style={{fontSize:10,color:"rgba(255,255,255,0.5)",marginBottom:5,letterSpacing:1,textTransform:"uppercase"}}>🍖 Masse grasse (kg)</div>
+              <input type="number" step="0.1" value={form.masseGrasseKg||""} onChange={e=>setForm(p=>({...p,masseGrasseKg:e.target.value}))} placeholder="Ex: 18.2" style={{width:"100%",padding:"12px",borderRadius:10,border:"1.5px solid rgba(255,255,255,0.2)",background:"rgba(255,255,255,0.08)",color:C.white,fontSize:15,outline:"none",boxSizing:"border-box",fontFamily:"sans-serif"}}/>
+              {pctGras>0&&masseMaigre>0&&<div style={{fontSize:10,color:"rgba(255,255,255,0.7)",marginTop:5}}>📊 Soit <strong style={{color:C.yellow}}>{pctGras}%</strong> de masse grasse · Masse maigre : <strong style={{color:"#6EF0A0"}}>{masseMaigre} kg</strong></div>}
+            </div>
+          </div>
+
+          {/* OBJECTIF KCAL */}
           <div style={{fontSize:14,fontWeight:900,color:C.white,marginBottom:10}}>🎯 Ton objectif</div>
           <div style={{display:"flex",flexDirection:"column",gap:6,marginBottom:14}}>
             {OBJECTIFS_COACH.map(o=>{ const on=objCur===o.v; return(
@@ -2453,6 +2493,8 @@ export default function App() {
               </div>
             );})}
           </div>
+
+          {/* PROTÉINES */}
           <div style={{fontSize:14,fontWeight:900,color:C.white,marginBottom:8}}>🥩 Protéines</div>
           <div style={{display:"flex",gap:5,marginBottom:16}}>
             {RATIOS_PROTEINES.map(r=>{ const on=ratCur===r.v; return(
@@ -2462,6 +2504,8 @@ export default function App() {
               </div>
             );})}
           </div>
+
+          {/* PLAN CALCULÉ */}
           {bmrCur>0&&poidsCur>0&&(
             <div style={{background:"linear-gradient(135deg,rgba(245,194,0,0.15),rgba(245,194,0,0.05))",border:"1.5px solid "+C.yellow,borderRadius:14,padding:"14px 16px",marginBottom:14}}>
               <div style={{fontSize:9,color:C.yellow,letterSpacing:2,textTransform:"uppercase",marginBottom:6}}>✨ TON PLAN CALCULÉ</div>
@@ -2488,9 +2532,24 @@ export default function App() {
               </details>
             </div>
           )}
+
+          {/* BOUTONS */}
           <div style={{display:"flex",gap:8}}>
             <button onClick={()=>setStep("info")} style={{padding:"14px 18px",background:"transparent",border:"1.5px solid rgba(255,255,255,0.2)",borderRadius:12,color:"rgba(255,255,255,0.7)",fontSize:13,cursor:"pointer"}}>← Retour</button>
-            <button onClick={()=>{ const p=parseFloat(form.poids); const b=parseInt(form.bmr); if(!p||p<35||p>250){alert("Entre un poids valide (35-250 kg)");return;} if(!b||b<800||b>3000){alert("Entre un BMR valide (800-3000 kcal)\n\nC'est la valeur donnée par Dominique lors de ta pesée.");return;} setStep("formule"); }} style={{flex:1,padding:"15px",background:C.yellow,border:"none",borderRadius:12,color:C.navy,fontSize:15,fontWeight:"900",cursor:"pointer"}}>Suivant →</button>
+            <button onClick={()=>{
+              const p=parseFloat(form.poids); const b=parseInt(form.bmr);
+              const pc=parseFloat(form.poidsCible);
+              const mm=parseFloat(form.masseMuscle);
+              const mg=parseFloat(form.masseGrasseKg);
+              if(!p||p<35||p>250){alert("⚖️ Entre un poids valide (35-250 kg)");return;}
+              if(!b||b<800||b>3000){alert("🔥 Entre un BMR valide (800-3000 kcal)\n\nC'est la valeur donnée par Dominique lors de ta pesée.");return;}
+              if(!pc||pc<30||pc>250){alert("🏁 Entre un poids cible valide (30-250 kg)");return;}
+              if(!mm||mm<10||mm>100){alert("💪 Entre une masse musculaire valide (10-100 kg)\n\nValeur donnée par l'impédancemètre STIMBODY.");return;}
+              if(!mg||mg<2||mg>100){alert("🍖 Entre une masse grasse valide (2-100 kg)\n\nValeur donnée par l'impédancemètre STIMBODY.");return;}
+              if(mm+mg>p+5){alert("⚠️ Vérifie tes valeurs :\n\nMasse musculaire ("+mm+" kg) + Masse grasse ("+mg+" kg) = "+(mm+mg)+" kg\nPoids total : "+p+" kg\n\nLa somme ne peut pas dépasser le poids total !");return;}
+              if(mg>=p){alert("⚠️ La masse grasse ne peut pas être supérieure ou égale au poids total");return;}
+              setStep("formule");
+            }} style={{flex:1,padding:"15px",background:C.yellow,border:"none",borderRadius:12,color:C.navy,fontSize:15,fontWeight:"900",cursor:"pointer"}}>Suivant →</button>
           </div>
         </div>
       );
@@ -2508,11 +2567,25 @@ export default function App() {
           <div key={key} onClick={()=>{
             const poids=parseFloat(form.poids);
             const bmr=parseInt(form.bmr);
+            const poidsCible=parseFloat(form.poidsCible);
+            const masseMuscle=parseFloat(form.masseMuscle);
+            const masseGrasseKg=parseFloat(form.masseGrasseKg);
             const objectifKcal=form.objectifKcal||"gras";
             const ratioProt=form.ratioProt||"1";
             const kcalObj=calcObjectifKcal(bmr,objectifKcal);
             const protObj=calcObjectifProteines(poids,ratioProt);
-            const info={prenom:form.prenom.trim(),age:form.age,objectif:form.objectif,formule:key,poids,bmr,objectifKcal,ratioProt,kcalObjectif:kcalObj,protObjectif:protObj,datePesee:new Date().toISOString()};
+            // Calculs composition corporelle
+            const masseMaigre=+(poids-masseGrasseKg).toFixed(1);
+            const pctGras=Math.round(masseGrasseKg/poids*100);
+            const aPerdre=+(poids-poidsCible).toFixed(1);
+            const info={
+              prenom:form.prenom.trim(), age:form.age, objectif:form.objectif, formule:key,
+              poids, bmr, poidsCible, masseMuscle, masseGrasseKg,
+              masseMaigre, pctGras, aPerdre,
+              objectifKcal, ratioProt, kcalObjectif:kcalObj, protObjectif:protObj,
+              datePesee:new Date().toISOString(),
+              version:4 // V4 = composition corporelle
+            };
             setClientInfo(info); setPrefs(f.prefs);
             try{localStorage.setItem("sb-info",JSON.stringify(info));}catch(e){}
             setEditingProfile(false); setStep("info");
@@ -2538,7 +2611,7 @@ export default function App() {
             <span style={{fontSize:9,background:formule==="sucre"?C.orange:C.green,color:"white",padding:"2px 8px",borderRadius:20,fontWeight:700}}>{FORMULES[formule].emoji} {FORMULES[formule].label}</span>
             <span style={{fontSize:9,color:"rgba(255,255,255,0.4)"}}>· {CLIENT.toUpperCase()}</span>
             {clientInfo?.kcalObjectif&&<span style={{fontSize:9,color:C.yellow,fontWeight:700}}>· 🎯 {clientInfo.kcalObjectif} kcal</span>}
-            <button onClick={()=>{setForm({prenom:clientInfo?.prenom||"",age:clientInfo?.age||"",objectif:clientInfo?.objectif||"",poids:clientInfo?.poids||"",bmr:clientInfo?.bmr||"",objectifKcal:clientInfo?.objectifKcal||"gras",ratioProt:clientInfo?.ratioProt||"1"});setEditingProfile(true);setStep("info");}} style={{background:"rgba(255,255,255,0.1)",border:"none",borderRadius:6,color:C.yellow,fontSize:9,padding:"2px 7px",cursor:"pointer"}}>✏️</button>
+            <button onClick={()=>{setForm({prenom:clientInfo?.prenom||"",age:clientInfo?.age||"",objectif:clientInfo?.objectif||"",poids:clientInfo?.poids||"",bmr:clientInfo?.bmr||"",poidsCible:clientInfo?.poidsCible||"",masseMuscle:clientInfo?.masseMuscle||"",masseGrasseKg:clientInfo?.masseGrasseKg||"",objectifKcal:clientInfo?.objectifKcal||"gras",ratioProt:clientInfo?.ratioProt||"1"});setEditingProfile(true);setStep("info");}} style={{background:"rgba(255,255,255,0.1)",border:"none",borderRadius:6,color:C.yellow,fontSize:9,padding:"2px 7px",cursor:"pointer"}}>✏️</button>
           </div>
         </div>
         <div style={{display:"flex",overflowX:"auto",scrollbarWidth:"none",msOverflowStyle:"none"}}>{TABS.map(t=>(<button key={t.k} onClick={()=>setTab(t.k)} style={{flexShrink:0,padding:"8px 10px",background:"transparent",border:"none",borderBottom:tab===t.k?"3px solid "+C.yellow:"3px solid transparent",color:tab===t.k?C.yellow:"rgba(255,255,255,0.4)",fontSize:8,cursor:"pointer",whiteSpace:"nowrap",fontWeight:tab===t.k?"bold":"normal"}}>{t.l}</button>))}</div>
@@ -2555,6 +2628,63 @@ export default function App() {
             <button onClick={()=>setDay(d=>Math.min(24,d+1))} disabled={day===24} style={{background:day===24?"#E8EAF0":C.navy,border:"none",color:day===24?C.muted:C.yellow,borderRadius:9,padding:"8px 15px",fontSize:16,cursor:day===24?"default":"pointer",fontWeight:"bold"}}>{">"}</button>
           </div>
           <div style={{height:5,background:C.border,borderRadius:3,marginBottom:14}}><div style={{height:"100%",borderRadius:3,background:"linear-gradient(90deg,"+C.navy+","+C.yellow+")",width:((day+1)/25*100)+"%",transition:"width 0.3s"}}/></div>
+          {/* === BANDEAU OBJECTIF PERTE & COMPOSITION CORPORELLE V4 === */}
+          {clientInfo?.poidsCible&&clientInfo?.poids&&(
+            <div style={{background:"linear-gradient(135deg,#0AAA50,#0AAA50CC)",borderRadius:14,padding:"12px 14px",marginBottom:10,color:C.white,boxShadow:"0 3px 10px rgba(10,170,80,0.2)"}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
+                <span style={{fontSize:9,letterSpacing:2,textTransform:"uppercase",fontWeight:"bold"}}>🏁 Objectif perte</span>
+                <span style={{fontSize:9,opacity:0.85}}>{clientInfo.poids} kg → {clientInfo.poidsCible} kg</span>
+              </div>
+              {(()=>{
+                const aPerdre=+(clientInfo.poids-clientInfo.poidsCible).toFixed(1);
+                if(aPerdre>0){
+                  return(
+                    <>
+                      <div style={{fontSize:18,fontWeight:900,marginBottom:4}}>Reste {aPerdre} kg à perdre</div>
+                      <div style={{fontSize:10,opacity:0.9}}>💪 Tu peux le faire {clientInfo.prenom} !</div>
+                    </>
+                  );
+                }else if(aPerdre<0){
+                  return(
+                    <>
+                      <div style={{fontSize:18,fontWeight:900,marginBottom:4}}>Gain de {Math.abs(aPerdre)} kg</div>
+                      <div style={{fontSize:10,opacity:0.9}}>📈 En route vers ton objectif</div>
+                    </>
+                  );
+                }else{
+                  return(
+                    <>
+                      <div style={{fontSize:18,fontWeight:900,marginBottom:4}}>🎉 Objectif atteint !</div>
+                      <div style={{fontSize:10,opacity:0.9}}>Place au maintien {clientInfo.prenom}</div>
+                    </>
+                  );
+                }
+              })()}
+            </div>
+          )}
+          {/* COMPOSITION CORPORELLE - mini bandeau pliable */}
+          {clientInfo?.masseMuscle&&clientInfo?.masseGrasseKg&&(
+            <details style={{background:C.white,border:"1px solid "+C.border,borderRadius:10,marginBottom:10,boxShadow:"0 2px 6px rgba(13,27,75,0.05)"}}>
+              <summary style={{padding:"10px 14px",fontSize:11,color:C.navy,cursor:"pointer",listStyle:"none",display:"flex",justifyContent:"space-between",alignItems:"center",fontWeight:600}}>
+                <span>🧪 Composition corporelle</span>
+                <span style={{fontSize:9,color:C.muted}}>▸ détail</span>
+              </summary>
+              <div style={{padding:"0 14px 12px",display:"flex",gap:8,fontSize:11}}>
+                <div style={{flex:1,background:"#F5F7FF",borderRadius:8,padding:"8px 10px",textAlign:"center"}}>
+                  <div style={{fontSize:16,fontWeight:900,color:"#0AAA50"}}>{clientInfo.masseMuscle}<span style={{fontSize:10,color:C.muted}}> kg</span></div>
+                  <div style={{fontSize:8,color:C.muted,textTransform:"uppercase",letterSpacing:1}}>💪 Muscle</div>
+                </div>
+                <div style={{flex:1,background:"#FFF5F0",borderRadius:8,padding:"8px 10px",textAlign:"center"}}>
+                  <div style={{fontSize:16,fontWeight:900,color:"#CC6600"}}>{clientInfo.masseGrasseKg}<span style={{fontSize:10,color:C.muted}}> kg</span></div>
+                  <div style={{fontSize:8,color:C.muted,textTransform:"uppercase",letterSpacing:1}}>🍖 Gras ({clientInfo.pctGras}%)</div>
+                </div>
+                <div style={{flex:1,background:"#F0F5FF",borderRadius:8,padding:"8px 10px",textAlign:"center"}}>
+                  <div style={{fontSize:16,fontWeight:900,color:C.navy}}>{clientInfo.masseMaigre}<span style={{fontSize:10,color:C.muted}}> kg</span></div>
+                  <div style={{fontSize:8,color:C.muted,textTransform:"uppercase",letterSpacing:1}}>📏 Maigre</div>
+                </div>
+              </div>
+            </details>
+          )}
           {/* === BANDEAU JOURNALIER V3 - Méthode Coach Dominique === */}
           <div style={{background:C.navy,borderRadius:14,padding:"14px 14px 12px",marginBottom:14}}>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
