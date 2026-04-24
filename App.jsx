@@ -306,6 +306,441 @@ const ALIMENTS_DB = [
   {id:"a907",n:"Poignée amandes (30g)",c:"collation",e:"🌰",p:21,l:51,g:10,cal:580},
   {id:"a908",n:"Fromage blanc + baies",c:"collation",e:"🫐",p:8,l:0.1,g:8,cal:60},
   {id:"a909",n:"Skyr + fruits rouges",c:"collation",e:"🍓",p:10,l:0.2,g:8,cal:65},
+
+  // ========== VIANDES SUPPLÉMENTAIRES (25) ==========
+  {id:"b001",n:"Tranche de jambon blanc (1)",c:"viande",e:"🥓",p:12,l:1,g:0.6,cal:65},
+  {id:"b002",n:"Tranche de jambon dinde (1)",c:"viande",e:"🥓",p:11,l:1,g:0.6,cal:60},
+  {id:"b003",n:"Tranche de bacon cru",c:"viande",e:"🥓",p:13,l:40,g:0,cal:420},
+  {id:"b004",n:"Lardons",c:"viande",e:"🥓",p:15,l:30,g:0,cal:330},
+  {id:"b005",n:"Chorizo",c:"viande",e:"🥓",p:25,l:40,g:2,cal:455},
+  {id:"b006",n:"Saucisson sec",c:"viande",e:"🥓",p:25,l:35,g:1,cal:415},
+  {id:"b007",n:"Rillettes",c:"viande",e:"🥓",p:20,l:40,g:0,cal:440},
+  {id:"b008",n:"Pâté de campagne",c:"viande",e:"🥓",p:14,l:28,g:2,cal:320},
+  {id:"b009",n:"Foie gras",c:"viande",e:"🥓",p:10,l:50,g:2,cal:500},
+  {id:"b010",n:"Merguez",c:"viande",e:"🌭",p:15,l:28,g:1,cal:310},
+  {id:"b011",n:"Saucisse de Toulouse",c:"viande",e:"🌭",p:15,l:27,g:1,cal:305},
+  {id:"b012",n:"Saucisse de Francfort",c:"viande",e:"🌭",p:12,l:25,g:2,cal:280},
+  {id:"b013",n:"Knacki",c:"viande",e:"🌭",p:11,l:20,g:2,cal:235},
+  {id:"b014",n:"Boudin blanc",c:"viande",e:"🥓",p:12,l:20,g:5,cal:250},
+  {id:"b015",n:"Andouille",c:"viande",e:"🥓",p:18,l:20,g:1,cal:255},
+  {id:"b016",n:"Épaule d'agneau",c:"viande",e:"🍖",p:22,l:20,g:0,cal:270},
+  {id:"b017",n:"Gigot d'agneau",c:"viande",e:"🍖",p:28,l:15,g:0,cal:250},
+  {id:"b018",n:"Rosbif",c:"viande",e:"🥩",p:28,l:7,g:0,cal:180},
+  {id:"b019",n:"Entrecôte",c:"viande",e:"🥩",p:26,l:18,g:0,cal:265},
+  {id:"b020",n:"Filet mignon de porc",c:"viande",e:"🥩",p:22,l:4,g:0,cal:130},
+  {id:"b021",n:"Travers de porc",c:"viande",e:"🥩",p:22,l:28,g:0,cal:340},
+  {id:"b022",n:"Poulet rôti entier (avec peau)",c:"viande",e:"🍗",p:24,l:12,g:0,cal:215},
+  {id:"b023",n:"Aile de poulet rôtie",c:"viande",e:"🍗",p:22,l:15,g:0,cal:230},
+  {id:"b024",n:"Pintade rôtie",c:"viande",e:"🍗",p:27,l:12,g:0,cal:215},
+  {id:"b025",n:"Cheval (steak)",c:"viande",e:"🥩",p:22,l:3,g:0,cal:115},
+
+  // ========== POISSONS SUPPLÉMENTAIRES (15) ==========
+  {id:"b100",n:"Filet de limande",c:"poisson",e:"🐟",p:17,l:1,g:0,cal:80},
+  {id:"b101",n:"Rouget",c:"poisson",e:"🐟",p:19,l:4,g:0,cal:120},
+  {id:"b102",n:"Raie",c:"poisson",e:"🐟",p:20,l:1,g:0,cal:90},
+  {id:"b103",n:"Flétan",c:"poisson",e:"🐟",p:20,l:2,g:0,cal:105},
+  {id:"b104",n:"Églefin",c:"poisson",e:"🐟",p:18,l:1,g:0,cal:85},
+  {id:"b105",n:"Carrelet",c:"poisson",e:"🐟",p:18,l:1,g:0,cal:85},
+  {id:"b106",n:"Turbot",c:"poisson",e:"🐟",p:17,l:3,g:0,cal:100},
+  {id:"b107",n:"Lotte",c:"poisson",e:"🐟",p:18,l:0.5,g:0,cal:80},
+  {id:"b108",n:"Espadon",c:"poisson",e:"🐟",p:20,l:5,g:0,cal:130},
+  {id:"b109",n:"Tilapia",c:"poisson",e:"🐟",p:21,l:2,g:0,cal:100},
+  {id:"b110",n:"Truite fumée",c:"poisson",e:"🐟",p:25,l:5,g:0,cal:145},
+  {id:"b111",n:"Bâtonnet de poisson pané",c:"poisson",e:"🐟",p:13,l:11,g:22,cal:235},
+  {id:"b112",n:"Brandade de morue",c:"poisson",e:"🐟",p:14,l:10,g:12,cal:190},
+  {id:"b113",n:"Maquereau au vin blanc (boîte)",c:"poisson",e:"🥫",p:17,l:11,g:2,cal:175},
+  {id:"b114",n:"Rillettes de saumon",c:"poisson",e:"🐟",p:14,l:20,g:1,cal:240},
+
+  // ========== FRUITS DE MER SUPPLÉMENTAIRES (8) ==========
+  {id:"b200",n:"Langoustines",c:"fruitsmer",e:"🦐",p:19,l:1,g:0,cal:90},
+  {id:"b201",n:"Huîtres (6 pièces)",c:"fruitsmer",e:"🦪",p:8,l:2,g:4,cal:70},
+  {id:"b202",n:"Palourdes",c:"fruitsmer",e:"🦪",p:15,l:1,g:3,cal:85},
+  {id:"b203",n:"Coques",c:"fruitsmer",e:"🦪",p:13,l:1,g:3,cal:75},
+  {id:"b204",n:"Bigorneaux",c:"fruitsmer",e:"🐌",p:15,l:1,g:5,cal:90},
+  {id:"b205",n:"Langouste",c:"fruitsmer",e:"🦞",p:20,l:1,g:0,cal:90},
+  {id:"b206",n:"Encornet",c:"fruitsmer",e:"🦑",p:16,l:1,g:3,cal:90},
+  {id:"b207",n:"Salade de fruits de mer",c:"fruitsmer",e:"🦪",p:13,l:8,g:5,cal:135},
+
+  // ========== FROMAGES SUPPLÉMENTAIRES (20) ==========
+  {id:"b300",n:"Camembert",c:"fromage",e:"🧀",p:20,l:24,g:1,cal:300},
+  {id:"b301",n:"Brie",c:"fromage",e:"🧀",p:21,l:28,g:0,cal:335},
+  {id:"b302",n:"Coulommiers",c:"fromage",e:"🧀",p:21,l:27,g:0,cal:330},
+  {id:"b303",n:"Gruyère",c:"fromage",e:"🧀",p:28,l:32,g:0,cal:405},
+  {id:"b304",n:"Beaufort",c:"fromage",e:"🧀",p:26,l:31,g:0,cal:395},
+  {id:"b305",n:"Reblochon",c:"fromage",e:"🧀",p:20,l:27,g:1,cal:330},
+  {id:"b306",n:"Morbier",c:"fromage",e:"🧀",p:22,l:28,g:0,cal:340},
+  {id:"b307",n:"Tomme de Savoie",c:"fromage",e:"🧀",p:22,l:22,g:0,cal:290},
+  {id:"b308",n:"Roquefort",c:"fromage",e:"🧀",p:21,l:32,g:0,cal:380},
+  {id:"b309",n:"Bleu d'Auvergne",c:"fromage",e:"🧀",p:19,l:29,g:0,cal:350},
+  {id:"b310",n:"Gorgonzola",c:"fromage",e:"🧀",p:19,l:27,g:0,cal:335},
+  {id:"b311",n:"Parmesan",c:"fromage",e:"🧀",p:36,l:29,g:0,cal:400},
+  {id:"b312",n:"Mozzarella di Bufala",c:"fromage",e:"🧀",p:17,l:22,g:1,cal:280},
+  {id:"b313",n:"Burrata",c:"fromage",e:"🧀",p:17,l:27,g:1,cal:320},
+  {id:"b314",n:"Chèvre demi-sec",c:"fromage",e:"🧀",p:20,l:28,g:1,cal:340},
+  {id:"b315",n:"Chèvre sec",c:"fromage",e:"🧀",p:24,l:34,g:1,cal:410},
+  {id:"b316",n:"Crottin de Chavignol",c:"fromage",e:"🧀",p:22,l:26,g:0,cal:325},
+  {id:"b317",n:"Fromage à raclette",c:"fromage",e:"🧀",p:22,l:28,g:1,cal:345},
+  {id:"b318",n:"Kiri (1 portion 20g)",c:"fromage",e:"🧀",p:6,l:23,g:3,cal:250},
+  {id:"b319",n:"Vache qui rit (1 portion 20g)",c:"fromage",e:"🧀",p:9,l:22,g:5,cal:260},
+
+  // ========== LAITAGES SUPPLÉMENTAIRES - MARQUES INCLUSES (15) ==========
+  {id:"b400",n:"Yaourt nature sucré",c:"laitage",e:"🍶",p:4,l:1,g:12,cal:75},
+  {id:"b401",n:"Yaourt aux fruits",c:"laitage",e:"🍶",p:3.5,l:1.5,g:15,cal:85},
+  {id:"b402",n:"Yaourt à la grecque entier",c:"laitage",e:"🍶",p:6,l:9,g:4,cal:115},
+  {id:"b403",n:"Petit-suisse 40% MG",c:"laitage",e:"🧀",p:9,l:8,g:3,cal:120},
+  {id:"b404",n:"Fromage blanc 20% MG",c:"laitage",e:"🥛",p:8,l:7,g:4,cal:110},
+  {id:"b405",n:"Faisselle",c:"laitage",e:"🥛",p:7,l:3,g:4,cal:70},
+  {id:"b406",n:"Lait entier",c:"laitage",e:"🥛",p:3.2,l:3.6,g:4.8,cal:65},
+  {id:"b407",n:"Lait demi-écrémé",c:"laitage",e:"🥛",p:3.3,l:1.5,g:4.8,cal:47},
+  {id:"b408",n:"Lait écrémé",c:"laitage",e:"🥛",p:3.5,l:0.2,g:5,cal:35},
+  {id:"b409",n:"Lait d'amande non sucré",c:"laitage",e:"🥛",p:0.5,l:1.5,g:0.3,cal:17},
+  {id:"b410",n:"Lait d'avoine",c:"laitage",e:"🥛",p:1,l:1.5,g:6.5,cal:45},
+  {id:"b411",n:"Lait de soja",c:"laitage",e:"🥛",p:3.3,l:1.8,g:2.5,cal:40},
+  {id:"b412",n:"Lait de coco",c:"laitage",e:"🥛",p:2,l:21,g:3,cal:215},
+  {id:"b413",n:"Activia nature",c:"laitage",e:"🍶",p:4,l:3,g:4.5,cal:60},
+  {id:"b414",n:"Danone Danio (skyr style)",c:"laitage",e:"🫙",p:8,l:0.2,g:7,cal:65},
+
+  // ========== LÉGUMES SUPPLÉMENTAIRES (25) ==========
+  {id:"b500",n:"Poireaux crus",c:"legume",e:"🥬",p:2,l:0.3,g:6,cal:35},
+  {id:"b501",n:"Betterave cuite",c:"legume",e:"🟣",p:2,l:0.2,g:10,cal:45},
+  {id:"b502",n:"Carottes cuites",c:"legume",e:"🥕",p:1,l:0.2,g:8,cal:40},
+  {id:"b503",n:"Navets cuits",c:"legume",e:"🥬",p:1,l:0.1,g:4,cal:20},
+  {id:"b504",n:"Rutabaga cuit",c:"legume",e:"🥕",p:1,l:0.2,g:8,cal:37},
+  {id:"b505",n:"Salsifis cuits",c:"legume",e:"🥬",p:3,l:0.2,g:18,cal:80},
+  {id:"b506",n:"Crosnes",c:"legume",e:"🌿",p:3,l:0,g:17,cal:80},
+  {id:"b507",n:"Cardon cuit",c:"legume",e:"🌿",p:1,l:0.1,g:2,cal:12},
+  {id:"b508",n:"Topinambour",c:"legume",e:"🥔",p:2,l:0,g:17,cal:75},
+  {id:"b509",n:"Mange-tout / pois gourmands",c:"legume",e:"🫛",p:3,l:0.3,g:7,cal:42},
+  {id:"b510",n:"Petits pois cuits",c:"legume",e:"🫛",p:5,l:0.4,g:14,cal:80},
+  {id:"b511",n:"Maïs doux cuit",c:"legume",e:"🌽",p:3.3,l:1.4,g:19,cal:97},
+  {id:"b512",n:"Oignon cru",c:"legume",e:"🧅",p:1,l:0.1,g:9,cal:40},
+  {id:"b513",n:"Ail cru",c:"legume",e:"🧄",p:6,l:0.5,g:28,cal:135},
+  {id:"b514",n:"Échalote",c:"legume",e:"🧅",p:2.5,l:0.1,g:17,cal:75},
+  {id:"b515",n:"Courgette crue",c:"crudite",e:"🟢",p:1,l:0.2,g:3,cal:18},
+  {id:"b516",n:"Champignons cèpes",c:"legume",e:"🍄",p:4,l:0.5,g:5,cal:40},
+  {id:"b517",n:"Champignons girolles",c:"legume",e:"🍄",p:2,l:0.5,g:3,cal:30},
+  {id:"b518",n:"Champignons pleurotes",c:"legume",e:"🍄",p:3,l:0.3,g:4,cal:35},
+  {id:"b519",n:"Truffe noire",c:"legume",e:"🍄",p:6,l:0.5,g:4,cal:50},
+  {id:"b520",n:"Cornichons",c:"legume",e:"🥒",p:0.5,l:0.2,g:2,cal:15},
+  {id:"b521",n:"Câpres",c:"legume",e:"🌿",p:2.4,l:0.9,g:5,cal:35},
+  {id:"b522",n:"Olives vertes",c:"legume",e:"🫒",p:1,l:15,g:4,cal:145},
+  {id:"b523",n:"Olives noires",c:"legume",e:"🫒",p:1.8,l:16,g:6,cal:170},
+  {id:"b524",n:"Coeurs d'artichaut",c:"legume",e:"🌿",p:3,l:0.1,g:5,cal:35},
+
+  // ========== CRUDITÉS SUPPLÉMENTAIRES (10) ==========
+  {id:"b600",n:"Salade iceberg",c:"crudite",e:"🥬",p:1,l:0.1,g:2.5,cal:15},
+  {id:"b601",n:"Cresson",c:"crudite",e:"🌿",p:2,l:0.3,g:1.3,cal:15},
+  {id:"b602",n:"Pourpier",c:"crudite",e:"🌿",p:1.3,l:0.4,g:3.4,cal:20},
+  {id:"b603",n:"Pousses d'épinards",c:"crudite",e:"🌿",p:3,l:0.4,g:4,cal:25},
+  {id:"b604",n:"Tomate coeur de boeuf",c:"crudite",e:"🍅",p:0.9,l:0.2,g:4,cal:20},
+  {id:"b605",n:"Tomate verte",c:"crudite",e:"🍅",p:1.2,l:0.2,g:5,cal:25},
+  {id:"b606",n:"Poivron jaune cru",c:"crudite",e:"🫑",p:1,l:0.2,g:6,cal:28},
+  {id:"b607",n:"Poivron rouge cru",c:"crudite",e:"🫑",p:1,l:0.3,g:6,cal:30},
+  {id:"b608",n:"Radis noir",c:"crudite",e:"🥬",p:1,l:0.1,g:4,cal:18},
+  {id:"b609",n:"Taboulé (semoule + légumes)",c:"crudite",e:"🥗",p:3,l:4,g:20,cal:140},
+
+  // ========== FRUITS SUPPLÉMENTAIRES (20) ==========
+  {id:"b700",n:"Grenade",c:"fruit",e:"🍎",p:1.7,l:1.2,g:19,cal:85},
+  {id:"b701",n:"Figue fraîche",c:"fruit",e:"🍑",p:0.8,l:0.3,g:16,cal:70},
+  {id:"b702",n:"Figue sèche",c:"fruit",e:"🌰",p:3,l:1,g:64,cal:275},
+  {id:"b703",n:"Datte",c:"fruit",e:"🌰",p:2,l:0.4,g:75,cal:300},
+  {id:"b704",n:"Pruneaux",c:"fruit",e:"🌰",p:2.3,l:0.4,g:64,cal:260},
+  {id:"b705",n:"Raisins secs",c:"fruit",e:"🌰",p:3,l:0.4,g:78,cal:325},
+  {id:"b706",n:"Abricots secs",c:"fruit",e:"🌰",p:3,l:0.5,g:55,cal:240},
+  {id:"b707",n:"Raisin blanc",c:"fruit",e:"🍇",p:0.6,l:0.3,g:17,cal:70},
+  {id:"b708",n:"Raisin noir",c:"fruit",e:"🍇",p:0.6,l:0.3,g:17,cal:70},
+  {id:"b709",n:"Papaye",c:"fruit",e:"🥭",p:0.5,l:0.3,g:11,cal:45},
+  {id:"b710",n:"Fruit de la passion",c:"fruit",e:"🥭",p:2,l:0.4,g:13,cal:65},
+  {id:"b711",n:"Litchi",c:"fruit",e:"🍒",p:0.8,l:0.4,g:17,cal:70},
+  {id:"b712",n:"Nectarine",c:"fruit",e:"🍑",p:1.1,l:0.3,g:9,cal:45},
+  {id:"b713",n:"Groseilles",c:"fruit",e:"🫐",p:1.4,l:0.2,g:8,cal:40},
+  {id:"b714",n:"Cassis",c:"fruit",e:"🫐",p:1.4,l:0.4,g:11,cal:55},
+  {id:"b715",n:"Rhubarbe",c:"fruit",e:"🌿",p:0.7,l:0.2,g:3,cal:15},
+  {id:"b716",n:"Compote de pomme sans sucre",c:"fruit",e:"🍎",p:0.3,l:0.1,g:12,cal:50},
+  {id:"b717",n:"Compote de poire sans sucre",c:"fruit",e:"🍐",p:0.3,l:0.1,g:13,cal:55},
+  {id:"b718",n:"Banane séchée",c:"fruit",e:"🍌",p:3,l:1,g:78,cal:320},
+  {id:"b719",n:"Noix de coco fraîche",c:"fruit",e:"🥥",p:3,l:33,g:15,cal:355},
+
+  // ========== FÉCULENTS SUPPLÉMENTAIRES (15) ==========
+  {id:"b800",n:"Pâtes à la sauce tomate",c:"feculent",e:"🍝",p:4,l:2,g:22,cal:125},
+  {id:"b801",n:"Pâtes à la carbonara",c:"feculent",e:"🍝",p:7,l:9,g:25,cal:210},
+  {id:"b802",n:"Pâtes à la bolognaise",c:"feculent",e:"🍝",p:8,l:5,g:22,cal:170},
+  {id:"b803",n:"Pâtes au pesto",c:"feculent",e:"🍝",p:5,l:12,g:25,cal:230},
+  {id:"b804",n:"Lasagnes",c:"feculent",e:"🍝",p:7,l:8,g:18,cal:170},
+  {id:"b805",n:"Gnocchis cuits",c:"feculent",e:"🍚",p:2,l:1,g:30,cal:135},
+  {id:"b806",n:"Raviolis",c:"feculent",e:"🍝",p:5,l:3,g:25,cal:145},
+  {id:"b807",n:"Tagliatelles aux champignons",c:"feculent",e:"🍝",p:5,l:5,g:24,cal:165},
+  {id:"b808",n:"Risotto classique",c:"feculent",e:"🍚",p:4,l:7,g:28,cal:195},
+  {id:"b809",n:"Paella",c:"feculent",e:"🍚",p:9,l:5,g:25,cal:185},
+  {id:"b810",n:"Riz cantonais",c:"feculent",e:"🍚",p:6,l:5,g:28,cal:180},
+  {id:"b811",n:"Purée de pommes de terre",c:"feculent",e:"🥔",p:2,l:3,g:15,cal:95},
+  {id:"b812",n:"Frites",c:"feculent",e:"🍟",p:3,l:15,g:35,cal:275},
+  {id:"b813",n:"Pommes dauphines",c:"feculent",e:"🥔",p:3,l:15,g:25,cal:250},
+  {id:"b814",n:"Gratin dauphinois",c:"feculent",e:"🥔",p:3,l:10,g:13,cal:155},
+
+  // ========== PLATS FRANÇAIS CLASSIQUES (25) ==========
+  {id:"c001",n:"Quiche lorraine",c:"plat",e:"🥧",p:10,l:20,g:18,cal:290},
+  {id:"c002",n:"Quiche aux légumes",c:"plat",e:"🥧",p:8,l:15,g:20,cal:235},
+  {id:"c003",n:"Pizza Margherita",c:"plat",e:"🍕",p:10,l:10,g:30,cal:245},
+  {id:"c004",n:"Pizza 4 fromages",c:"plat",e:"🍕",p:12,l:15,g:28,cal:285},
+  {id:"c005",n:"Pizza jambon",c:"plat",e:"🍕",p:12,l:10,g:30,cal:250},
+  {id:"c006",n:"Croque-monsieur",c:"plat",e:"🥪",p:15,l:18,g:25,cal:300},
+  {id:"c007",n:"Sandwich jambon-beurre",c:"plat",e:"🥪",p:10,l:10,g:30,cal:240},
+  {id:"c008",n:"Sandwich poulet crudités",c:"plat",e:"🥪",p:14,l:8,g:28,cal:240},
+  {id:"c009",n:"Sandwich thon mayonnaise",c:"plat",e:"🥪",p:13,l:15,g:25,cal:275},
+  {id:"c010",n:"Blanquette de veau",c:"plat",e:"🍲",p:15,l:10,g:8,cal:175},
+  {id:"c011",n:"Bourguignon",c:"plat",e:"🍲",p:18,l:12,g:5,cal:200},
+  {id:"c012",n:"Pot-au-feu",c:"plat",e:"🍲",p:15,l:5,g:8,cal:130},
+  {id:"c013",n:"Hachis parmentier",c:"plat",e:"🥧",p:10,l:8,g:15,cal:170},
+  {id:"c014",n:"Cassoulet",c:"plat",e:"🍲",p:12,l:15,g:18,cal:250},
+  {id:"c015",n:"Choucroute garnie",c:"plat",e:"🍲",p:15,l:20,g:8,cal:275},
+  {id:"c016",n:"Tartiflette",c:"plat",e:"🥧",p:10,l:20,g:15,cal:280},
+  {id:"c017",n:"Raclette (avec pommes de terre et charcuterie)",c:"plat",e:"🧀",p:20,l:25,g:15,cal:380},
+  {id:"c018",n:"Fondue savoyarde",c:"plat",e:"🧀",p:25,l:28,g:3,cal:380},
+  {id:"c019",n:"Gratin de chou-fleur",c:"plat",e:"🥦",p:6,l:8,g:8,cal:140},
+  {id:"c020",n:"Gratin de courgettes",c:"plat",e:"🟢",p:5,l:7,g:6,cal:115},
+  {id:"c021",n:"Poulet basquaise",c:"plat",e:"🍗",p:22,l:8,g:6,cal:180},
+  {id:"c022",n:"Bouillabaisse",c:"plat",e:"🐟",p:18,l:5,g:5,cal:140},
+  {id:"c023",n:"Moules frites",c:"plat",e:"🦪",p:12,l:10,g:30,cal:260},
+  {id:"c024",n:"Cuisses de grenouille",c:"plat",e:"🐸",p:17,l:0.5,g:0,cal:75},
+  {id:"c025",n:"Escargots au beurre (12)",c:"plat",e:"🐌",p:10,l:20,g:3,cal:240},
+
+  // ========== SALADES COMPOSÉES (10) ==========
+  {id:"c100",n:"Salade César (poulet)",c:"plat",e:"🥗",p:12,l:10,g:5,cal:160},
+  {id:"c101",n:"Salade niçoise",c:"plat",e:"🥗",p:10,l:7,g:7,cal:135},
+  {id:"c102",n:"Salade lyonnaise (lardons-oeuf)",c:"plat",e:"🥗",p:10,l:15,g:3,cal:195},
+  {id:"c103",n:"Salade périgourdine (foies, gésiers)",c:"plat",e:"🥗",p:13,l:15,g:4,cal:215},
+  {id:"c104",n:"Salade de lentilles chèvre",c:"plat",e:"🥗",p:9,l:8,g:15,cal:165},
+  {id:"c105",n:"Salade de riz thon",c:"plat",e:"🥗",p:8,l:5,g:25,cal:175},
+  {id:"c106",n:"Salade de pâtes pesto",c:"plat",e:"🥗",p:6,l:10,g:25,cal:205},
+  {id:"c107",n:"Taboulé libanais",c:"plat",e:"🥗",p:3,l:5,g:22,cal:150},
+  {id:"c108",n:"Salade grecque (feta-olives)",c:"plat",e:"🥗",p:6,l:12,g:5,cal:155},
+  {id:"c109",n:"Salade quinoa avocat",c:"plat",e:"🥗",p:5,l:8,g:18,cal:170},
+
+  // ========== PETITS-DÉJEUNERS VARIÉS (15) ==========
+  {id:"c200",n:"Porridge avoine lait (prêt)",c:"plat",e:"🥣",p:6,l:4,g:22,cal:155},
+  {id:"c201",n:"Porridge avoine eau (prêt)",c:"plat",e:"🥣",p:5,l:3,g:20,cal:125},
+  {id:"c202",n:"Bowl cake (oeuf-avoine-banane)",c:"plat",e:"🥣",p:12,l:8,g:25,cal:220},
+  {id:"c203",n:"Smoothie banane-fraise",c:"plat",e:"🥤",p:2,l:0.5,g:18,cal:85},
+  {id:"c204",n:"Smoothie vert (épinards-pomme)",c:"plat",e:"🥤",p:2,l:0.5,g:10,cal:55},
+  {id:"c205",n:"Açaï bowl",c:"plat",e:"🥣",p:5,l:5,g:25,cal:170},
+  {id:"c206",n:"Chia pudding",c:"plat",e:"🥣",p:6,l:9,g:15,cal:170},
+  {id:"c207",n:"Overnight oats",c:"plat",e:"🥣",p:7,l:5,g:25,cal:175},
+  {id:"c208",n:"Pancakes (2)",c:"plat",e:"🥞",p:6,l:8,g:30,cal:220},
+  {id:"c209",n:"Pancakes protéinés (2)",c:"plat",e:"🥞",p:18,l:5,g:20,cal:205},
+  {id:"c210",n:"Crêpes (1 nature)",c:"plat",e:"🥞",p:5,l:8,g:25,cal:190},
+  {id:"c211",n:"Gaufre (1)",c:"plat",e:"🧇",p:7,l:15,g:40,cal:320},
+  {id:"c212",n:"Tartine pain complet-beurre-confiture",c:"plat",e:"🍞",p:5,l:8,g:40,cal:250},
+  {id:"c213",n:"Tartine avocat-oeuf poché",c:"plat",e:"🥑",p:10,l:15,g:20,cal:250},
+  {id:"c214",n:"Toast fromage blanc-fruits rouges",c:"plat",e:"🍞",p:9,l:2,g:30,cal:175},
+
+  // ========== PAINS & VIENNOISERIES SUPPLÉMENTAIRES (10) ==========
+  {id:"c300",n:"Pain bagnat",c:"pain",e:"🥪",p:6,l:4,g:45,cal:245},
+  {id:"c301",n:"Baguette tradition",c:"pain",e:"🥖",p:8.5,l:1.2,g:52,cal:260},
+  {id:"c302",n:"Pain au levain",c:"pain",e:"🍞",p:9,l:1.5,g:48,cal:245},
+  {id:"c303",n:"Pain sans gluten",c:"pain",e:"🍞",p:3,l:5,g:55,cal:280},
+  {id:"c304",n:"Pain pita",c:"pain",e:"🫓",p:8,l:1.5,g:55,cal:275},
+  {id:"c305",n:"Wrap (1)",c:"pain",e:"🌯",p:8,l:7,g:50,cal:290},
+  {id:"c306",n:"Chausson aux pommes",c:"pain",e:"🥐",p:5,l:18,g:40,cal:335},
+  {id:"c307",n:"Pain aux raisins",c:"pain",e:"🥐",p:7,l:14,g:45,cal:325},
+  {id:"c308",n:"Croissant aux amandes",c:"pain",e:"🥐",p:9,l:26,g:40,cal:445},
+  {id:"c309",n:"Pain brioché au lait",c:"pain",e:"🍞",p:10,l:10,g:50,cal:320},
+
+  // ========== PLATS DU MONDE (25) ==========
+  {id:"c400",n:"Sushi saumon (2 pièces)",c:"plat",e:"🍣",p:6,l:2,g:18,cal:120},
+  {id:"c401",n:"Sushi thon (2 pièces)",c:"plat",e:"🍣",p:7,l:0.5,g:18,cal:105},
+  {id:"c402",n:"Maki saumon-avocat (6)",c:"plat",e:"🍣",p:6,l:4,g:22,cal:155},
+  {id:"c403",n:"Sashimi saumon (5)",c:"plat",e:"🐟",p:20,l:13,g:0,cal:200},
+  {id:"c404",n:"Poke bowl saumon",c:"plat",e:"🥗",p:15,l:8,g:25,cal:230},
+  {id:"c405",n:"Bobun (bol vietnamien)",c:"plat",e:"🍜",p:10,l:5,g:35,cal:220},
+  {id:"c406",n:"Soupe pho",c:"plat",e:"🍜",p:8,l:3,g:20,cal:140},
+  {id:"c407",n:"Nems (2)",c:"plat",e:"🥟",p:6,l:10,g:20,cal:190},
+  {id:"c408",n:"Rouleaux de printemps (2)",c:"plat",e:"🥟",p:6,l:2,g:25,cal:140},
+  {id:"c409",n:"Poulet curry",c:"plat",e:"🍛",p:18,l:10,g:5,cal:185},
+  {id:"c410",n:"Poulet tikka masala",c:"plat",e:"🍛",p:17,l:12,g:6,cal:205},
+  {id:"c411",n:"Dahl de lentilles",c:"plat",e:"🍛",p:8,l:3,g:18,cal:135},
+  {id:"c412",n:"Naan nature",c:"pain",e:"🫓",p:8,l:7,g:45,cal:275},
+  {id:"c413",n:"Couscous poulet-merguez",c:"plat",e:"🍛",p:14,l:10,g:28,cal:255},
+  {id:"c414",n:"Tajine poulet-citron",c:"plat",e:"🍛",p:17,l:8,g:8,cal:170},
+  {id:"c415",n:"Chili con carne",c:"plat",e:"🌶️",p:12,l:6,g:15,cal:160},
+  {id:"c416",n:"Burrito au boeuf",c:"plat",e:"🌯",p:12,l:10,g:30,cal:265},
+  {id:"c417",n:"Fajitas poulet",c:"plat",e:"🌯",p:14,l:8,g:25,cal:230},
+  {id:"c418",n:"Tacos au boeuf (1)",c:"plat",e:"🌮",p:10,l:12,g:20,cal:225},
+  {id:"c419",n:"Guacamole",c:"plat",e:"🥑",p:2,l:15,g:7,cal:170},
+  {id:"c420",n:"Houmous",c:"plat",e:"🥙",p:8,l:10,g:15,cal:170},
+  {id:"c421",n:"Falafel (3 boules)",c:"plat",e:"🥙",p:7,l:10,g:20,cal:195},
+  {id:"c422",n:"Kebab assiette",c:"plat",e:"🥙",p:18,l:12,g:25,cal:270},
+  {id:"c423",n:"Gyros grec",c:"plat",e:"🥙",p:15,l:10,g:25,cal:240},
+  {id:"c424",n:"Pad thaï",c:"plat",e:"🍜",p:10,l:8,g:40,cal:270},
+
+  // ========== BURGERS & FAST-FOOD (10) ==========
+  {id:"c500",n:"Burger maison (boeuf 5%)",c:"plat",e:"🍔",p:18,l:12,g:25,cal:280},
+  {id:"c501",n:"Burger poulet grillé",c:"plat",e:"🍔",p:20,l:8,g:25,cal:250},
+  {id:"c502",n:"Burger végétarien",c:"plat",e:"🍔",p:10,l:10,g:30,cal:245},
+  {id:"c503",n:"Cheeseburger (fast-food)",c:"plat",e:"🍔",p:15,l:13,g:28,cal:280},
+  {id:"c504",n:"Big Mac style",c:"plat",e:"🍔",p:12,l:17,g:25,cal:295},
+  {id:"c505",n:"Nuggets de poulet (5)",c:"plat",e:"🍗",p:15,l:18,g:12,cal:275},
+  {id:"c506",n:"Hot dog",c:"plat",e:"🌭",p:10,l:15,g:25,cal:270},
+  {id:"c507",n:"Kebab en sandwich",c:"plat",e:"🥙",p:15,l:15,g:30,cal:305},
+  {id:"c508",n:"Fish and chips",c:"plat",e:"🐟",p:12,l:15,g:30,cal:295},
+  {id:"c509",n:"Panini jambon-fromage",c:"plat",e:"🥪",p:12,l:12,g:30,cal:275},
+
+  // ========== DESSERTS & PÂTISSERIES (20) ==========
+  {id:"c600",n:"Mousse au chocolat",c:"dessert",e:"🍫",p:5,l:15,g:20,cal:240},
+  {id:"c601",n:"Tarte au citron meringuée",c:"dessert",e:"🥧",p:5,l:12,g:40,cal:290},
+  {id:"c602",n:"Tarte tatin",c:"dessert",e:"🥧",p:3,l:10,g:35,cal:245},
+  {id:"c603",n:"Tarte aux fraises",c:"dessert",e:"🥧",p:3,l:10,g:30,cal:220},
+  {id:"c604",n:"Tarte aux pommes",c:"dessert",e:"🥧",p:3,l:8,g:35,cal:220},
+  {id:"c605",n:"Éclair au chocolat",c:"dessert",e:"🍰",p:6,l:15,g:30,cal:275},
+  {id:"c606",n:"Millefeuille",c:"dessert",e:"🍰",p:5,l:20,g:35,cal:340},
+  {id:"c607",n:"Paris-Brest",c:"dessert",e:"🍩",p:8,l:25,g:35,cal:380},
+  {id:"c608",n:"Saint-Honoré",c:"dessert",e:"🍰",p:5,l:18,g:40,cal:335},
+  {id:"c609",n:"Opéra",c:"dessert",e:"🍰",p:7,l:25,g:45,cal:415},
+  {id:"c610",n:"Fondant au chocolat",c:"dessert",e:"🍫",p:6,l:22,g:35,cal:360},
+  {id:"c611",n:"Brownie",c:"dessert",e:"🍫",p:5,l:22,g:40,cal:380},
+  {id:"c612",n:"Cookie chocolat (1)",c:"dessert",e:"🍪",p:4,l:22,g:55,cal:440},
+  {id:"c613",n:"Muffin chocolat",c:"dessert",e:"🧁",p:5,l:18,g:45,cal:370},
+  {id:"c614",n:"Cupcake",c:"dessert",e:"🧁",p:4,l:15,g:48,cal:345},
+  {id:"c615",n:"Macaron (1)",c:"dessert",e:"🍬",p:5,l:15,g:55,cal:380},
+  {id:"c616",n:"Madeleine (1)",c:"dessert",e:"🍪",p:5,l:20,g:50,cal:395},
+  {id:"c617",n:"Crème brûlée",c:"dessert",e:"🍮",p:4,l:18,g:20,cal:260},
+  {id:"c618",n:"Flan pâtissier",c:"dessert",e:"🍮",p:5,l:8,g:28,cal:205},
+  {id:"c619",n:"Riz au lait",c:"dessert",e:"🍚",p:4,l:3,g:25,cal:145},
+
+  // ========== GLACES (5) ==========
+  {id:"c700",n:"Glace vanille (1 boule)",c:"dessert",e:"🍦",p:4,l:10,g:22,cal:200},
+  {id:"c701",n:"Glace chocolat (1 boule)",c:"dessert",e:"🍨",p:4,l:11,g:24,cal:215},
+  {id:"c702",n:"Glace fraise (1 boule)",c:"dessert",e:"🍦",p:3,l:8,g:23,cal:185},
+  {id:"c703",n:"Sorbet citron (1 boule)",c:"dessert",e:"🍧",p:0.5,l:0,g:28,cal:115},
+  {id:"c704",n:"Magnum classique",c:"dessert",e:"🍦",p:4,l:20,g:30,cal:320},
+
+  // ========== CHOCOLATS & CONFISERIES (10) ==========
+  {id:"c800",n:"Chocolat noir 70%",c:"dessert",e:"🍫",p:8,l:40,g:30,cal:540},
+  {id:"c801",n:"Chocolat au lait",c:"dessert",e:"🍫",p:8,l:30,g:55,cal:535},
+  {id:"c802",n:"Chocolat blanc",c:"dessert",e:"🍫",p:6,l:30,g:58,cal:540},
+  {id:"c803",n:"Bounty",c:"dessert",e:"🍫",p:4,l:25,g:57,cal:485},
+  {id:"c804",n:"Kinder Bueno",c:"dessert",e:"🍫",p:10,l:38,g:50,cal:570},
+  {id:"c805",n:"Snickers (barre)",c:"dessert",e:"🍫",p:8,l:24,g:60,cal:490},
+  {id:"c806",n:"Mars (barre)",c:"dessert",e:"🍫",p:4,l:17,g:70,cal:450},
+  {id:"c807",n:"Twix (1 barrette)",c:"dessert",e:"🍫",p:4,l:24,g:65,cal:495},
+  {id:"c808",n:"Bonbons gélifiés",c:"dessert",e:"🍬",p:6,l:0,g:80,cal:340},
+  {id:"c809",n:"Guimauve",c:"dessert",e:"🍬",p:2,l:0,g:80,cal:325},
+
+  // ========== BISCUITS & APÉROS (15) ==========
+  {id:"d000",n:"Biscuit sec (petit LU)",c:"dessert",e:"🍪",p:7,l:15,g:70,cal:440},
+  {id:"d001",n:"Spéculoos",c:"dessert",e:"🍪",p:5,l:20,g:70,cal:470},
+  {id:"d002",n:"Palet breton",c:"dessert",e:"🍪",p:5,l:25,g:60,cal:495},
+  {id:"d003",n:"Sablé",c:"dessert",e:"🍪",p:5,l:20,g:65,cal:465},
+  {id:"d004",n:"Tuile amandes",c:"dessert",e:"🍪",p:8,l:30,g:50,cal:500},
+  {id:"d005",n:"Chips nature",c:"snack",e:"🍟",p:6,l:35,g:50,cal:540},
+  {id:"d006",n:"Chips allégées",c:"snack",e:"🍟",p:7,l:22,g:60,cal:470},
+  {id:"d007",n:"Cacahuètes",c:"snack",e:"🥜",p:27,l:50,g:16,cal:600},
+  {id:"d008",n:"Pistaches",c:"snack",e:"🥜",p:21,l:50,g:18,cal:585},
+  {id:"d009",n:"Noix de cajou",c:"snack",e:"🥜",p:18,l:45,g:28,cal:555},
+  {id:"d010",n:"Popcorn nature",c:"snack",e:"🍿",p:11,l:5,g:75,cal:380},
+  {id:"d011",n:"Popcorn sucré",c:"snack",e:"🍿",p:7,l:8,g:80,cal:430},
+  {id:"d012",n:"Bretzel salé",c:"snack",e:"🥨",p:10,l:3,g:80,cal:385},
+  {id:"d013",n:"Tuc (biscuit salé)",c:"snack",e:"🍪",p:8,l:22,g:65,cal:485},
+  {id:"d014",n:"Olives apéro (30g)",c:"snack",e:"🫒",p:1,l:15,g:4,cal:150},
+
+  // ========== CONDIMENTS & SAUCES (20) ==========
+  {id:"d100",n:"Mayonnaise",c:"huile",e:"🟡",p:1,l:75,g:1,cal:680},
+  {id:"d101",n:"Mayonnaise allégée",c:"huile",e:"🟡",p:1,l:35,g:5,cal:325},
+  {id:"d102",n:"Moutarde Dijon",c:"condiment",e:"🟡",p:5,l:5,g:5,cal:90},
+  {id:"d103",n:"Moutarde à l'ancienne",c:"condiment",e:"🟡",p:6,l:6,g:5,cal:100},
+  {id:"d104",n:"Ketchup",c:"condiment",e:"🍅",p:1,l:0.2,g:25,cal:105},
+  {id:"d105",n:"Sauce barbecue",c:"condiment",e:"🔴",p:1,l:1,g:35,cal:165},
+  {id:"d106",n:"Sauce soja",c:"condiment",e:"🍶",p:8,l:0,g:5,cal:55},
+  {id:"d107",n:"Sauce soja salée réduite",c:"condiment",e:"🍶",p:8,l:0,g:3,cal:40},
+  {id:"d108",n:"Sauce tomate en bocal",c:"condiment",e:"🍅",p:1.5,l:2,g:7,cal:55},
+  {id:"d109",n:"Pesto vert",c:"condiment",e:"🌿",p:5,l:45,g:5,cal:450},
+  {id:"d110",n:"Pesto rouge",c:"condiment",e:"🍅",p:4,l:35,g:8,cal:370},
+  {id:"d111",n:"Sauce béchamel",c:"condiment",e:"🥛",p:4,l:8,g:10,cal:135},
+  {id:"d112",n:"Sauce hollandaise",c:"condiment",e:"🥛",p:4,l:25,g:2,cal:255},
+  {id:"d113",n:"Vinaigre balsamique",c:"condiment",e:"🍶",p:0.5,l:0,g:18,cal:75},
+  {id:"d114",n:"Vinaigre de vin",c:"condiment",e:"🍶",p:0,l:0,g:1,cal:20},
+  {id:"d115",n:"Vinaigrette maison",c:"condiment",e:"🥗",p:0,l:40,g:2,cal:370},
+  {id:"d116",n:"Harissa",c:"condiment",e:"🌶️",p:3,l:10,g:15,cal:155},
+  {id:"d117",n:"Tabasco",c:"condiment",e:"🌶️",p:1,l:0,g:1,cal:10},
+  {id:"d118",n:"Raifort",c:"condiment",e:"🌿",p:2,l:1,g:11,cal:60},
+  {id:"d119",n:"Wasabi",c:"condiment",e:"🌿",p:5,l:1,g:25,cal:130},
+
+  // ========== OLÉAGINEUX SUPPLÉMENTAIRES (10) ==========
+  {id:"d200",n:"Noix de pécan",c:"oleagineux",e:"🌰",p:9,l:72,g:14,cal:690},
+  {id:"d201",n:"Noix du Brésil",c:"oleagineux",e:"🌰",p:14,l:66,g:12,cal:660},
+  {id:"d202",n:"Noix de macadamia",c:"oleagineux",e:"🌰",p:8,l:75,g:14,cal:720},
+  {id:"d203",n:"Graines de tournesol",c:"oleagineux",e:"🌻",p:21,l:51,g:20,cal:585},
+  {id:"d204",n:"Graines de courge",c:"oleagineux",e:"🎃",p:30,l:49,g:11,cal:560},
+  {id:"d205",n:"Graines de sésame",c:"oleagineux",e:"🌱",p:18,l:50,g:23,cal:575},
+  {id:"d206",n:"Graines de lin",c:"oleagineux",e:"🌱",p:18,l:42,g:29,cal:535},
+  {id:"d207",n:"Beurre de cacahuète",c:"oleagineux",e:"🥜",p:25,l:50,g:20,cal:600},
+  {id:"d208",n:"Purée d'amande",c:"oleagineux",e:"🌰",p:21,l:55,g:10,cal:620},
+  {id:"d209",n:"Purée de noisette",c:"oleagineux",e:"🌰",p:15,l:60,g:8,cal:625},
+
+  // ========== CÉRÉALES & BARRES (10) ==========
+  {id:"d300",n:"Cruesli",c:"cereale",e:"🥣",p:9,l:10,g:65,cal:385},
+  {id:"d301",n:"Special K",c:"cereale",e:"🥣",p:15,l:1.5,g:75,cal:375},
+  {id:"d302",n:"Chocapic",c:"cereale",e:"🥣",p:7,l:4,g:78,cal:385},
+  {id:"d303",n:"Frosties",c:"cereale",e:"🥣",p:5,l:1,g:88,cal:380},
+  {id:"d304",n:"Lion céréales",c:"cereale",e:"🥣",p:5,l:6,g:78,cal:400},
+  {id:"d305",n:"Barre de céréales Special K",c:"collation",e:"🍫",p:6,l:3,g:72,cal:360},
+  {id:"d306",n:"Barre Grany",c:"collation",e:"🍫",p:7,l:16,g:65,cal:430},
+  {id:"d307",n:"Barre Nature Valley",c:"collation",e:"🍫",p:8,l:15,g:65,cal:425},
+  {id:"d308",n:"Compote à boire",c:"collation",e:"🍎",p:0.3,l:0.1,g:15,cal:60},
+  {id:"d309",n:"Boudoir (biscuit)",c:"dessert",e:"🍪",p:7,l:5,g:75,cal:385},
+
+  // ========== BOISSONS NON ALCOOLISÉES (15) ==========
+  {id:"d400",n:"Eau plate",c:"boisson",e:"💧",p:0,l:0,g:0,cal:0},
+  {id:"d401",n:"Eau gazeuse",c:"boisson",e:"💧",p:0,l:0,g:0,cal:0},
+  {id:"d402",n:"Café noir",c:"boisson",e:"☕",p:0,l:0,g:0,cal:2},
+  {id:"d403",n:"Café au lait",c:"boisson",e:"☕",p:3,l:3,g:5,cal:55},
+  {id:"d404",n:"Cappuccino",c:"boisson",e:"☕",p:3,l:3,g:5,cal:60},
+  {id:"d405",n:"Latte",c:"boisson",e:"☕",p:5,l:5,g:8,cal:95},
+  {id:"d406",n:"Thé nature",c:"boisson",e:"🍵",p:0,l:0,g:0,cal:1},
+  {id:"d407",n:"Thé vert",c:"boisson",e:"🍵",p:0,l:0,g:0,cal:1},
+  {id:"d408",n:"Coca-Cola",c:"boisson",e:"🥤",p:0,l:0,g:11,cal:42},
+  {id:"d409",n:"Coca-Cola Zero",c:"boisson",e:"🥤",p:0,l:0,g:0,cal:0},
+  {id:"d410",n:"Orangina",c:"boisson",e:"🥤",p:0,l:0,g:10,cal:42},
+  {id:"d411",n:"Jus d'orange frais",c:"boisson",e:"🍊",p:0.7,l:0,g:10,cal:45},
+  {id:"d412",n:"Jus de pomme",c:"boisson",e:"🍎",p:0.2,l:0,g:11,cal:46},
+  {id:"d413",n:"Smoothie fruits du commerce",c:"boisson",e:"🥤",p:1,l:0.3,g:15,cal:65},
+  {id:"d414",n:"Red Bull",c:"boisson",e:"🥤",p:0,l:0,g:11,cal:45},
+
+  // ========== ALCOOLS (15) - Valeurs moyennes indicatives ==========
+  {id:"d500",n:"Vin rouge (verre 125ml)",c:"alcool",e:"🍷",p:0.1,l:0,g:0.5,cal:85},
+  {id:"d501",n:"Vin blanc sec (verre 125ml)",c:"alcool",e:"🥂",p:0.1,l:0,g:1,cal:82},
+  {id:"d502",n:"Vin blanc doux (verre 125ml)",c:"alcool",e:"🥂",p:0.1,l:0,g:5,cal:110},
+  {id:"d503",n:"Vin rosé (verre 125ml)",c:"alcool",e:"🍷",p:0.1,l:0,g:1,cal:85},
+  {id:"d504",n:"Champagne (flûte 100ml)",c:"alcool",e:"🥂",p:0.2,l:0,g:2,cal:80},
+  {id:"d505",n:"Bière blonde (demi 250ml)",c:"alcool",e:"🍺",p:1,l:0,g:9,cal:110},
+  {id:"d506",n:"Bière brune (demi 250ml)",c:"alcool",e:"🍺",p:1,l:0,g:10,cal:130},
+  {id:"d507",n:"Bière sans alcool (250ml)",c:"alcool",e:"🍺",p:1,l:0,g:5,cal:55},
+  {id:"d508",n:"Whisky (dose 40ml)",c:"alcool",e:"🥃",p:0,l:0,g:0,cal:95},
+  {id:"d509",n:"Vodka (dose 40ml)",c:"alcool",e:"🥃",p:0,l:0,g:0,cal:90},
+  {id:"d510",n:"Rhum (dose 40ml)",c:"alcool",e:"🥃",p:0,l:0,g:0,cal:95},
+  {id:"d511",n:"Gin tonic",c:"alcool",e:"🍸",p:0,l:0,g:8,cal:160},
+  {id:"d512",n:"Mojito",c:"alcool",e:"🍹",p:0,l:0,g:20,cal:220},
+  {id:"d513",n:"Margarita",c:"alcool",e:"🍹",p:0,l:0,g:10,cal:170},
+  {id:"d514",n:"Spritz",c:"alcool",e:"🍹",p:0,l:0,g:15,cal:145},
+
+  // ========== PLATS VÉGÉTARIENS (10) ==========
+  {id:"d600",n:"Steak de soja",c:"plat",e:"⬜",p:17,l:8,g:6,cal:160},
+  {id:"d601",n:"Galette végétale (pois chiches)",c:"plat",e:"⬜",p:10,l:5,g:20,cal:155},
+  {id:"d602",n:"Seitan",c:"legumineuse",e:"⬜",p:25,l:2,g:14,cal:180},
+  {id:"d603",n:"Tempeh",c:"legumineuse",e:"⬜",p:19,l:11,g:9,cal:195},
+  {id:"d604",n:"Tofu soyeux",c:"legumineuse",e:"⬜",p:5,l:2,g:2,cal:45},
+  {id:"d605",n:"Tofu fumé",c:"legumineuse",e:"⬜",p:17,l:8,g:2,cal:140},
+  {id:"d606",n:"Velouté de légumes",c:"plat",e:"🥣",p:2,l:2,g:8,cal:60},
+  {id:"d607",n:"Soupe à l'oignon gratinée",c:"plat",e:"🥣",p:5,l:8,g:10,cal:135},
+  {id:"d608",n:"Gaspacho",c:"plat",e:"🥣",p:1,l:2,g:5,cal:40},
+  {id:"d609",n:"Buddha bowl quinoa",c:"plat",e:"🥗",p:8,l:10,g:20,cal:195},
+
+  // ========== COLLATIONS HP SUPPLÉMENTAIRES (5) ==========
+  {id:"d700",n:"Levovia Gaufre protéinée",c:"collation",e:"🧇",p:30,l:8,g:35,cal:320},
+  {id:"d701",n:"Levovia Crispy Caramel",c:"collation",e:"🍫",p:25,l:10,g:40,cal:350},
+  {id:"d702",n:"Levovia Dessert Chocolat",c:"collation",e:"🍮",p:28,l:3,g:15,cal:200},
+  {id:"d703",n:"Pudding protéiné Levovia",c:"collation",e:"🍮",p:30,l:4,g:12,cal:200},
+  {id:"d704",n:"Shake isolat whey (30g poudre + eau)",c:"collation",e:"🥤",p:28,l:0.5,g:1,cal:120},
 ];
 
 // Catégories affichables avec emoji et label
@@ -314,18 +749,24 @@ const ALIMENTS_CATS = [
   {k:"poisson",l:"Poissons",e:"🐟"},
   {k:"fruitsmer",l:"Fruits de mer",e:"🦐"},
   {k:"oeuf",l:"Œufs",e:"🥚"},
-  {k:"laitage",l:"Laitages 0%",e:"🥛"},
+  {k:"laitage",l:"Laitages & Laits",e:"🥛"},
   {k:"fromage",l:"Fromages",e:"🧀"},
   {k:"legume",l:"Légumes cuits",e:"🥦"},
   {k:"crudite",l:"Crudités",e:"🥗"},
-  {k:"feculent",l:"Féculents",e:"🍚"},
-  {k:"legumineuse",l:"Légumineuses",e:"🫘"},
+  {k:"feculent",l:"Féculents & Pâtes",e:"🍚"},
+  {k:"legumineuse",l:"Légumineuses & Végétal",e:"🫘"},
   {k:"fruit",l:"Fruits",e:"🍎"},
-  {k:"pain",l:"Pains",e:"🍞"},
+  {k:"pain",l:"Pains & Viennoiseries",e:"🍞"},
   {k:"cereale",l:"Céréales PDJ",e:"🥣"},
+  {k:"plat",l:"Plats préparés",e:"🍽️"},
   {k:"huile",l:"Matières grasses",e:"🫒"},
-  {k:"oleagineux",l:"Oléagineux",e:"🌰"},
-  {k:"collation",l:"Collations HP",e:"🍫"},
+  {k:"oleagineux",l:"Oléagineux & Graines",e:"🌰"},
+  {k:"condiment",l:"Condiments & Sauces",e:"🌿"},
+  {k:"snack",l:"Snacks & Apéro",e:"🍿"},
+  {k:"dessert",l:"Desserts & Sucreries",e:"🍫"},
+  {k:"collation",l:"Collations HP",e:"💪"},
+  {k:"boisson",l:"Boissons",e:"🥤"},
+  {k:"alcool",l:"Alcools",e:"🍷"},
 ];
 
 // Fonction de recherche optimisée (normalisée, insensible aux accents)
@@ -336,6 +777,488 @@ function searchAliments(query){
     const n=a.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
     return n.includes(q);
   }).slice(0,30); // Max 30 résultats
+}
+
+// === LE DÉFI 3 SEMAINES - Bibliothèque de recettes STIMBODY ===
+// Recettes inspirées des principes nutritionnels universels (perte de gras, équilibre P/L/G)
+// Chaque recette pointe vers ALIMENTS_DB pour calcul auto des valeurs nutritionnelles
+// Format: {id, n: nom, e: emoji, semaine: 1-3, jour, repas: matin/midi/coll/soir, duree (min), 
+//          difficulte, ingredients: [{alimentId, qty, label}], preparation: [étapes], conseil}
+
+const RECETTES_DEFI = [
+  // ========== SEMAINE 1 - LUNDI (Protéines + Légumes) ==========
+  {
+    id:"r001", n:"Omelette champignons", e:"🍳",
+    semaine:1, jour:"Lundi", repas:"matin", duree:10, difficulte:"Facile",
+    ingredients:[
+      {alimentId:"a200", qty:120, label:"2 œufs entiers"},
+      {alimentId:"a202", qty:66, label:"2 blancs d'œuf"},
+      {alimentId:"a310", qty:100, label:"100g champignons de Paris"}
+    ],
+    preparation:[
+      "Émincer finement les champignons",
+      "Les faire suer 5 min à sec dans une poêle anti-adhésive pour évacuer l'eau",
+      "Battre les œufs entiers avec les blancs, sel poivre",
+      "Verser sur les champignons, cuire à feu doux pour garder le moelleux"
+    ],
+    conseil:"Cuisson lente = œufs moelleux. Ajoute du persil ciselé pour la fraîcheur."
+  },
+  {
+    id:"r002", n:"Salade thon fraîche", e:"🥗",
+    semaine:1, jour:"Lundi", repas:"midi", duree:10, difficulte:"Facile",
+    ingredients:[
+      {alimentId:"a113", qty:120, label:"120g thon au naturel"},
+      {alimentId:"a400", qty:80, label:"80g salade verte"},
+      {alimentId:"a405", qty:100, label:"100g tomates"},
+      {alimentId:"a409", qty:80, label:"80g carottes râpées"},
+      {alimentId:"a800", qty:5, label:"1 c.à.c huile d'olive"}
+    ],
+    preparation:[
+      "Égoutter le thon",
+      "Laver et essorer la salade",
+      "Couper les tomates en quartiers",
+      "Mélanger le tout, ajouter citron + huile juste avant de servir"
+    ],
+    conseil:"Le citron rehausse les saveurs sans calories. Évite les vinaigrettes industrielles."
+  },
+  {
+    id:"r003", n:"Œuf dur & amandes", e:"🥚",
+    semaine:1, jour:"Lundi", repas:"coll", duree:12, difficulte:"Facile",
+    ingredients:[
+      {alimentId:"a201", qty:60, label:"1 œuf dur"},
+      {alimentId:"a811", qty:15, label:"15g amandes (≈12)"}
+    ],
+    preparation:[
+      "Faire bouillir l'œuf 10 min",
+      "Refroidir sous eau froide pour faciliter l'écalage",
+      "Servir avec les amandes nature (non salées)"
+    ],
+    conseil:"Combo parfait protéines + bons lipides pour tenir jusqu'au dîner."
+  },
+  {
+    id:"r004", n:"Poulet grillé légumes", e:"🍗",
+    semaine:1, jour:"Lundi", repas:"soir", duree:20, difficulte:"Facile",
+    ingredients:[
+      {alimentId:"a002", qty:120, label:"120g blanc de poulet"},
+      {alimentId:"a300", qty:150, label:"150g brocolis"},
+      {alimentId:"a310", qty:100, label:"100g champignons"}
+    ],
+    preparation:[
+      "Assaisonner le poulet (paprika, ail, sel) et le griller à la poêle 5-6 min par face",
+      "Cuire les brocolis à la vapeur 8 min (ils doivent rester croquants)",
+      "Faire revenir les champignons 3 min à feu vif",
+      "Servir bien chaud avec un filet de citron"
+    ],
+    conseil:"Coupe le poulet en lamelles avant cuisson pour gagner du temps."
+  },
+
+  // ========== SEMAINE 1 - MARDI ==========
+  {
+    id:"r005", n:"Pancakes protéinés fruits rouges", e:"🥞",
+    semaine:1, jour:"Mardi", repas:"matin", duree:12, difficulte:"Facile",
+    ingredients:[
+      {alimentId:"a200", qty:60, label:"1 œuf"},
+      {alimentId:"a207", qty:50, label:"50g fromage blanc 0%"},
+      {alimentId:"a512", qty:20, label:"20g flocons d'avoine"},
+      {alimentId:"a608", qty:80, label:"80g fruits rouges"}
+    ],
+    preparation:[
+      "Mixer œuf + fromage blanc + avoine pour avoir une pâte lisse",
+      "Faire chauffer une poêle anti-adhésive",
+      "Verser de petites louches, cuire 1 min par face",
+      "Servir avec les fruits rouges au-dessus"
+    ],
+    conseil:"Sans farine ! Les flocons d'avoine remplacent et apportent des fibres."
+  },
+  {
+    id:"r006", n:"Saumon fumé crudités", e:"🐟",
+    semaine:1, jour:"Mardi", repas:"midi", duree:10, difficulte:"Facile",
+    ingredients:[
+      {alimentId:"a101", qty:60, label:"60g saumon fumé"},
+      {alimentId:"a207", qty:30, label:"30g fromage blanc 0% (sauce)"},
+      {alimentId:"a409", qty:80, label:"80g carottes râpées"},
+      {alimentId:"a407", qty:70, label:"70g concombre"}
+    ],
+    preparation:[
+      "Mélanger fromage blanc + jus de citron + aneth pour la sauce",
+      "Servir le saumon fumé en lamelles",
+      "Disposer les crudités à côté",
+      "Napper de sauce au moment de manger"
+    ],
+    conseil:"Le saumon fumé est riche en oméga-3. Vérifie qu'il soit pauvre en sel."
+  },
+  {
+    id:"r007", n:"Pomme & amandes", e:"🍎",
+    semaine:1, jour:"Mardi", repas:"coll", duree:2, difficulte:"Facile",
+    ingredients:[
+      {alimentId:"a600", qty:120, label:"1 pomme (≈120g)"},
+      {alimentId:"a811", qty:15, label:"15g amandes"}
+    ],
+    preparation:[
+      "Couper la pomme en quartiers",
+      "Servir avec une poignée d'amandes nature"
+    ],
+    conseil:"Mâche bien la pomme (la satiété arrive avec la mastication)."
+  },
+  {
+    id:"r008", n:"Boulettes bœuf sauce tomate aubergine", e:"🍝",
+    semaine:1, jour:"Mardi", repas:"soir", duree:35, difficulte:"Moyen",
+    ingredients:[
+      {alimentId:"a008", qty:120, label:"120g bœuf haché 5%"},
+      {alimentId:"a304", qty:150, label:"150g aubergine"},
+      {alimentId:"d108", qty:100, label:"100g sauce tomate"}
+    ],
+    preparation:[
+      "Couper l'aubergine en cubes, cuire au four 25 min à 200°C",
+      "Former des boulettes de bœuf avec sel/poivre/herbes",
+      "Cuire les boulettes à la poêle 8 min (les retourner régulièrement)",
+      "Ajouter la sauce tomate, mijoter 5 min, servir avec l'aubergine"
+    ],
+    conseil:"Bœuf 5% MG = protéines maximales, gras minimal."
+  },
+
+  // ========== SEMAINE 1 - MERCREDI ==========
+  {
+    id:"r009", n:"Wasa avocat œuf", e:"🥑",
+    semaine:1, jour:"Mercredi", repas:"matin", duree:10, difficulte:"Facile",
+    ingredients:[
+      {alimentId:"a706", qty:30, label:"30g pain Wasa (≈3 tranches)"},
+      {alimentId:"a414", qty:50, label:"50g avocat (1/4)"},
+      {alimentId:"a201", qty:60, label:"1 œuf mollet"}
+    ],
+    preparation:[
+      "Cuire l'œuf 6 min dans l'eau bouillante (mollet)",
+      "Écraser l'avocat à la fourchette avec citron + sel",
+      "Tartiner sur les Wasa, déposer l'œuf coupé en deux",
+      "Saupoudrer de paprika ou piment d'Espelette"
+    ],
+    conseil:"L'avocat se marie avec un peu de citron pour éviter qu'il noircisse."
+  },
+  {
+    id:"r010", n:"Salade quinoa thon", e:"🥗",
+    semaine:1, jour:"Mercredi", repas:"midi", duree:25, difficulte:"Facile",
+    ingredients:[
+      {alimentId:"a505", qty:120, label:"40g quinoa cru (=120g cuit)"},
+      {alimentId:"a113", qty:100, label:"100g thon au naturel"},
+      {alimentId:"a405", qty:100, label:"100g tomates"},
+      {alimentId:"a407", qty:50, label:"50g concombre"}
+    ],
+    preparation:[
+      "Cuire le quinoa 12 min dans l'eau bouillante salée",
+      "Le rincer à l'eau froide pour le refroidir",
+      "Couper les légumes en petits dés",
+      "Mélanger avec le thon égoutté et un trait de citron"
+    ],
+    conseil:"Le quinoa est une protéine végétale complète. Excellent pour la satiété."
+  },
+  {
+    id:"r011", n:"Fromage blanc & chocolat noir", e:"🍫",
+    semaine:1, jour:"Mercredi", repas:"coll", duree:1, difficulte:"Facile",
+    ingredients:[
+      {alimentId:"a207", qty:150, label:"150g fromage blanc 0%"},
+      {alimentId:"a800", qty:0, label:"Chocolat noir 70% (10g)"}
+    ],
+    preparation:[
+      "Verser le fromage blanc dans un bol",
+      "Râper ou émietter le chocolat noir au-dessus",
+      "Ajouter cannelle ou vanille en option"
+    ],
+    conseil:"Chocolat noir 70% min = polyphénols et anti-stress."
+  },
+  {
+    id:"r012", n:"Poulet haricots verts", e:"🫛",
+    semaine:1, jour:"Mercredi", repas:"soir", duree:25, difficulte:"Facile",
+    ingredients:[
+      {alimentId:"a002", qty:120, label:"120g blanc de poulet"},
+      {alimentId:"a306", qty:150, label:"150g haricots verts"}
+    ],
+    preparation:[
+      "Cuire les haricots dans l'eau bouillante salée 8 min",
+      "Les égoutter et les faire revenir 2 min avec ail haché",
+      "Griller le poulet 5-6 min par face avec épices au choix",
+      "Servir avec un filet d'huile d'olive et fleur de sel"
+    ],
+    conseil:"Les haricots verts préservent leur croquant si tu les passes à l'eau froide après cuisson."
+  },
+
+  // ========== SEMAINE 1 - JEUDI ==========
+  {
+    id:"r013", n:"Crêpes healthy avoine", e:"🥞",
+    semaine:1, jour:"Jeudi", repas:"matin", duree:15, difficulte:"Facile",
+    ingredients:[
+      {alimentId:"a200", qty:60, label:"1 œuf"},
+      {alimentId:"a512", qty:30, label:"30g flocons d'avoine"},
+      {alimentId:"b407", qty:80, label:"80ml lait demi-écrémé"}
+    ],
+    preparation:[
+      "Mixer œuf + avoine + lait pour une pâte fluide",
+      "Laisser reposer 5 min (l'avoine va gonfler)",
+      "Cuire en crêpes fines à feu moyen (1 min par face)",
+      "Servir avec un filet de miel ou des fruits frais"
+    ],
+    conseil:"Les flocons d'avoine apportent de la satiété grâce aux fibres bêta-glucanes."
+  },
+  {
+    id:"r014", n:"Lentilles saumon fumé", e:"🫘",
+    semaine:1, jour:"Jeudi", repas:"midi", duree:30, difficulte:"Facile",
+    ingredients:[
+      {alimentId:"a516", qty:180, label:"60g lentilles crues (=180g cuites)"},
+      {alimentId:"a101", qty:60, label:"60g saumon fumé"},
+      {alimentId:"a409", qty:80, label:"80g carottes"},
+      {alimentId:"a407", qty:70, label:"70g concombre"}
+    ],
+    preparation:[
+      "Cuire les lentilles 25 min dans l'eau salée non bouillante",
+      "Égoutter et laisser tiédir",
+      "Couper le saumon en lamelles, les légumes en petits dés",
+      "Mélanger le tout avec citron + huile d'olive"
+    ],
+    conseil:"Lentilles + saumon = protéines complètes + fer + oméga-3. Idéal pour les femmes."
+  },
+  {
+    id:"r015", n:"Yaourt cannelle", e:"🍶",
+    semaine:1, jour:"Jeudi", repas:"coll", duree:1, difficulte:"Facile",
+    ingredients:[
+      {alimentId:"a211", qty:125, label:"1 yaourt nature (125g)"}
+    ],
+    preparation:[
+      "Verser le yaourt dans un bol",
+      "Saupoudrer généreusement de cannelle"
+    ],
+    conseil:"La cannelle aide à réguler la glycémie. Une petite astuce nutrition simple."
+  },
+  {
+    id:"r016", n:"Omelette légumes", e:"🍳",
+    semaine:1, jour:"Jeudi", repas:"soir", duree:15, difficulte:"Facile",
+    ingredients:[
+      {alimentId:"a200", qty:120, label:"2 œufs"},
+      {alimentId:"a303", qty:75, label:"75g courgettes"},
+      {alimentId:"a305", qty:75, label:"75g poivrons"}
+    ],
+    preparation:[
+      "Couper les légumes en petits dés",
+      "Les faire revenir 7 min à la poêle (couvert)",
+      "Battre les œufs avec sel/poivre",
+      "Verser, laisser prendre, plier l'omelette"
+    ],
+    conseil:"Tu peux varier les légumes : tomates, épinards, oignons selon tes envies."
+  },
+
+  // ========== SEMAINE 1 - VENDREDI ==========
+  {
+    id:"r017", n:"Fromage blanc & fruits", e:"🥣",
+    semaine:1, jour:"Vendredi", repas:"matin", duree:3, difficulte:"Facile",
+    ingredients:[
+      {alimentId:"a207", qty:150, label:"150g fromage blanc 0%"},
+      {alimentId:"a608", qty:100, label:"100g fruits rouges"}
+    ],
+    preparation:[
+      "Verser le fromage blanc dans un bol",
+      "Disposer les fruits rouges frais ou décongelés"
+    ],
+    conseil:"Un petit-déj rapide hyperprotéiné. Idéal les matins pressés."
+  },
+  {
+    id:"r018", n:"Salade thon avocat", e:"🥗",
+    semaine:1, jour:"Vendredi", repas:"midi", duree:8, difficulte:"Facile",
+    ingredients:[
+      {alimentId:"a113", qty:120, label:"120g thon au naturel"},
+      {alimentId:"a414", qty:60, label:"60g avocat"},
+      {alimentId:"a400", qty:80, label:"80g salade verte"},
+      {alimentId:"a405", qty:70, label:"70g tomates cerises"}
+    ],
+    preparation:[
+      "Égoutter le thon",
+      "Couper l'avocat en lamelles + citron",
+      "Disposer sur la salade avec les tomates",
+      "Assaisonner citron + filet d'huile d'olive"
+    ],
+    conseil:"Sans féculents le midi = idéal pour un dîner plus copieux le soir."
+  },
+  {
+    id:"r019", n:"Fruit & amandes", e:"🍎",
+    semaine:1, jour:"Vendredi", repas:"coll", duree:2, difficulte:"Facile",
+    ingredients:[
+      {alimentId:"a600", qty:120, label:"1 fruit (pomme/poire)"},
+      {alimentId:"a811", qty:15, label:"15g amandes"}
+    ],
+    preparation:[
+      "Laver et couper le fruit",
+      "Servir avec les amandes"
+    ],
+    conseil:"Cette combinaison stabilise la glycémie. Parfait avant un dîner tardif."
+  },
+  {
+    id:"r020", n:"Poulet rôti & pommes de terre", e:"🍗",
+    semaine:1, jour:"Vendredi", repas:"soir", duree:50, difficulte:"Facile",
+    ingredients:[
+      {alimentId:"b022", qty:150, label:"150g poulet rôti"},
+      {alimentId:"a513", qty:150, label:"150g pommes de terre"},
+      {alimentId:"a306", qty:150, label:"150g légumes (haricots/courgettes)"},
+      {alimentId:"c309", qty:40, label:"40g pain brioché"}
+    ],
+    preparation:[
+      "Préchauffer le four à 200°C",
+      "Cuire le poulet avec ail/thym/épices 40 min, arroser régulièrement",
+      "Couper les pommes de terre en cubes, les ajouter au four 30 min",
+      "Faire les légumes vapeur pendant ce temps"
+    ],
+    conseil:"Plat festif idéal pour un dîner du vendredi. Rassasiant et équilibré."
+  },
+
+  // ========== SEMAINE 1 - SAMEDI ==========
+  {
+    id:"r021", n:"Fromage blanc fruits rouges amandes", e:"🥣",
+    semaine:1, jour:"Samedi", repas:"matin", duree:3, difficulte:"Facile",
+    ingredients:[
+      {alimentId:"a207", qty:150, label:"150g fromage blanc 0%"},
+      {alimentId:"a608", qty:100, label:"100g fruits rouges"},
+      {alimentId:"a811", qty:10, label:"10g amandes effilées"}
+    ],
+    preparation:[
+      "Disposer le fromage blanc dans un bol",
+      "Ajouter fruits rouges et amandes",
+      "Option : un trait de miel"
+    ],
+    conseil:"Petit-déj weekend chic et nutritif. Tu peux ajouter de la noix de coco râpée."
+  },
+  {
+    id:"r022", n:"Veau mijoté carottes", e:"🍲",
+    semaine:1, jour:"Samedi", repas:"midi", duree:75, difficulte:"Moyen",
+    ingredients:[
+      {alimentId:"a012", qty:150, label:"150g morceaux de veau"},
+      {alimentId:"b502", qty:150, label:"150g carottes"},
+      {alimentId:"c309", qty:40, label:"40g pain brioché"}
+    ],
+    preparation:[
+      "Faire revenir le veau 5 min dans une cocotte",
+      "Ajouter les carottes coupées en rondelles",
+      "Couvrir d'eau + bouillon, ajouter thym/laurier/épices",
+      "Mijoter 1h à feu doux jusqu'à ce que le veau soit fondant"
+    ],
+    conseil:"Plat dominical par excellence. Encore meilleur réchauffé le lendemain."
+  },
+  {
+    id:"r023", n:"Fruit", e:"🍎",
+    semaine:1, jour:"Samedi", repas:"coll", duree:1, difficulte:"Facile",
+    ingredients:[
+      {alimentId:"a600", qty:120, label:"1 pomme ou autre fruit"}
+    ],
+    preparation:[
+      "Choisir un fruit de saison",
+      "Le manger nature ou en quartiers"
+    ],
+    conseil:"Privilégier les fruits entiers aux jus (plus de fibres, moins de sucre rapide)."
+  },
+  {
+    id:"r024", n:"Salade thon œufs", e:"🥗",
+    semaine:1, jour:"Samedi", repas:"soir", duree:15, difficulte:"Facile",
+    ingredients:[
+      {alimentId:"a113", qty:100, label:"100g thon au naturel"},
+      {alimentId:"a201", qty:120, label:"2 œufs durs"},
+      {alimentId:"a400", qty:80, label:"80g salade verte"},
+      {alimentId:"a405", qty:70, label:"70g tomates"}
+    ],
+    preparation:[
+      "Cuire les œufs 10 min, les écaler",
+      "Égoutter le thon",
+      "Disposer salade + tomates + œufs coupés en quartiers + thon",
+      "Assaisonner citron + sel/poivre"
+    ],
+    conseil:"Variation de la salade niçoise classique. Très protéinée et rassasiante."
+  },
+
+  // ========== SEMAINE 1 - DIMANCHE ==========
+  {
+    id:"r025", n:"Pancakes & fruits", e:"🥞",
+    semaine:1, jour:"Dimanche", repas:"matin", duree:12, difficulte:"Facile",
+    ingredients:[
+      {alimentId:"a200", qty:60, label:"1 œuf"},
+      {alimentId:"a512", qty:20, label:"20g flocons d'avoine"},
+      {alimentId:"a608", qty:100, label:"100g fruits frais"}
+    ],
+    preparation:[
+      "Mixer œuf + avoine pour une pâte épaisse",
+      "Cuire en petits pancakes (1 min par face)",
+      "Servir avec les fruits coupés au-dessus",
+      "Option : filet de miel"
+    ],
+    conseil:"Petit-déj plaisir du dimanche, sans culpabilité."
+  },
+  {
+    id:"r026", n:"Saumon & patate douce rôtis", e:"🐟",
+    semaine:1, jour:"Dimanche", repas:"midi", duree:25, difficulte:"Facile",
+    ingredients:[
+      {alimentId:"a100", qty:120, label:"120g saumon frais"},
+      {alimentId:"a515", qty:150, label:"150g patate douce"},
+      {alimentId:"a300", qty:150, label:"150g légumes verts"}
+    ],
+    preparation:[
+      "Préchauffer le four à 200°C",
+      "Couper la patate douce en cubes, l'enfourner 25 min avec un peu d'huile",
+      "Ajouter le saumon (et les légumes) sur la même plaque les 15 dernières minutes",
+      "Assaisonner avec citron, aneth ou paprika"
+    ],
+    conseil:"Patate douce = féculent à index glycémique bas. Mieux que la pomme de terre classique."
+  },
+  {
+    id:"r027", n:"Fromage blanc & chocolat", e:"🍫",
+    semaine:1, jour:"Dimanche", repas:"coll", duree:1, difficulte:"Facile",
+    ingredients:[
+      {alimentId:"a207", qty:150, label:"150g fromage blanc 0%"}
+    ],
+    preparation:[
+      "Verser le fromage blanc dans un bol",
+      "Râper 10g de chocolat noir 70% au-dessus"
+    ],
+    conseil:"Plaisir gourmand sans déraper sur les calories."
+  },
+  {
+    id:"r028", n:"Poulet & légumes poêlés", e:"🍗",
+    semaine:1, jour:"Dimanche", repas:"soir", duree:20, difficulte:"Facile",
+    ingredients:[
+      {alimentId:"a002", qty:120, label:"120g blanc de poulet"},
+      {alimentId:"a303", qty:80, label:"80g courgettes"},
+      {alimentId:"a305", qty:70, label:"70g poivrons"}
+    ],
+    preparation:[
+      "Couper le poulet en lamelles",
+      "Le faire dorer 5 min à la poêle avec curry/paprika",
+      "Ajouter les légumes coupés, cuire 8 min en remuant",
+      "Servir bien chaud avec du citron"
+    ],
+    conseil:"Plat 'vide-frigo' : remplace les légumes par ce qui te reste !"
+  }
+];
+
+// Calcul automatique des valeurs nutritionnelles d'une recette
+function calcRecette(recette){
+  return recette.ingredients.reduce((acc,ing)=>{
+    const a=ALIMENTS_DB.find(x=>x.id===ing.alimentId);
+    if(!a) return acc;
+    const f=ing.qty/100;
+    return {
+      cal:acc.cal+a.cal*f,
+      p:acc.p+a.p*f,
+      l:acc.l+a.l*f,
+      g:acc.g+a.g*f
+    };
+  },{cal:0,p:0,l:0,g:0});
+}
+
+// Recherche dans les recettes
+function searchRecettes(query, semaine, repas){
+  let results=[...RECETTES_DEFI];
+  if(semaine) results=results.filter(r=>r.semaine===semaine);
+  if(repas) results=results.filter(r=>r.repas===repas);
+  if(query&&query.length>=2){
+    const q=query.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+    results=results.filter(r=>{
+      const n=r.n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+      return n.includes(q);
+    });
+  }
+  return results;
 }
 
 const RECETTES = [
@@ -1114,6 +2037,207 @@ function calcFreeItems(items){
   },{p:0,f:0,c:0,cal:0});
 }
 
+// === COMPOSANT : Modal détail recette + ajout au journal ===
+function RecetteDetailModal({recette, freeJournalDay, onAddItems, onClose}){
+  const [mode,setMode]=useState(null); // null/quick/custom
+  const [customQty,setCustomQty]=useState(()=>{
+    const o={};
+    recette.ingredients.forEach((ing,i)=>{ o[i]=ing.qty; });
+    return o;
+  });
+  const valeurs=calcRecette(recette);
+  // Mode personnalisé : recalculer avec les quantités modifiées
+  const valeursCustom=mode==="custom"?recette.ingredients.reduce((acc,ing,i)=>{
+    const a=ALIMENTS_DB.find(x=>x.id===ing.alimentId);
+    if(!a) return acc;
+    const f=(customQty[i]||0)/100;
+    return {cal:acc.cal+a.cal*f, p:acc.p+a.p*f, l:acc.l+a.l*f, g:acc.g+a.g*f};
+  },{cal:0,p:0,l:0,g:0}):valeurs;
+
+  const handleAddQuick=()=>{
+    const items=recette.ingredients.map(ing=>({alimentId:ing.alimentId, qty:ing.qty}));
+    onAddItems(recette.repas, items);
+    onClose();
+  };
+  const handleAddCustom=()=>{
+    const items=recette.ingredients.map((ing,i)=>({alimentId:ing.alimentId, qty:customQty[i]||0})).filter(x=>x.qty>0);
+    onAddItems(recette.repas, items);
+    onClose();
+  };
+
+  const repasLabel={matin:"petit-déjeuner",midi:"déjeuner",coll:"collation",soir:"dîner"}[recette.repas]||recette.repas;
+
+  return(
+    <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.6)",zIndex:9999,display:"flex",alignItems:"flex-end",justifyContent:"center"}}>
+      <div style={{background:C.white,borderRadius:"20px 20px 0 0",width:"100%",maxWidth:480,maxHeight:"90vh",overflow:"auto"}}>
+        {/* Header */}
+        <div style={{position:"sticky",top:0,background:C.white,padding:"16px 18px 10px",borderBottom:"1px solid "+C.border,zIndex:2}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
+            <div style={{fontSize:9,letterSpacing:2,color:C.muted,textTransform:"uppercase"}}>Le Défi 3 Semaines · S{recette.semaine} · {recette.jour}</div>
+            <button onClick={onClose} style={{background:"none",border:"none",color:C.muted,fontSize:22,cursor:"pointer"}}>×</button>
+          </div>
+          <div style={{fontSize:20,fontWeight:900,color:C.navy,marginBottom:4}}>{recette.e} {recette.n}</div>
+          <div style={{display:"flex",gap:8,fontSize:10,color:C.muted}}>
+            <span>⏱ {recette.duree} min</span>
+            <span>·</span>
+            <span>{recette.difficulte}</span>
+            <span>·</span>
+            <span>📍 {repasLabel}</span>
+          </div>
+        </div>
+
+        <div style={{padding:"16px 18px 24px"}}>
+          {/* Bandeau valeurs nutritionnelles */}
+          <div style={{background:"linear-gradient(135deg,"+C.navy+","+C.navyL+")",borderRadius:14,padding:"12px 14px",marginBottom:16}}>
+            <div style={{fontSize:8,color:C.yellow,letterSpacing:2,textTransform:"uppercase",marginBottom:8}}>📊 Valeurs nutritionnelles</div>
+            <div style={{display:"flex",justifyContent:"space-between"}}>
+              <div><div style={{fontSize:20,fontWeight:900,color:C.yellow}}>{Math.round(valeursCustom.cal)}</div><div style={{fontSize:8,color:"rgba(255,255,255,0.5)",textTransform:"uppercase"}}>kcal</div></div>
+              <div><div style={{fontSize:20,fontWeight:900,color:"#6EF0A0"}}>{valeursCustom.p.toFixed(1)}g</div><div style={{fontSize:8,color:"rgba(255,255,255,0.5)",textTransform:"uppercase"}}>Prot</div></div>
+              <div><div style={{fontSize:20,fontWeight:900,color:"#6EC8FF"}}>{valeursCustom.l.toFixed(1)}g</div><div style={{fontSize:8,color:"rgba(255,255,255,0.5)",textTransform:"uppercase"}}>Lip</div></div>
+              <div><div style={{fontSize:20,fontWeight:900,color:"#C0A0FF"}}>{valeursCustom.g.toFixed(1)}g</div><div style={{fontSize:8,color:"rgba(255,255,255,0.5)",textTransform:"uppercase"}}>Gluc</div></div>
+            </div>
+          </div>
+
+          {/* Ingrédients */}
+          <div style={{fontSize:11,fontWeight:700,color:C.navy,marginBottom:8,letterSpacing:1,textTransform:"uppercase"}}>🛒 Ingrédients</div>
+          <div style={{background:"#F5F7FF",borderRadius:12,padding:"10px 12px",marginBottom:14}}>
+            {recette.ingredients.map((ing,i)=>{
+              const a=ALIMENTS_DB.find(x=>x.id===ing.alimentId);
+              if(!a) return null;
+              if(mode==="custom"){
+                return(
+                  <div key={i} style={{padding:"6px 0",borderBottom:i<recette.ingredients.length-1?"1px dotted "+C.border:"none"}}>
+                    <div style={{fontSize:11,color:C.navy,marginBottom:4}}>{a.e} {a.n}</div>
+                    <div style={{display:"flex",alignItems:"center",gap:8}}>
+                      <button onClick={()=>setCustomQty(p=>({...p,[i]:Math.max(0,(p[i]||0)-10)}))} style={{width:30,height:30,borderRadius:8,background:C.navy,color:C.yellow,border:"none",fontSize:14,cursor:"pointer"}}>−</button>
+                      <input type="number" value={customQty[i]||0} onChange={e=>setCustomQty(p=>({...p,[i]:Math.max(0,parseInt(e.target.value)||0)}))} style={{flex:1,padding:"6px",borderRadius:6,border:"1px solid "+C.border,fontSize:13,fontWeight:"bold",textAlign:"center",color:C.navy,fontFamily:"sans-serif"}}/>
+                      <span style={{fontSize:11,color:C.navy,fontWeight:"bold"}}>g</span>
+                      <button onClick={()=>setCustomQty(p=>({...p,[i]:(p[i]||0)+10}))} style={{width:30,height:30,borderRadius:8,background:C.navy,color:C.yellow,border:"none",fontSize:14,cursor:"pointer"}}>+</button>
+                    </div>
+                  </div>
+                );
+              }
+              return(
+                <div key={i} style={{padding:"5px 0",borderBottom:i<recette.ingredients.length-1?"1px dotted "+C.border:"none",display:"flex",alignItems:"center",gap:8}}>
+                  <span style={{fontSize:14}}>{a.e}</span>
+                  <span style={{fontSize:11,color:C.navy,flex:1}}>{ing.label}</span>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Préparation */}
+          {mode!=="custom"&&(
+            <>
+              <div style={{fontSize:11,fontWeight:700,color:C.navy,marginBottom:8,letterSpacing:1,textTransform:"uppercase"}}>👨‍🍳 Préparation</div>
+              <div style={{background:"#FFFBF0",borderRadius:12,padding:"10px 14px",marginBottom:14,border:"1px solid "+C.yellow+"40"}}>
+                {recette.preparation.map((etape,i)=>(
+                  <div key={i} style={{display:"flex",gap:8,padding:"4px 0",fontSize:11,color:C.text,lineHeight:1.5}}>
+                    <span style={{minWidth:18,height:18,background:C.yellow,color:C.navy,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,fontWeight:"bold",flexShrink:0,marginTop:1}}>{i+1}</span>
+                    <span>{etape}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div style={{background:C.navy,borderRadius:12,padding:"10px 14px",marginBottom:14}}>
+                <div style={{fontSize:9,color:C.yellow,letterSpacing:2,textTransform:"uppercase",marginBottom:4}}>💡 Conseil Dominique</div>
+                <div style={{fontSize:11,color:C.white,lineHeight:1.5,fontStyle:"italic"}}>{recette.conseil}</div>
+              </div>
+            </>
+          )}
+
+          {/* Boutons d'action */}
+          {!mode&&(
+            <div style={{display:"flex",flexDirection:"column",gap:8}}>
+              <button onClick={handleAddQuick} style={{padding:"14px",background:C.yellow,border:"none",borderRadius:12,color:C.navy,fontSize:14,fontWeight:"900",cursor:"pointer"}}>✨ Ajouter directement à mon {repasLabel}</button>
+              <button onClick={()=>setMode("custom")} style={{padding:"12px",background:"white",border:"1.5px solid "+C.navy,borderRadius:12,color:C.navy,fontSize:13,fontWeight:"700",cursor:"pointer"}}>📝 Personnaliser les quantités</button>
+            </div>
+          )}
+          {mode==="custom"&&(
+            <div style={{display:"flex",gap:8}}>
+              <button onClick={()=>setMode(null)} style={{padding:"14px 16px",background:"transparent",border:"1.5px solid "+C.border,borderRadius:12,color:C.muted,fontSize:13,cursor:"pointer"}}>← Retour</button>
+              <button onClick={handleAddCustom} style={{flex:1,padding:"14px",background:C.yellow,border:"none",borderRadius:12,color:C.navy,fontSize:14,fontWeight:"900",cursor:"pointer"}}>✓ Ajouter à mon {repasLabel}</button>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// === COMPOSANT : Bibliothèque de recettes Le Défi 3 Semaines ===
+function BibliothequeRecettes({onSelectRecette}){
+  const [query,setQuery]=useState("");
+  const [filterSemaine,setFilterSemaine]=useState(null);
+  const [filterRepas,setFilterRepas]=useState(null);
+  const results=searchRecettes(query, filterSemaine, filterRepas);
+
+  const REPAS_LABELS={matin:{l:"Matin",e:"🌅"},midi:{l:"Midi",e:"☀️"},coll:{l:"Collation",e:"🍎"},soir:{l:"Soir",e:"🌙"}};
+
+  return(
+    <div style={{padding:"6px 14px 80px"}}>
+      <div style={{background:"linear-gradient(135deg,"+C.navy+","+C.navyL+")",borderRadius:14,padding:"14px 16px",marginBottom:14,color:C.white}}>
+        <div style={{fontSize:9,color:C.yellow,letterSpacing:2,textTransform:"uppercase",marginBottom:4}}>📚 Bibliothèque STIMBODY</div>
+        <div style={{fontSize:18,fontWeight:900,marginBottom:4}}>Le Défi 3 Semaines</div>
+        <div style={{fontSize:10,color:"rgba(255,255,255,0.7)",lineHeight:1.5}}>Recettes inspirées par Coach Dominique. Pioche tes idées de repas selon tes envies !</div>
+      </div>
+
+      {/* Recherche */}
+      <input value={query} onChange={e=>setQuery(e.target.value)} placeholder="🔍 Rechercher une recette (ex: poulet, salade...)" style={{width:"100%",padding:"11px 14px",borderRadius:12,border:"1.5px solid "+C.border,fontSize:13,outline:"none",boxSizing:"border-box",fontFamily:"sans-serif",background:"#F5F7FF",marginBottom:10}}/>
+
+      {/* Filtres semaine */}
+      <div style={{display:"flex",gap:5,marginBottom:8,overflowX:"auto"}}>
+        <button onClick={()=>setFilterSemaine(null)} style={{padding:"6px 12px",borderRadius:8,border:"1px solid "+(filterSemaine===null?C.navy:C.border),background:filterSemaine===null?C.navy:"white",color:filterSemaine===null?C.yellow:C.soft,fontSize:11,fontWeight:"bold",cursor:"pointer",whiteSpace:"nowrap"}}>Toutes</button>
+        {[1,2,3].map(s=>(
+          <button key={s} onClick={()=>setFilterSemaine(filterSemaine===s?null:s)} style={{padding:"6px 12px",borderRadius:8,border:"1px solid "+(filterSemaine===s?C.navy:C.border),background:filterSemaine===s?C.navy:"white",color:filterSemaine===s?C.yellow:C.soft,fontSize:11,fontWeight:"bold",cursor:"pointer",whiteSpace:"nowrap"}}>Sem {s}</button>
+        ))}
+      </div>
+
+      {/* Filtres repas */}
+      <div style={{display:"flex",gap:5,marginBottom:14,overflowX:"auto"}}>
+        <button onClick={()=>setFilterRepas(null)} style={{padding:"6px 10px",borderRadius:8,border:"1px solid "+(filterRepas===null?C.navy:C.border),background:filterRepas===null?C.navy:"white",color:filterRepas===null?C.yellow:C.soft,fontSize:11,fontWeight:"bold",cursor:"pointer",whiteSpace:"nowrap"}}>Tous repas</button>
+        {Object.entries(REPAS_LABELS).map(([k,v])=>(
+          <button key={k} onClick={()=>setFilterRepas(filterRepas===k?null:k)} style={{padding:"6px 10px",borderRadius:8,border:"1px solid "+(filterRepas===k?C.navy:C.border),background:filterRepas===k?C.navy:"white",color:filterRepas===k?C.yellow:C.soft,fontSize:11,fontWeight:"bold",cursor:"pointer",whiteSpace:"nowrap"}}>{v.e} {v.l}</button>
+        ))}
+      </div>
+
+      <div style={{fontSize:10,color:C.muted,marginBottom:8,letterSpacing:1,textTransform:"uppercase"}}>{results.length} recette{results.length>1?"s":""}</div>
+
+      {results.length===0?(
+        <div style={{padding:"40px 20px",textAlign:"center",color:C.muted}}>
+          <div style={{fontSize:36,marginBottom:8}}>🔍</div>
+          <div style={{fontSize:12}}>Aucune recette trouvée</div>
+        </div>
+      ):(
+        <div style={{display:"flex",flexDirection:"column",gap:8}}>
+          {results.map(r=>{
+            const v=calcRecette(r);
+            const repas=REPAS_LABELS[r.repas]||{l:r.repas,e:""};
+            return(
+              <div key={r.id} onClick={()=>onSelectRecette(r)} style={{background:C.white,borderRadius:12,padding:"12px 14px",cursor:"pointer",border:"1px solid "+C.border,boxShadow:"0 2px 6px rgba(13,27,75,0.05)"}}>
+                <div style={{display:"flex",alignItems:"flex-start",gap:10,marginBottom:8}}>
+                  <span style={{fontSize:26}}>{r.e}</span>
+                  <div style={{flex:1}}>
+                    <div style={{fontSize:13,fontWeight:900,color:C.navy,marginBottom:2}}>{r.n}</div>
+                    <div style={{fontSize:9,color:C.muted}}>{repas.e} {repas.l} · S{r.semaine} · {r.jour} · ⏱ {r.duree} min</div>
+                  </div>
+                  <span style={{color:C.muted,fontSize:14}}>›</span>
+                </div>
+                <div style={{display:"flex",justifyContent:"space-around",background:"#F5F7FF",borderRadius:8,padding:"6px",fontSize:10}}>
+                  <span><strong style={{color:C.yellow}}>{Math.round(v.cal)}</strong> <span style={{color:C.muted}}>kcal</span></span>
+                  <span><strong style={{color:"#0AAA50"}}>{v.p.toFixed(1)}g</strong> <span style={{color:C.muted}}>P</span></span>
+                  <span><strong style={{color:"#0066CC"}}>{v.l.toFixed(1)}g</strong> <span style={{color:C.muted}}>L</span></span>
+                  <span><strong style={{color:"#7700CC"}}>{v.g.toFixed(1)}g</strong> <span style={{color:C.muted}}>G</span></span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function App() {
   const [day,setDay]=useState(0);
   const [tab,setTab]=useState("profil");
@@ -1134,6 +2258,7 @@ export default function App() {
   const CLIENT=clientInfo?.prenom||"Cliente";
   const formule=clientInfo?.formule||"equilibre";
   const [searchMeal,setSearchMeal]=useState(null); // Session 2 : modal recherche aliment
+  const [selectedRecette,setSelectedRecette]=useState(null); // Le Défi 3 Semaines : modal détail recette
 
   useEffect(()=>{
     // === MIGRATION V3 : Méthode Coach STIMBODY ===
@@ -1227,6 +2352,17 @@ export default function App() {
       const mealArr=(dayJ[meal]||[]).filter((_,i)=>i!==idx);
       return{...prev,[day]:{...dayJ,[meal]:mealArr}};
     });
+  };
+  // Le Défi 3 Semaines : ajouter plusieurs items d'une recette d'un coup
+  const addRecetteItems=(meal,items)=>{
+    const ts=Date.now();
+    const newItems=items.map((it,i)=>({alimentId:it.alimentId, qty:it.qty, ts:ts+i}));
+    setFreeJournal(prev=>{
+      const dayJ=prev[day]||{};
+      const mealArr=dayJ[meal]||[];
+      return{...prev,[day]:{...dayJ,[meal]:[...mealArr,...newItems]}};
+    });
+    setTab("repas"); // Rediriger sur l'onglet Repas pour voir le résultat
   };
   // Progression vs OBJECTIF PERSONNEL
   const pctCal=userKcalObjectif>0?Math.round(totalActual.cal/userKcalObjectif*100):0;
@@ -1583,8 +2719,12 @@ export default function App() {
         </div>
       )}
       {tab==="exemple"&&<ExempleMenu/>}
+      {/* === LE DÉFI 3 SEMAINES : Bibliothèque de recettes === */}
+      {tab==="recettes"&&<BibliothequeRecettes onSelectRecette={setSelectedRecette}/>}
       {/* === SESSION 2 : Modal de recherche d'aliments === */}
       {searchMeal&&<AlimentSearch mealKey={searchMeal.key} mealLabel={searchMeal.label} mealEmoji={searchMeal.emoji} onAdd={(aliment,qty)=>addFreeItem(searchMeal.key,aliment,qty)} onClose={()=>setSearchMeal(null)}/>}
+      {/* === LE DÉFI 3 SEMAINES : Modal détail recette === */}
+      {selectedRecette&&<RecetteDetailModal recette={selectedRecette} onAddItems={addRecetteItems} onClose={()=>setSelectedRecette(null)}/>}
     </div>
   );
 }
