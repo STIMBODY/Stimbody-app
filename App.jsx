@@ -52,6 +52,37 @@ const MV = {super:5,bien:4,moyen:3,fatigue:2,frustre:1};
 const FV = {rassasie:1,moyen:2,faim:3};
 const MOODS = [{v:"super",e:"😄",l:"Super"},{v:"bien",e:"😊",l:"Bien"},{v:"moyen",e:"😐",l:"Moyen"},{v:"fatigue",e:"😔",l:"Fatigué"},{v:"frustre",e:"😤",l:"Frustré"}];
 const FAIM = [{v:"rassasie",e:"🙂",l:"Rassasié"},{v:"moyen",e:"😑",l:"Moyen"},{v:"faim",e:"😩",l:"Faim"}];
+
+// === MÉTHODE COACH DOMINIQUE STIMBODY ===
+// BMR mesuré à l'impédancemètre (pas de formule théorique)
+// Pesée mensuelle au studio STIMBODY
+
+// Objectifs coach (basés sur le BMR mesuré)
+const OBJECTIFS_COACH = [
+  {v:"gras",l:"Perte de gras",desc:"BMR − 400 kcal · Déficit agressif",deficit:400,e:"🔥"},
+  {v:"douce",l:"Perte en douceur",desc:"BMR − 200 kcal · Rythme soutenable",deficit:200,e:"🌱"},
+  {v:"maintien",l:"Maintien",desc:"= BMR · Stabilisation",deficit:0,e:"⚖️"}
+];
+
+// Ratios protéines (ajustables par la cliente ou coach)
+const RATIOS_PROTEINES = [
+  {v:"1",l:"1g / kg",desc:"Standard",mult:1.0},
+  {v:"12",l:"1.2g / kg",desc:"Renforcé",mult:1.2},
+  {v:"15",l:"1.5g / kg",desc:"Très protéiné",mult:1.5}
+];
+
+// Calcul objectif kcal selon BMR mesuré
+function calcObjectifKcal(bmr, objectifKey) {
+  const o = OBJECTIFS_COACH.find(x => x.v === objectifKey);
+  const deficit = o ? o.deficit : 0;
+  return Math.max(1000, bmr - deficit); // Min 1000 kcal (sécurité)
+}
+
+// Calcul objectif protéines selon poids
+function calcObjectifProteines(poids, ratioKey) {
+  const r = RATIOS_PROTEINES.find(x => x.v === ratioKey);
+  return Math.round(poids * (r ? r.mult : 1.0));
+}
 const RECETTES = [
   {id:1,titre:"Bowl saumon & avocat",emoji:"🍣",cat:"midi",temps:10,kcal:420,macros:{p:38,l:22,g:8},formules:["sucre","equilibre"],photo:"https://images.unsplash.com/photo-1580822184713-fc5400e7fe10?w=400&q=75",tags:["poisson","rapide"],ingredients:["150g saumon fumé","1/2 avocat","100g concombre","50g edamame","1 cas tamari","Citron","Sésame"],etapes:["Trancher le saumon et l'avocat","Disposer le concombre et les edamame","Arroser de tamari et citron","Parsemer de sésame grillé"],conseil:"Idéal en lunch box. Prépare tout la veille sauf l'avocat."},
   {id:2,titre:"Omelette épinards feta",emoji:"🍳",cat:"matin",temps:8,kcal:280,macros:{p:24,l:18,g:4},formules:["sucre","equilibre"],photo:"https://images.unsplash.com/photo-1525351484163-7529414344d8?w=400&q=75",tags:["oeufs","rapide"],ingredients:["3 oeufs","80g épinards","30g feta allégée","Herbes de Provence","1 cac huile olive"],etapes:["Faire suer les épinards","Battre les oeufs et verser","Émietter la feta, plier l'omelette"],conseil:"Les épinards peuvent être remplacés par du kale."},
@@ -713,7 +744,28 @@ export default function App() {
   const formule=clientInfo?.formule||"equilibre";
 
   useEffect(()=>{
-    try{const r=localStorage.getItem("sb-info");if(r)setClientInfo(JSON.parse(r));}catch(e){}
+    // === MIGRATION V3 : Méthode Coach STIMBODY ===
+    try{
+      const r=localStorage.getItem("sb-info");
+      if(r){
+        const info=JSON.parse(r);
+        // Si le profil existe SANS les nouveaux champs coach → reset propre
+        if(!info.bmr || !info.protObjectif || !info.kcalObjectif){
+          // Reset complet des données
+          localStorage.removeItem("sb-info");
+          localStorage.removeItem("sb-e");
+          localStorage.removeItem("sb-c");
+          localStorage.removeItem("sb-j");
+          localStorage.removeItem("sb-p");
+          setTimeout(()=>{
+            alert("✨ Nouvelle version STIMBODY !\n\nTon app utilise maintenant TA méthode coach Dominique :\n\n🔬 Pesée impédancemètre\n🔥 Objectif perte de gras\n🥩 Protéines 1g/kg\n\n📝 Quelques infos à re-renseigner pour que l'app calcule ton plan personnalisé.\n\nDemande à Dominique ton métabolisme de base (BMR) lors de ta prochaine pesée !");
+          },300);
+          setLoaded(true);
+          return;
+        }
+        setClientInfo(info);
+      }
+    }catch(e){}
     try{const r=localStorage.getItem("sb-e");if(r)setEaten(JSON.parse(r));}catch(e){}
     try{const r=localStorage.getItem("sb-c");if(r)setCustom(JSON.parse(r));}catch(e){}
     try{const r=localStorage.getItem("sb-j");if(r)setJournal(JSON.parse(r));}catch(e){}
@@ -740,7 +792,10 @@ export default function App() {
   const mCount=meal=>getI(meal).filter((_,i)=>isEaten(meal,i)).length;
   const allI=planReady&&d?[...getI("matin"),...getI("midi"),...getI("soir")]:[];
   const total=calc([...allI,{k:"huileOlive",g:10}]);
-  // === NOUVEAU : Calcul du réel mangé (uniquement les repas cochés) ===
+  // === MÉTHODE COACH DOMINIQUE STIMBODY ===
+  const userKcalObjectif=clientInfo?.kcalObjectif||2000;
+  const userProtObjectif=clientInfo?.protObjectif||65; // Basé sur poids × ratio coach (1g/kg par défaut)
+  // === Calcul du réel mangé (uniquement les repas cochés) ===
   const eatenItems=planReady&&d?[
     ...getI("matin").filter((_,i)=>isEaten("matin",i)),
     ...getI("midi").filter((_,i)=>isEaten("midi",i)),
@@ -748,12 +803,15 @@ export default function App() {
   ]:[];
   const huileEaten=mDone("midi")?[{k:"huileOlive",g:10}]:[];
   const totalActual=calc([...eatenItems,...huileEaten]);
-  const pctCal=total.cal>0?Math.round(totalActual.cal/total.cal*100):0;
-  const restCal=Math.max(0,Math.round(total.cal-totalActual.cal));
-  // Couleur intelligente de la barre
+  // Progression vs OBJECTIF PERSONNEL
+  const pctCal=userKcalObjectif>0?Math.round(totalActual.cal/userKcalObjectif*100):0;
+  const pctProt=userProtObjectif>0?Math.round(totalActual.p/userProtObjectif*100):0;
+  const restCal=Math.max(0,Math.round(userKcalObjectif-totalActual.cal));
+  const restProt=Math.max(0,Math.round(userProtObjectif-totalActual.p));
+  // Couleur intelligente de la barre kcal
   const barColor=pctCal>=110?C.red:pctCal>=80?C.green:pctCal>=50?C.yellow:"#6EC8FF";
-  const motivMsg=totalActual.cal===0?"🍽 Coche tes repas pour voir ta progression":pctCal>=110?"⚠️ Attention, dépassement de "+(Math.round(totalActual.cal-total.cal))+" kcal":pctCal>=95?"🎯 Objectif atteint ! Bravo "+CLIENT:pctCal>=80?"💪 Tu y es presque ! Plus que "+restCal+" kcal":"🌱 Plus que "+restCal+" kcal pour atteindre l'objectif";
-  // === FIN NOUVEAU ===
+  const motivMsg=totalActual.cal===0?"🍽 Coche tes repas pour voir ta progression":pctCal>=110?"⚠️ Attention, dépassement de "+(Math.round(totalActual.cal-userKcalObjectif))+" kcal":pctCal>=95?"🎯 Objectif atteint ! Bravo "+CLIENT:pctCal>=80?"💪 Tu y es presque ! Plus que "+restCal+" kcal":"🌱 Plus que "+restCal+" kcal pour atteindre l'objectif";
+  // === FIN MÉTHODE COACH ===
   const totalC=allI.length; const doneC=planReady?mCount("matin")+mCount("midi")+mCount("soir"):0;
   const dayOk=planReady&&mDone("matin")&&mDone("midi")&&mDone("soir");
   const j=journal[day]||{mood:null,faim:null,water:false,note:""};
@@ -778,34 +836,132 @@ export default function App() {
   const courses=buildCourses(plan,prefs);
 
   if(!clientInfo||editingProfile) {
+    // === ÉTAPE 1 : Infos personnelles ===
     if(step==="info") return(
-      <div style={{fontFamily:"sans-serif",minHeight:"100vh",background:C.navy,color:C.white,maxWidth:480,margin:"0 auto",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"30px 24px"}}>
-        <div style={{marginBottom:32,textAlign:"center"}}><div style={{display:"flex",justifyContent:"center",alignItems:"baseline",marginBottom:8}}><span style={{fontSize:36,fontWeight:"900",color:C.white,letterSpacing:1}}>STIM</span><span style={{fontSize:36,fontWeight:"900",color:C.yellow,letterSpacing:1}}>BODY</span><span style={{fontSize:20,color:C.yellow,marginLeft:3}}>⚡</span></div><div style={{fontSize:11,color:"rgba(255,255,255,0.5)",letterSpacing:3}}>PLAN NUTRITIONNEL PERSONNALISÉ</div></div>
-        <div style={{background:"rgba(255,255,255,0.07)",borderRadius:20,padding:"28px 24px",width:"100%"}}>
-          <div style={{fontSize:16,fontWeight:"bold",color:C.yellow,marginBottom:20,textAlign:"center"}}>{editingProfile?"Modifier mon profil ✏️":"Bienvenue ! 👋"}</div>
-          {[{key:"prenom",label:"Ton prénom",placeholder:"Ex: Marie",type:"text"},{key:"age",label:"Ton âge",placeholder:"Ex: 38",type:"number"},{key:"objectif",label:"Ton objectif",placeholder:"Ex: Retrouver de l'énergie...",type:"text"}].map(field=>(
-            <div key={field.key} style={{marginBottom:16}}><div style={{fontSize:11,color:"rgba(255,255,255,0.6)",marginBottom:6,letterSpacing:1,textTransform:"uppercase"}}>{field.label}</div><input type={field.type} value={form[field.key]} onChange={e=>setForm(p=>({...p,[field.key]:e.target.value}))} placeholder={field.placeholder} style={{width:"100%",padding:"12px 14px",borderRadius:10,border:"1.5px solid rgba(255,255,255,0.2)",background:"rgba(255,255,255,0.08)",color:C.white,fontSize:14,outline:"none",boxSizing:"border-box",fontFamily:"sans-serif"}}/></div>
+      <div style={{fontFamily:"sans-serif",minHeight:"100vh",background:C.navy,color:C.white,maxWidth:480,margin:"0 auto",padding:"30px 24px"}}>
+        <div style={{marginBottom:24,textAlign:"center"}}><div style={{display:"flex",justifyContent:"center",alignItems:"baseline",marginBottom:8}}><span style={{fontSize:32,fontWeight:"900",color:C.white,letterSpacing:1}}>STIM</span><span style={{fontSize:32,fontWeight:"900",color:C.yellow,letterSpacing:1}}>BODY</span><span style={{fontSize:18,color:C.yellow,marginLeft:3}}>⚡</span></div><div style={{fontSize:10,color:"rgba(255,255,255,0.5)",letterSpacing:3}}>PLAN NUTRITIONNEL PERSONNALISÉ</div></div>
+        <div style={{display:"flex",gap:4,marginBottom:18}}>{[1,2,3].map(n=>(<div key={n} style={{flex:1,height:3,borderRadius:2,background:n<=1?C.yellow:"rgba(255,255,255,0.15)"}}/>))}</div>
+        <div style={{fontSize:10,color:C.yellow,letterSpacing:2,marginBottom:6,textTransform:"uppercase"}}>Étape 1 / 3</div>
+        <div style={{fontSize:22,fontWeight:900,color:C.white,marginBottom:4}}>{editingProfile?"Modifier mon profil ✏️":"Bienvenue ! 👋"}</div>
+        <div style={{fontSize:13,color:"rgba(255,255,255,0.6)",marginBottom:22,lineHeight:1.5}}>Quelques infos avant de calculer ton plan personnalisé.</div>
+        <div style={{background:"rgba(255,255,255,0.05)",borderRadius:18,padding:"20px 18px",width:"100%",boxSizing:"border-box"}}>
+          {[{key:"prenom",label:"Ton prénom",placeholder:"Ex: Marie",type:"text"},{key:"age",label:"Ton âge",placeholder:"Ex: 38",type:"number"},{key:"objectif",label:"Ta motivation (optionnel)",placeholder:"Ex: Retrouver de l'énergie...",type:"text"}].map(field=>(
+            <div key={field.key} style={{marginBottom:14}}><div style={{fontSize:10,color:"rgba(255,255,255,0.5)",marginBottom:5,letterSpacing:1,textTransform:"uppercase"}}>{field.label}</div><input type={field.type} value={form[field.key]||""} onChange={e=>setForm(p=>({...p,[field.key]:e.target.value}))} placeholder={field.placeholder} style={{width:"100%",padding:"12px 14px",borderRadius:10,border:"1.5px solid rgba(255,255,255,0.2)",background:"rgba(255,255,255,0.08)",color:C.white,fontSize:14,outline:"none",boxSizing:"border-box",fontFamily:"sans-serif"}}/></div>
           ))}
-          <button onClick={()=>{ if(!form.prenom.trim()){alert("Entre ton prénom pour continuer");return;} setStep("formule"); }} style={{width:"100%",padding:"15px",background:C.yellow,border:"none",borderRadius:12,color:C.navy,fontSize:15,fontWeight:"900",cursor:"pointer",marginTop:8}}>Suivant →</button>
         </div>
+        <button onClick={()=>{ if(!form.prenom.trim()){alert("Entre ton prénom pour continuer");return;} if(!form.age||parseInt(form.age)<16||parseInt(form.age)>99){alert("Entre un âge valide (16-99)");return;} setStep("impedance"); }} style={{width:"100%",padding:"15px",background:C.yellow,border:"none",borderRadius:12,color:C.navy,fontSize:15,fontWeight:"900",cursor:"pointer",marginTop:16}}>Suivant →</button>
       </div>
     );
+
+    // === ÉTAPE 2 : Pesée impédancemètre + Objectif ===
+    if(step==="impedance") {
+      const poidsCur=parseFloat(form.poids)||0;
+      const bmrCur=parseInt(form.bmr)||0;
+      const objCur=form.objectifKcal||"gras";
+      const ratCur=form.ratioProt||"1";
+      const kcalCalc=bmrCur>0?calcObjectifKcal(bmrCur,objCur):0;
+      const protCalc=poidsCur>0?calcObjectifProteines(poidsCur,ratCur):0;
+      return(
+        <div style={{fontFamily:"sans-serif",minHeight:"100vh",background:C.navy,color:C.white,maxWidth:480,margin:"0 auto",padding:"30px 20px"}}>
+          <div style={{marginBottom:20,textAlign:"center"}}><div style={{display:"flex",justifyContent:"center",alignItems:"baseline"}}><span style={{fontSize:28,fontWeight:"900",color:C.white}}>STIM</span><span style={{fontSize:28,fontWeight:"900",color:C.yellow}}>BODY</span><span style={{fontSize:16,color:C.yellow,marginLeft:3}}>⚡</span></div></div>
+          <div style={{display:"flex",gap:4,marginBottom:18}}>{[1,2,3].map(n=>(<div key={n} style={{flex:1,height:3,borderRadius:2,background:n<=2?C.yellow:"rgba(255,255,255,0.15)"}}/>))}</div>
+          <div style={{fontSize:10,color:C.yellow,letterSpacing:2,marginBottom:6,textTransform:"uppercase"}}>Étape 2 / 3 · Pesée & Objectif</div>
+          <div style={{fontSize:20,fontWeight:900,color:C.white,marginBottom:6}}>Ta pesée STIMBODY 🔬</div>
+          <div style={{fontSize:12,color:"rgba(255,255,255,0.6)",marginBottom:18,lineHeight:1.6,background:"rgba(245,194,0,0.08)",border:"1px solid rgba(245,194,0,0.2)",borderRadius:10,padding:"10px 12px"}}>💡 Valeurs données par Dominique lors de ta pesée mensuelle à l'impédancemètre STIMBODY.</div>
+          <div style={{background:"rgba(255,255,255,0.05)",borderRadius:16,padding:"16px 16px",marginBottom:14}}>
+            <div style={{marginBottom:14}}>
+              <div style={{fontSize:10,color:"rgba(255,255,255,0.5)",marginBottom:5,letterSpacing:1,textTransform:"uppercase"}}>⚖️ Ton poids (kg)</div>
+              <input type="number" step="0.1" value={form.poids||""} onChange={e=>setForm(p=>({...p,poids:e.target.value}))} placeholder="Ex: 65.5" style={{width:"100%",padding:"14px",borderRadius:10,border:"1.5px solid rgba(255,255,255,0.2)",background:"rgba(255,255,255,0.08)",color:C.white,fontSize:16,outline:"none",boxSizing:"border-box",fontFamily:"sans-serif"}}/>
+            </div>
+            <div>
+              <div style={{fontSize:10,color:"rgba(255,255,255,0.5)",marginBottom:5,letterSpacing:1,textTransform:"uppercase"}}>🔥 Ton métabolisme de base (kcal)</div>
+              <input type="number" value={form.bmr||""} onChange={e=>setForm(p=>({...p,bmr:e.target.value}))} placeholder="Ex: 1400" style={{width:"100%",padding:"14px",borderRadius:10,border:"1.5px solid rgba(255,255,255,0.2)",background:"rgba(255,255,255,0.08)",color:C.white,fontSize:16,outline:"none",boxSizing:"border-box",fontFamily:"sans-serif"}}/>
+              <div style={{fontSize:9,color:"rgba(255,255,255,0.4)",marginTop:5,fontStyle:"italic"}}>📊 Valeur mesurée par impédancemètre (kcal au repos)</div>
+            </div>
+          </div>
+          <div style={{fontSize:14,fontWeight:900,color:C.white,marginBottom:10}}>🎯 Ton objectif</div>
+          <div style={{display:"flex",flexDirection:"column",gap:6,marginBottom:14}}>
+            {OBJECTIFS_COACH.map(o=>{ const on=objCur===o.v; return(
+              <div key={o.v} onClick={()=>setForm(p=>({...p,objectifKcal:o.v}))} style={{background:on?"rgba(245,194,0,0.15)":"rgba(255,255,255,0.05)",border:"1.5px solid "+(on?C.yellow:"rgba(255,255,255,0.1)"),borderRadius:12,padding:"10px 12px",cursor:"pointer",display:"flex",alignItems:"center",gap:10}}>
+                <span style={{fontSize:20}}>{o.e}</span>
+                <div style={{flex:1}}>
+                  <div style={{fontSize:12,fontWeight:700,color:on?C.yellow:C.white}}>{o.l}</div>
+                  <div style={{fontSize:9,color:"rgba(255,255,255,0.5)",marginTop:1}}>{o.desc}</div>
+                </div>
+                {on&&<span style={{fontSize:14,color:C.yellow}}>✓</span>}
+              </div>
+            );})}
+          </div>
+          <div style={{fontSize:14,fontWeight:900,color:C.white,marginBottom:8}}>🥩 Protéines</div>
+          <div style={{display:"flex",gap:5,marginBottom:16}}>
+            {RATIOS_PROTEINES.map(r=>{ const on=ratCur===r.v; return(
+              <div key={r.v} onClick={()=>setForm(p=>({...p,ratioProt:r.v}))} style={{flex:1,background:on?"rgba(245,194,0,0.15)":"rgba(255,255,255,0.05)",border:"1.5px solid "+(on?C.yellow:"rgba(255,255,255,0.1)"),borderRadius:10,padding:"8px 4px",cursor:"pointer",textAlign:"center"}}>
+                <div style={{fontSize:12,fontWeight:700,color:on?C.yellow:C.white}}>{r.l}</div>
+                <div style={{fontSize:8,color:"rgba(255,255,255,0.5)",marginTop:1}}>{r.desc}</div>
+              </div>
+            );})}
+          </div>
+          {bmrCur>0&&poidsCur>0&&(
+            <div style={{background:"linear-gradient(135deg,rgba(245,194,0,0.15),rgba(245,194,0,0.05))",border:"1.5px solid "+C.yellow,borderRadius:14,padding:"14px 16px",marginBottom:14}}>
+              <div style={{fontSize:9,color:C.yellow,letterSpacing:2,textTransform:"uppercase",marginBottom:6}}>✨ TON PLAN CALCULÉ</div>
+              <div style={{display:"flex",gap:12,marginBottom:6}}>
+                <div style={{flex:1}}>
+                  <div style={{fontSize:22,fontWeight:900,color:C.yellow}}>{kcalCalc}</div>
+                  <div style={{fontSize:9,color:"rgba(255,255,255,0.6)"}}>kcal / jour</div>
+                </div>
+                <div style={{width:1,background:"rgba(255,255,255,0.15)"}}/>
+                <div style={{flex:1}}>
+                  <div style={{fontSize:22,fontWeight:900,color:"#6EF0A0"}}>{protCalc}g</div>
+                  <div style={{fontSize:9,color:"rgba(255,255,255,0.6)"}}>protéines / jour</div>
+                </div>
+              </div>
+              <details style={{marginTop:6}}>
+                <summary style={{fontSize:10,color:"rgba(255,255,255,0.5)",cursor:"pointer",listStyle:"none"}}>▸ Voir le détail du calcul</summary>
+                <div style={{marginTop:8,fontSize:10,color:"rgba(255,255,255,0.7)",lineHeight:1.7}}>
+                  <div>🔬 BMR impédancemètre : <strong style={{color:C.white}}>{bmrCur} kcal</strong></div>
+                  <div>🎯 Déficit : <strong style={{color:C.white}}>−{OBJECTIFS_COACH.find(o=>o.v===objCur)?.deficit||0} kcal</strong></div>
+                  <div>✅ Objectif kcal : <strong style={{color:C.yellow}}>{kcalCalc} kcal</strong></div>
+                  <div style={{marginTop:5}}>⚖️ Poids : <strong style={{color:C.white}}>{poidsCur} kg</strong> × <strong>{RATIOS_PROTEINES.find(r=>r.v===ratCur)?.mult||1}g</strong></div>
+                  <div>✅ Objectif protéines : <strong style={{color:"#6EF0A0"}}>{protCalc}g</strong></div>
+                </div>
+              </details>
+            </div>
+          )}
+          <div style={{display:"flex",gap:8}}>
+            <button onClick={()=>setStep("info")} style={{padding:"14px 18px",background:"transparent",border:"1.5px solid rgba(255,255,255,0.2)",borderRadius:12,color:"rgba(255,255,255,0.7)",fontSize:13,cursor:"pointer"}}>← Retour</button>
+            <button onClick={()=>{ const p=parseFloat(form.poids); const b=parseInt(form.bmr); if(!p||p<35||p>250){alert("Entre un poids valide (35-250 kg)");return;} if(!b||b<800||b>3000){alert("Entre un BMR valide (800-3000 kcal)\n\nC'est la valeur donnée par Dominique lors de ta pesée.");return;} setStep("formule"); }} style={{flex:1,padding:"15px",background:C.yellow,border:"none",borderRadius:12,color:C.navy,fontSize:15,fontWeight:"900",cursor:"pointer"}}>Suivant →</button>
+          </div>
+        </div>
+      );
+    }
+
+    // === ÉTAPE 3 : Choix de la formule ===
     return(
-      <div style={{fontFamily:"sans-serif",minHeight:"100vh",background:C.navy,color:C.white,maxWidth:480,margin:"0 auto",padding:"40px 24px"}}>
-        <div style={{textAlign:"center",marginBottom:32}}><div style={{display:"flex",justifyContent:"center",alignItems:"baseline",marginBottom:8}}><span style={{fontSize:28,fontWeight:"900",color:C.white}}>STIM</span><span style={{fontSize:28,fontWeight:"900",color:C.yellow}}>BODY</span><span style={{fontSize:16,color:C.yellow,marginLeft:3}}>⚡</span></div><div style={{fontSize:14,color:"rgba(255,255,255,0.7)",marginTop:4}}>Choisis ta formule, {form.prenom} 👇</div></div>
+      <div style={{fontFamily:"sans-serif",minHeight:"100vh",background:C.navy,color:C.white,maxWidth:480,margin:"0 auto",padding:"30px 20px"}}>
+        <div style={{marginBottom:20,textAlign:"center"}}><div style={{display:"flex",justifyContent:"center",alignItems:"baseline"}}><span style={{fontSize:26,fontWeight:"900",color:C.white}}>STIM</span><span style={{fontSize:26,fontWeight:"900",color:C.yellow}}>BODY</span><span style={{fontSize:14,color:C.yellow,marginLeft:3}}>⚡</span></div></div>
+        <div style={{display:"flex",gap:4,marginBottom:18}}>{[1,2,3].map(n=>(<div key={n} style={{flex:1,height:3,borderRadius:2,background:n<=3?C.yellow:"rgba(255,255,255,0.15)"}}/>))}</div>
+        <div style={{fontSize:10,color:C.yellow,letterSpacing:2,marginBottom:6,textTransform:"uppercase"}}>Étape 3 / 3 · Ta formule</div>
+        <div style={{fontSize:19,fontWeight:900,color:C.white,marginBottom:4}}>Choisis ta formule, {form.prenom} 👇</div>
+        <div style={{fontSize:12,color:"rgba(255,255,255,0.6)",marginBottom:18,lineHeight:1.5}}>Elle sera utilisée comme recommandation dans ton journal alimentaire.</div>
         {Object.entries(FORMULES).map(([key,f])=>(
           <div key={key} onClick={()=>{
-            const info={prenom:form.prenom.trim(),age:form.age,objectif:form.objectif,formule:key};
+            const poids=parseFloat(form.poids);
+            const bmr=parseInt(form.bmr);
+            const objectifKcal=form.objectifKcal||"gras";
+            const ratioProt=form.ratioProt||"1";
+            const kcalObj=calcObjectifKcal(bmr,objectifKcal);
+            const protObj=calcObjectifProteines(poids,ratioProt);
+            const info={prenom:form.prenom.trim(),age:form.age,objectif:form.objectif,formule:key,poids,bmr,objectifKcal,ratioProt,kcalObjectif:kcalObj,protObjectif:protObj,datePesee:new Date().toISOString()};
             setClientInfo(info); setPrefs(f.prefs);
             try{localStorage.setItem("sb-info",JSON.stringify(info));}catch(e){}
             setEditingProfile(false); setStep("info");
-          }} style={{background:"rgba(255,255,255,0.07)",borderRadius:18,padding:"20px",marginBottom:14,cursor:"pointer",border:"2px solid rgba(255,255,255,0.15)"}}>
-            <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:10}}><div style={{fontSize:32}}>{f.emoji}</div><div><div style={{fontSize:16,fontWeight:900,color:C.yellow}}>{f.label}</div><div style={{fontSize:10,color:"rgba(255,255,255,0.5)",marginTop:2}}>Programme 25 jours</div></div></div>
+          }} style={{background:"rgba(255,255,255,0.07)",borderRadius:18,padding:"20px",marginBottom:12,cursor:"pointer",border:"2px solid rgba(255,255,255,0.15)"}}>
+            <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:10}}><div style={{fontSize:32}}>{f.emoji}</div><div><div style={{fontSize:16,fontWeight:900,color:C.yellow}}>{f.label}</div><div style={{fontSize:10,color:"rgba(255,255,255,0.5)",marginTop:2}}>Programme 25 jours recommandé</div></div></div>
             <div style={{fontSize:12,color:"rgba(255,255,255,0.7)",lineHeight:1.6,marginBottom:12}}>{f.desc}</div>
             <div style={{background:C.yellow,borderRadius:10,padding:"10px 14px",textAlign:"center",color:C.navy,fontWeight:900,fontSize:13}}>Choisir cette formule →</div>
           </div>
         ))}
-        <button onClick={()=>setStep("info")} style={{width:"100%",padding:"12px",background:"transparent",border:"1px solid rgba(255,255,255,0.2)",borderRadius:12,color:"rgba(255,255,255,0.5)",fontSize:12,cursor:"pointer",marginTop:4}}>← Retour</button>
+        <button onClick={()=>setStep("impedance")} style={{width:"100%",padding:"12px",background:"transparent",border:"1px solid rgba(255,255,255,0.2)",borderRadius:12,color:"rgba(255,255,255,0.5)",fontSize:12,cursor:"pointer",marginTop:4}}>← Retour</button>
       </div>
     );
   }
@@ -820,7 +976,8 @@ export default function App() {
           <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:6,marginTop:2}}>
             <span style={{fontSize:9,background:formule==="sucre"?C.orange:C.green,color:"white",padding:"2px 8px",borderRadius:20,fontWeight:700}}>{FORMULES[formule].emoji} {FORMULES[formule].label}</span>
             <span style={{fontSize:9,color:"rgba(255,255,255,0.4)"}}>· {CLIENT.toUpperCase()}</span>
-            <button onClick={()=>{setForm({prenom:clientInfo?.prenom||"",age:clientInfo?.age||"",objectif:clientInfo?.objectif||""});setEditingProfile(true);setStep("info");}} style={{background:"rgba(255,255,255,0.1)",border:"none",borderRadius:6,color:C.yellow,fontSize:9,padding:"2px 7px",cursor:"pointer"}}>✏️</button>
+            {clientInfo?.kcalObjectif&&<span style={{fontSize:9,color:C.yellow,fontWeight:700}}>· 🎯 {clientInfo.kcalObjectif} kcal</span>}
+            <button onClick={()=>{setForm({prenom:clientInfo?.prenom||"",age:clientInfo?.age||"",objectif:clientInfo?.objectif||"",poids:clientInfo?.poids||"",bmr:clientInfo?.bmr||"",objectifKcal:clientInfo?.objectifKcal||"gras",ratioProt:clientInfo?.ratioProt||"1"});setEditingProfile(true);setStep("info");}} style={{background:"rgba(255,255,255,0.1)",border:"none",borderRadius:6,color:C.yellow,fontSize:9,padding:"2px 7px",cursor:"pointer"}}>✏️</button>
           </div>
         </div>
         <div style={{display:"flex",overflowX:"auto",scrollbarWidth:"none",msOverflowStyle:"none"}}>{TABS.map(t=>(<button key={t.k} onClick={()=>setTab(t.k)} style={{flexShrink:0,padding:"8px 10px",background:"transparent",border:"none",borderBottom:tab===t.k?"3px solid "+C.yellow:"3px solid transparent",color:tab===t.k?C.yellow:"rgba(255,255,255,0.4)",fontSize:8,cursor:"pointer",whiteSpace:"nowrap",fontWeight:tab===t.k?"bold":"normal"}}>{t.l}</button>))}</div>
@@ -837,37 +994,62 @@ export default function App() {
             <button onClick={()=>setDay(d=>Math.min(24,d+1))} disabled={day===24} style={{background:day===24?"#E8EAF0":C.navy,border:"none",color:day===24?C.muted:C.yellow,borderRadius:9,padding:"8px 15px",fontSize:16,cursor:day===24?"default":"pointer",fontWeight:"bold"}}>{">"}</button>
           </div>
           <div style={{height:5,background:C.border,borderRadius:3,marginBottom:14}}><div style={{height:"100%",borderRadius:3,background:"linear-gradient(90deg,"+C.navy+","+C.yellow+")",width:((day+1)/25*100)+"%",transition:"width 0.3s"}}/></div>
-          {/* === BANDEAU JOURNALIER MODIFIÉ - Style MyFitnessPal/Yazio === */}
+          {/* === BANDEAU JOURNALIER V3 - Méthode Coach Dominique === */}
           <div style={{background:C.navy,borderRadius:14,padding:"14px 14px 12px",marginBottom:14}}>
-            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
-              <span style={{fontSize:8,letterSpacing:2,color:C.yellow,textTransform:"uppercase",fontWeight:"bold"}}>Total journalier</span>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
+              <span style={{fontSize:9,letterSpacing:2,color:C.yellow,textTransform:"uppercase",fontWeight:"bold"}}>🎯 Tes objectifs du jour</span>
               <span style={{fontSize:8,letterSpacing:1,color:"rgba(255,255,255,0.5)"}}>Mangé / Objectif</span>
             </div>
-            <div style={{display:"flex",marginBottom:12}}>
-              {[
-                {actual:totalActual.p,planned:total.p,l:"Prot",c:"#6EF0A0"},
-                {actual:totalActual.f,planned:total.f,l:"Lip",c:"#6EC8FF"},
-                {actual:totalActual.c,planned:total.c,l:"Gluc",c:"#C0A0FF"},
-                {actual:totalActual.cal,planned:total.cal,l:"kcal",c:C.yellow}
-              ].map((x,i,arr)=>(
-                <div key={i} style={{flex:1,textAlign:"center",borderRight:i<arr.length-1?"1px solid rgba(255,255,255,0.1)":"none"}}>
-                  <div style={{fontSize:14,fontWeight:"bold",color:x.c}}>
-                    {Math.round(x.actual)}<span style={{fontSize:10,color:"rgba(255,255,255,0.4)"}}>/{Math.round(x.planned)}</span>
-                  </div>
-                  <div style={{fontSize:7,color:"rgba(255,255,255,0.5)",textTransform:"uppercase",letterSpacing:1}}>{x.l}</div>
+            {/* KCAL - Gros affichage */}
+            <div style={{marginBottom:12}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:4}}>
+                <span style={{fontSize:10,color:"rgba(255,255,255,0.6)",fontWeight:600}}>🔥 KCAL</span>
+                <span style={{fontSize:11,color:barColor,fontWeight:"bold"}}>{pctCal}%</span>
+              </div>
+              <div style={{fontSize:18,fontWeight:"bold",color:C.yellow,marginBottom:5}}>
+                {Math.round(totalActual.cal)} <span style={{fontSize:11,color:"rgba(255,255,255,0.4)"}}>/ {Math.round(userKcalObjectif)} kcal</span>
+              </div>
+              <div style={{height:7,background:"rgba(255,255,255,0.1)",borderRadius:4,overflow:"hidden"}}>
+                <div style={{height:"100%",width:Math.min(100,pctCal)+"%",background:barColor,borderRadius:4,transition:"width 0.5s"}}/>
+              </div>
+              <div style={{fontSize:10,color:"rgba(255,255,255,0.7)",marginTop:4}}>{motivMsg}</div>
+            </div>
+            {/* PROTÉINES - Gros affichage */}
+            <div style={{marginBottom:10}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:4}}>
+                <span style={{fontSize:10,color:"rgba(255,255,255,0.6)",fontWeight:600}}>🥩 PROTÉINES <span style={{fontSize:8,color:"rgba(255,255,255,0.4)",fontWeight:400}}>({clientInfo?.ratioProt==="12"?"1.2":clientInfo?.ratioProt==="15"?"1.5":"1"}g/kg)</span></span>
+                <span style={{fontSize:11,color:pctProt>=100?C.green:pctProt>=70?"#6EF0A0":"#6EC8FF",fontWeight:"bold"}}>{pctProt}%</span>
+              </div>
+              <div style={{fontSize:18,fontWeight:"bold",color:"#6EF0A0",marginBottom:5}}>
+                {Math.round(totalActual.p)}g <span style={{fontSize:11,color:"rgba(255,255,255,0.4)"}}>/ {userProtObjectif}g</span>
+              </div>
+              <div style={{height:7,background:"rgba(255,255,255,0.1)",borderRadius:4,overflow:"hidden"}}>
+                <div style={{height:"100%",width:Math.min(100,pctProt)+"%",background:pctProt>=100?C.green:"#6EF0A0",borderRadius:4,transition:"width 0.5s"}}/>
+              </div>
+              {restProt>0&&totalActual.p>0&&<div style={{fontSize:10,color:"rgba(255,255,255,0.7)",marginTop:4}}>🌱 Encore {restProt}g de protéines</div>}
+              {restProt===0&&totalActual.p>0&&<div style={{fontSize:10,color:C.green,marginTop:4,fontWeight:"bold"}}>✅ Objectif protéines atteint !</div>}
+            </div>
+            {/* Macros détails pliable */}
+            <details style={{marginTop:8,borderTop:"1px solid rgba(255,255,255,0.08)",paddingTop:8}}>
+              <summary style={{fontSize:9,color:"rgba(255,255,255,0.4)",cursor:"pointer",listStyle:"none",letterSpacing:1}}>▸ VOIR LES MACROS (LIPIDES / GLUCIDES)</summary>
+              <div style={{display:"flex",marginTop:10,gap:10}}>
+                <div style={{flex:1,textAlign:"center"}}>
+                  <div style={{fontSize:15,fontWeight:"bold",color:"#6EC8FF"}}>{Math.round(totalActual.f)}g</div>
+                  <div style={{fontSize:8,color:"rgba(255,255,255,0.5)",textTransform:"uppercase",letterSpacing:1}}>Lipides</div>
                 </div>
-              ))}
-            </div>
-            {/* Barre de progression principale */}
-            <div style={{height:8,background:"rgba(255,255,255,0.1)",borderRadius:4,overflow:"hidden",marginBottom:8}}>
-              <div style={{height:"100%",width:Math.min(100,pctCal)+"%",background:barColor,borderRadius:4,transition:"width 0.5s"}}/>
-            </div>
-            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-              <span style={{fontSize:10,color:"rgba(255,255,255,0.7)"}}>{motivMsg}</span>
-              <span style={{fontSize:11,color:barColor,fontWeight:"bold"}}>{pctCal}%</span>
-            </div>
+                <div style={{flex:1,textAlign:"center"}}>
+                  <div style={{fontSize:15,fontWeight:"bold",color:"#C0A0FF"}}>{Math.round(totalActual.c)}g</div>
+                  <div style={{fontSize:8,color:"rgba(255,255,255,0.5)",textTransform:"uppercase",letterSpacing:1}}>Glucides</div>
+                </div>
+              </div>
+            </details>
           </div>
-          {/* === FIN BANDEAU MODIFIÉ === */}
+          {/* Rappel plan théorique */}
+          <div style={{background:"#F5F7FF",borderRadius:10,padding:"8px 12px",marginBottom:14,fontSize:10,color:C.soft,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+            <span>💡 Plan STIMBODY recommandé : <strong style={{color:C.navy}}>{Math.round(total.cal)} kcal</strong></span>
+            <span style={{fontSize:9,color:C.muted}}>Indicatif</span>
+          </div>
+          {/* === FIN BANDEAU V3 === */}
           <MCard {...mp("matin")} emoji="🌅" title="Petit-déjeuner" footNote="Thé / Café noir · Grand verre d'eau"/>
           <MCard {...mp("midi")} emoji="☀️" title="Déjeuner · plat + complément" huile footNote="Huile olive · Vinaigre cidre · Citron · Moutarde"/>
           <MCard {...mp("soir")} emoji="🌙" title="Dîner · légumes cuits + crus + protéine" isSoir/>
