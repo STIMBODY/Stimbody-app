@@ -740,6 +740,20 @@ export default function App() {
   const mCount=meal=>getI(meal).filter((_,i)=>isEaten(meal,i)).length;
   const allI=planReady&&d?[...getI("matin"),...getI("midi"),...getI("soir")]:[];
   const total=calc([...allI,{k:"huileOlive",g:10}]);
+  // === NOUVEAU : Calcul du réel mangé (uniquement les repas cochés) ===
+  const eatenItems=planReady&&d?[
+    ...getI("matin").filter((_,i)=>isEaten("matin",i)),
+    ...getI("midi").filter((_,i)=>isEaten("midi",i)),
+    ...getI("soir").filter((_,i)=>isEaten("soir",i))
+  ]:[];
+  const huileEaten=mDone("midi")?[{k:"huileOlive",g:10}]:[];
+  const totalActual=calc([...eatenItems,...huileEaten]);
+  const pctCal=total.cal>0?Math.round(totalActual.cal/total.cal*100):0;
+  const restCal=Math.max(0,Math.round(total.cal-totalActual.cal));
+  // Couleur intelligente de la barre
+  const barColor=pctCal>=110?C.red:pctCal>=80?C.green:pctCal>=50?C.yellow:"#6EC8FF";
+  const motivMsg=totalActual.cal===0?"🍽 Coche tes repas pour voir ta progression":pctCal>=110?"⚠️ Attention, dépassement de "+(Math.round(totalActual.cal-total.cal))+" kcal":pctCal>=95?"🎯 Objectif atteint ! Bravo "+CLIENT:pctCal>=80?"💪 Tu y es presque ! Plus que "+restCal+" kcal":"🌱 Plus que "+restCal+" kcal pour atteindre l'objectif";
+  // === FIN NOUVEAU ===
   const totalC=allI.length; const doneC=planReady?mCount("matin")+mCount("midi")+mCount("soir"):0;
   const dayOk=planReady&&mDone("matin")&&mDone("midi")&&mDone("soir");
   const j=journal[day]||{mood:null,faim:null,water:false,note:""};
@@ -823,7 +837,37 @@ export default function App() {
             <button onClick={()=>setDay(d=>Math.min(24,d+1))} disabled={day===24} style={{background:day===24?"#E8EAF0":C.navy,border:"none",color:day===24?C.muted:C.yellow,borderRadius:9,padding:"8px 15px",fontSize:16,cursor:day===24?"default":"pointer",fontWeight:"bold"}}>{">"}</button>
           </div>
           <div style={{height:5,background:C.border,borderRadius:3,marginBottom:14}}><div style={{height:"100%",borderRadius:3,background:"linear-gradient(90deg,"+C.navy+","+C.yellow+")",width:((day+1)/25*100)+"%",transition:"width 0.3s"}}/></div>
-          <div style={{background:C.navy,borderRadius:14,padding:"12px 14px",marginBottom:14}}><div style={{fontSize:8,letterSpacing:3,color:C.yellow,textTransform:"uppercase",marginBottom:8,textAlign:"center"}}>Total journalier estimé</div><div style={{display:"flex"}}>{[{v:total.p,l:"Protéines",c:"#6EF0A0"},{v:total.f,l:"Lipides",c:"#6EC8FF"},{v:total.c,l:"Glucides",c:"#C0A0FF"},{v:total.cal,l:"kcal",c:C.yellow}].map((x,i,arr)=>(<div key={i} style={{flex:1,textAlign:"center",borderRight:i<arr.length-1?"1px solid rgba(255,255,255,0.1)":"none"}}><div style={{fontSize:18,fontWeight:"bold",color:x.c}}>{Math.round(x.v)}</div><div style={{fontSize:7,color:"rgba(255,255,255,0.5)",textTransform:"uppercase",letterSpacing:1}}>{x.l}</div></div>))}</div></div>
+          {/* === BANDEAU JOURNALIER MODIFIÉ - Style MyFitnessPal/Yazio === */}
+          <div style={{background:C.navy,borderRadius:14,padding:"14px 14px 12px",marginBottom:14}}>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
+              <span style={{fontSize:8,letterSpacing:2,color:C.yellow,textTransform:"uppercase",fontWeight:"bold"}}>Total journalier</span>
+              <span style={{fontSize:8,letterSpacing:1,color:"rgba(255,255,255,0.5)"}}>Mangé / Objectif</span>
+            </div>
+            <div style={{display:"flex",marginBottom:12}}>
+              {[
+                {actual:totalActual.p,planned:total.p,l:"Prot",c:"#6EF0A0"},
+                {actual:totalActual.f,planned:total.f,l:"Lip",c:"#6EC8FF"},
+                {actual:totalActual.c,planned:total.c,l:"Gluc",c:"#C0A0FF"},
+                {actual:totalActual.cal,planned:total.cal,l:"kcal",c:C.yellow}
+              ].map((x,i,arr)=>(
+                <div key={i} style={{flex:1,textAlign:"center",borderRight:i<arr.length-1?"1px solid rgba(255,255,255,0.1)":"none"}}>
+                  <div style={{fontSize:14,fontWeight:"bold",color:x.c}}>
+                    {Math.round(x.actual)}<span style={{fontSize:10,color:"rgba(255,255,255,0.4)"}}>/{Math.round(x.planned)}</span>
+                  </div>
+                  <div style={{fontSize:7,color:"rgba(255,255,255,0.5)",textTransform:"uppercase",letterSpacing:1}}>{x.l}</div>
+                </div>
+              ))}
+            </div>
+            {/* Barre de progression principale */}
+            <div style={{height:8,background:"rgba(255,255,255,0.1)",borderRadius:4,overflow:"hidden",marginBottom:8}}>
+              <div style={{height:"100%",width:Math.min(100,pctCal)+"%",background:barColor,borderRadius:4,transition:"width 0.5s"}}/>
+            </div>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+              <span style={{fontSize:10,color:"rgba(255,255,255,0.7)"}}>{motivMsg}</span>
+              <span style={{fontSize:11,color:barColor,fontWeight:"bold"}}>{pctCal}%</span>
+            </div>
+          </div>
+          {/* === FIN BANDEAU MODIFIÉ === */}
           <MCard {...mp("matin")} emoji="🌅" title="Petit-déjeuner" footNote="Thé / Café noir · Grand verre d'eau"/>
           <MCard {...mp("midi")} emoji="☀️" title="Déjeuner · plat + complément" huile footNote="Huile olive · Vinaigre cidre · Citron · Moutarde"/>
           <MCard {...mp("soir")} emoji="🌙" title="Dîner · légumes cuits + crus + protéine" isSoir/>
