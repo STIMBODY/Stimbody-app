@@ -785,451 +785,613 @@ function searchAliments(query){
 // Format: {id, n: nom, e: emoji, semaine: 1-3, jour, repas: matin/midi/coll/soir, duree (min), 
 //          difficulte, ingredients: [{alimentId, qty, label}], preparation: [étapes], conseil}
 
-const RECETTES_DEFI = [
-  // ========== SEMAINE 1 - LUNDI (Protéines + Légumes) ==========
-  {
-    id:"r001", n:"Omelette champignons", e:"🍳",
-    semaine:1, jour:"Lundi", repas:"matin", duree:10, difficulte:"Facile",
-    ingredients:[
-      {alimentId:"a200", qty:120, label:"2 œufs entiers"},
-      {alimentId:"a202", qty:66, label:"2 blancs d'œuf"},
-      {alimentId:"a310", qty:100, label:"100g champignons de Paris"}
-    ],
-    preparation:[
-      "Émincer finement les champignons",
-      "Les faire suer 5 min à sec dans une poêle anti-adhésive pour évacuer l'eau",
-      "Battre les œufs entiers avec les blancs, sel poivre",
-      "Verser sur les champignons, cuire à feu doux pour garder le moelleux"
-    ],
-    conseil:"Cuisson lente = œufs moelleux. Ajoute du persil ciselé pour la fraîcheur."
-  },
-  {
-    id:"r002", n:"Salade thon fraîche", e:"🥗",
-    semaine:1, jour:"Lundi", repas:"midi", duree:10, difficulte:"Facile",
-    ingredients:[
-      {alimentId:"a113", qty:120, label:"120g thon au naturel"},
-      {alimentId:"a400", qty:80, label:"80g salade verte"},
-      {alimentId:"a405", qty:100, label:"100g tomates"},
-      {alimentId:"a409", qty:80, label:"80g carottes râpées"},
-      {alimentId:"a800", qty:5, label:"1 c.à.c huile d'olive"}
-    ],
-    preparation:[
-      "Égoutter le thon",
-      "Laver et essorer la salade",
-      "Couper les tomates en quartiers",
-      "Mélanger le tout, ajouter citron + huile juste avant de servir"
-    ],
-    conseil:"Le citron rehausse les saveurs sans calories. Évite les vinaigrettes industrielles."
-  },
-  {
-    id:"r003", n:"Œuf dur & amandes", e:"🥚",
-    semaine:1, jour:"Lundi", repas:"coll", duree:12, difficulte:"Facile",
-    ingredients:[
-      {alimentId:"a201", qty:60, label:"1 œuf dur"},
-      {alimentId:"a811", qty:15, label:"15g amandes (≈12)"}
-    ],
-    preparation:[
-      "Faire bouillir l'œuf 10 min",
-      "Refroidir sous eau froide pour faciliter l'écalage",
-      "Servir avec les amandes nature (non salées)"
-    ],
-    conseil:"Combo parfait protéines + bons lipides pour tenir jusqu'au dîner."
-  },
-  {
-    id:"r004", n:"Poulet grillé légumes", e:"🍗",
-    semaine:1, jour:"Lundi", repas:"soir", duree:20, difficulte:"Facile",
-    ingredients:[
-      {alimentId:"a002", qty:120, label:"120g blanc de poulet"},
-      {alimentId:"a300", qty:150, label:"150g brocolis"},
-      {alimentId:"a310", qty:100, label:"100g champignons"}
-    ],
-    preparation:[
-      "Assaisonner le poulet (paprika, ail, sel) et le griller à la poêle 5-6 min par face",
-      "Cuire les brocolis à la vapeur 8 min (ils doivent rester croquants)",
-      "Faire revenir les champignons 3 min à feu vif",
-      "Servir bien chaud avec un filet de citron"
-    ],
-    conseil:"Coupe le poulet en lamelles avant cuisson pour gagner du temps."
-  },
+// === BANQUE DE RECETTES UNIFIÉE STIMBODY ===
+// Photos Unsplash par catégorie de plat (URLs publiques libres de droit)
+const PHOTOS_RECETTES = {
+  // Petits-déjeuners
+  omelette: "https://images.unsplash.com/photo-1525351484163-7529414344d8?w=600&q=80",
+  oeufs: "https://images.unsplash.com/photo-1525351484163-7529414344d8?w=600&q=80",
+  pancakes: "https://images.unsplash.com/photo-1528207776546-365bb710ee93?w=600&q=80",
+  crepes: "https://images.unsplash.com/photo-1519676867240-f03562e64548?w=600&q=80",
+  yaourt: "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=600&q=80",
+  fromage_blanc: "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=600&q=80",
+  skyr: "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=600&q=80",
+  smoothie_bowl: "https://images.unsplash.com/photo-1490474504059-bf2db5ab2348?w=600&q=80",
+  porridge: "https://images.unsplash.com/photo-1571197119282-7c4a6e5fbc56?w=600&q=80",
+  toast: "https://images.unsplash.com/photo-1525351484163-7529414344d8?w=600&q=80",
+  avocat_toast: "https://images.unsplash.com/photo-1603046891744-1f76eb10aec3?w=600&q=80",
+  french_toast: "https://images.unsplash.com/photo-1484723091739-30a097e8f929?w=600&q=80",
+  granola: "https://images.unsplash.com/photo-1517673400267-0251440c45dc?w=600&q=80",
+  cottage_cheese: "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=600&q=80",
+  // Plats principaux
+  poulet: "https://images.unsplash.com/photo-1532550907401-a500c9a57435?w=600&q=80",
+  poulet_legumes: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=600&q=80",
+  poulet_curry: "https://images.unsplash.com/photo-1631292784640-2b24be784d5d?w=600&q=80",
+  poulet_grille: "https://images.unsplash.com/photo-1567620832903-9fc6debc209f?w=600&q=80",
+  poulet_haricots: "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=600&q=80",
+  poulet_paprika: "https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=600&q=80",
+  poulet_shawarma: "https://images.unsplash.com/photo-1530469912745-a215c6b256ea?w=600&q=80",
+  saumon: "https://images.unsplash.com/photo-1580822184713-fc5400e7fe10?w=600&q=80",
+  saumon_legumes: "https://images.unsplash.com/photo-1559847844-5315695dadae?w=600&q=80",
+  saumon_fume: "https://images.unsplash.com/photo-1576185850227-1f72b7f8d484?w=600&q=80",
+  cabillaud: "https://images.unsplash.com/photo-1559847844-5315695dadae?w=600&q=80",
+  poisson_papillote: "https://images.unsplash.com/photo-1559847844-5315695dadae?w=600&q=80",
+  thon: "https://images.unsplash.com/photo-1542528180-1c2803fe048b?w=600&q=80",
+  crevettes: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600&q=80",
+  boeuf: "https://images.unsplash.com/photo-1546964124-0cce460f38ef?w=600&q=80",
+  steak: "https://images.unsplash.com/photo-1546964124-0cce460f38ef?w=600&q=80",
+  boulettes: "https://images.unsplash.com/photo-1529042410759-befb1204b468?w=600&q=80",
+  poivron_farci: "https://images.unsplash.com/photo-1626200419199-391ae4be7a41?w=600&q=80",
+  veau: "https://images.unsplash.com/photo-1544025162-d76694265947?w=600&q=80",
+  dinde: "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=600&q=80",
+  hachis: "https://images.unsplash.com/photo-1546549032-9571cd6b27df?w=600&q=80",
+  // Bowls et salades
+  bowl: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&q=80",
+  poke_bowl: "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=600&q=80",
+  salade: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80",
+  salade_thon: "https://images.unsplash.com/photo-1574484284002-952d92456975?w=600&q=80",
+  salade_nicoise: "https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?w=600&q=80",
+  salade_avocat: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=600&q=80",
+  quinoa: "https://images.unsplash.com/photo-1505576399279-565b52d4ac71?w=600&q=80",
+  lentilles: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&q=80",
+  // Wraps et sandwichs
+  wrap: "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?w=600&q=80",
+  sandwich: "https://images.unsplash.com/photo-1528736235302-52922df5c122?w=600&q=80",
+  // Soupes et veloutés
+  soupe: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600&q=80",
+  velute: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=600&q=80",
+  // Légumes seuls
+  legumes_vapeur: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=600&q=80",
+  ratatouille: "https://images.unsplash.com/photo-1572441713132-51c75654db73?w=600&q=80",
+  tian: "https://images.unsplash.com/photo-1572441713132-51c75654db73?w=600&q=80",
+  // Patates et féculents
+  patate_douce: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&q=80",
+  pommes_terre: "https://images.unsplash.com/photo-1580323956656-26bbb1206e34?w=600&q=80",
+  riz: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&q=80",
+  pates: "https://images.unsplash.com/photo-1551892374-ecf8754cf8b0?w=600&q=80",
+  tortilla: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=600&q=80",
+  // Collations
+  fruit_amandes: "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=600&q=80",
+  pomme: "https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?w=600&q=80",
+  fruits_rouges: "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=600&q=80",
+  oeuf_dur: "https://images.unsplash.com/photo-1551192041-c6f86fb52b94?w=600&q=80",
+  chocolat: "https://images.unsplash.com/photo-1481391319762-47dff72954d9?w=600&q=80",
+  houmous: "https://images.unsplash.com/photo-1571197119282-7c4a6e5fbc56?w=600&q=80",
+  // Default fallback
+  default: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&q=80"
+};
 
-  // ========== SEMAINE 1 - MARDI ==========
-  {
-    id:"r005", n:"Pancakes protéinés fruits rouges", e:"🥞",
-    semaine:1, jour:"Mardi", repas:"matin", duree:12, difficulte:"Facile",
-    ingredients:[
-      {alimentId:"a200", qty:60, label:"1 œuf"},
-      {alimentId:"a207", qty:50, label:"50g fromage blanc 0%"},
-      {alimentId:"a512", qty:20, label:"20g flocons d'avoine"},
-      {alimentId:"a608", qty:80, label:"80g fruits rouges"}
-    ],
-    preparation:[
-      "Mixer œuf + fromage blanc + avoine pour avoir une pâte lisse",
-      "Faire chauffer une poêle anti-adhésive",
-      "Verser de petites louches, cuire 1 min par face",
-      "Servir avec les fruits rouges au-dessus"
-    ],
-    conseil:"Sans farine ! Les flocons d'avoine remplacent et apportent des fibres."
-  },
-  {
-    id:"r006", n:"Saumon fumé crudités", e:"🐟",
-    semaine:1, jour:"Mardi", repas:"midi", duree:10, difficulte:"Facile",
-    ingredients:[
-      {alimentId:"a101", qty:60, label:"60g saumon fumé"},
-      {alimentId:"a207", qty:30, label:"30g fromage blanc 0% (sauce)"},
-      {alimentId:"a409", qty:80, label:"80g carottes râpées"},
-      {alimentId:"a407", qty:70, label:"70g concombre"}
-    ],
-    preparation:[
-      "Mélanger fromage blanc + jus de citron + aneth pour la sauce",
-      "Servir le saumon fumé en lamelles",
-      "Disposer les crudités à côté",
-      "Napper de sauce au moment de manger"
-    ],
-    conseil:"Le saumon fumé est riche en oméga-3. Vérifie qu'il soit pauvre en sel."
-  },
-  {
-    id:"r007", n:"Pomme & amandes", e:"🍎",
-    semaine:1, jour:"Mardi", repas:"coll", duree:2, difficulte:"Facile",
-    ingredients:[
-      {alimentId:"a600", qty:120, label:"1 pomme (≈120g)"},
-      {alimentId:"a811", qty:15, label:"15g amandes"}
-    ],
-    preparation:[
-      "Couper la pomme en quartiers",
-      "Servir avec une poignée d'amandes nature"
-    ],
-    conseil:"Mâche bien la pomme (la satiété arrive avec la mastication)."
-  },
-  {
-    id:"r008", n:"Boulettes bœuf sauce tomate aubergine", e:"🍝",
-    semaine:1, jour:"Mardi", repas:"soir", duree:35, difficulte:"Moyen",
-    ingredients:[
-      {alimentId:"a008", qty:120, label:"120g bœuf haché 5%"},
-      {alimentId:"a304", qty:150, label:"150g aubergine"},
-      {alimentId:"d108", qty:100, label:"100g sauce tomate"}
-    ],
-    preparation:[
-      "Couper l'aubergine en cubes, cuire au four 25 min à 200°C",
-      "Former des boulettes de bœuf avec sel/poivre/herbes",
-      "Cuire les boulettes à la poêle 8 min (les retourner régulièrement)",
-      "Ajouter la sauce tomate, mijoter 5 min, servir avec l'aubergine"
-    ],
-    conseil:"Bœuf 5% MG = protéines maximales, gras minimal."
-  },
+// === BANQUE DE RECETTES UNIFIÉE STIMBODY ===
+// Format unifié pour toutes les recettes (Coach + Le Défi 3 Semaines)
+// Chaque recette : {id, n: nom, e: emoji, photoKey, source, semaine?, jour?, repas, duree, difficulte, ingredients[], preparation[], conseil}
+const BANQUE_RECETTES = [
+  // ============================================================
+  // === LE DÉFI 3 SEMAINES - SEMAINE 1 (28 recettes) ===
+  // ============================================================
+  // LUNDI Sem 1
+  {id:"d1-lun-m", n:"Omelette champignons", e:"🍳", photoKey:"omelette", source:"defi", semaine:1, jour:"Lundi", repas:"matin", duree:10, difficulte:"Facile",
+    ingredients:[{alimentId:"a200", qty:120, label:"2 œufs entiers"},{alimentId:"a202", qty:66, label:"2 blancs d'œuf"},{alimentId:"a310", qty:100, label:"100g champignons de Paris"}],
+    preparation:["Émincer finement les champignons","Les faire suer 5 min à sec dans une poêle anti-adhésive","Battre les œufs entiers avec les blancs, sel poivre","Verser sur les champignons, cuire à feu doux"],
+    conseil:"Cuisson lente = œufs moelleux. Ajoute du persil ciselé pour la fraîcheur."},
+  {id:"d1-lun-d", n:"Salade thon fraîche", e:"🥗", photoKey:"salade_thon", source:"defi", semaine:1, jour:"Lundi", repas:"midi", duree:10, difficulte:"Facile",
+    ingredients:[{alimentId:"a113", qty:120, label:"120g thon au naturel"},{alimentId:"a400", qty:80, label:"80g salade verte"},{alimentId:"a405", qty:100, label:"100g tomates"},{alimentId:"a409", qty:80, label:"80g carottes râpées"},{alimentId:"a800", qty:5, label:"1 c.à.c huile d'olive"}],
+    preparation:["Égoutter le thon","Laver et essorer la salade","Couper les tomates en quartiers","Mélanger le tout, ajouter citron + huile juste avant de servir"],
+    conseil:"Le citron rehausse les saveurs sans calories. Évite les vinaigrettes industrielles."},
+  {id:"d1-lun-c", n:"Œuf dur & amandes", e:"🥚", photoKey:"oeuf_dur", source:"defi", semaine:1, jour:"Lundi", repas:"coll", duree:12, difficulte:"Facile",
+    ingredients:[{alimentId:"a201", qty:60, label:"1 œuf dur"},{alimentId:"a811", qty:15, label:"15g amandes"}],
+    preparation:["Faire bouillir l'œuf 10 min","Refroidir sous eau froide","Servir avec les amandes nature"],
+    conseil:"Combo parfait protéines + bons lipides pour tenir jusqu'au dîner."},
+  {id:"d1-lun-s", n:"Poulet grillé légumes", e:"🍗", photoKey:"poulet_grille", source:"defi", semaine:1, jour:"Lundi", repas:"soir", duree:20, difficulte:"Facile",
+    ingredients:[{alimentId:"a002", qty:120, label:"120g blanc de poulet"},{alimentId:"a300", qty:150, label:"150g brocolis"},{alimentId:"a310", qty:100, label:"100g champignons"}],
+    preparation:["Assaisonner le poulet (paprika, ail, sel) et le griller à la poêle 5-6 min par face","Cuire les brocolis à la vapeur 8 min","Faire revenir les champignons 3 min à feu vif","Servir bien chaud avec un filet de citron"],
+    conseil:"Coupe le poulet en lamelles avant cuisson pour gagner du temps."},
+  // MARDI Sem 1
+  {id:"d1-mar-m", n:"Pancakes protéinés fruits rouges", e:"🥞", photoKey:"pancakes", source:"defi", semaine:1, jour:"Mardi", repas:"matin", duree:12, difficulte:"Facile",
+    ingredients:[{alimentId:"a200", qty:60, label:"1 œuf"},{alimentId:"a207", qty:50, label:"50g fromage blanc 0%"},{alimentId:"a512", qty:20, label:"20g flocons d'avoine"},{alimentId:"a608", qty:80, label:"80g fruits rouges"}],
+    preparation:["Mixer œuf + fromage blanc + avoine","Faire chauffer une poêle anti-adhésive","Verser de petites louches, cuire 1 min par face","Servir avec les fruits rouges au-dessus"],
+    conseil:"Sans farine ! Les flocons d'avoine remplacent et apportent des fibres."},
+  {id:"d1-mar-d", n:"Saumon fumé crudités", e:"🐟", photoKey:"saumon_fume", source:"defi", semaine:1, jour:"Mardi", repas:"midi", duree:10, difficulte:"Facile",
+    ingredients:[{alimentId:"a101", qty:60, label:"60g saumon fumé"},{alimentId:"a207", qty:30, label:"30g fromage blanc 0%"},{alimentId:"a409", qty:80, label:"80g carottes râpées"},{alimentId:"a407", qty:70, label:"70g concombre"}],
+    preparation:["Mélanger fromage blanc + jus de citron + aneth","Servir le saumon fumé en lamelles","Disposer les crudités à côté","Napper de sauce au moment de manger"],
+    conseil:"Le saumon fumé est riche en oméga-3."},
+  {id:"d1-mar-c", n:"Pomme & amandes", e:"🍎", photoKey:"fruit_amandes", source:"defi", semaine:1, jour:"Mardi", repas:"coll", duree:2, difficulte:"Facile",
+    ingredients:[{alimentId:"a600", qty:120, label:"1 pomme"},{alimentId:"a811", qty:15, label:"15g amandes"}],
+    preparation:["Couper la pomme en quartiers","Servir avec une poignée d'amandes nature"],
+    conseil:"Mâche bien la pomme (la satiété arrive avec la mastication)."},
+  {id:"d1-mar-s", n:"Boulettes bœuf sauce tomate aubergine", e:"🍝", photoKey:"boulettes", source:"defi", semaine:1, jour:"Mardi", repas:"soir", duree:35, difficulte:"Moyen",
+    ingredients:[{alimentId:"a008", qty:120, label:"120g bœuf haché 5%"},{alimentId:"a304", qty:150, label:"150g aubergine"},{alimentId:"d108", qty:100, label:"100g sauce tomate"}],
+    preparation:["Couper l'aubergine en cubes, cuire au four 25 min à 200°C","Former des boulettes de bœuf avec sel/poivre/herbes","Cuire les boulettes à la poêle 8 min","Ajouter la sauce tomate, mijoter 5 min"],
+    conseil:"Bœuf 5% MG = protéines maximales, gras minimal."},
+  // MERCREDI Sem 1
+  {id:"d1-mer-m", n:"Wasa avocat œuf", e:"🥑", photoKey:"avocat_toast", source:"defi", semaine:1, jour:"Mercredi", repas:"matin", duree:10, difficulte:"Facile",
+    ingredients:[{alimentId:"a706", qty:30, label:"30g pain Wasa"},{alimentId:"a414", qty:50, label:"50g avocat"},{alimentId:"a201", qty:60, label:"1 œuf mollet"}],
+    preparation:["Cuire l'œuf 6 min dans l'eau bouillante","Écraser l'avocat à la fourchette avec citron + sel","Tartiner sur les Wasa, déposer l'œuf coupé en deux","Saupoudrer de paprika"],
+    conseil:"L'avocat se marie avec un peu de citron pour éviter qu'il noircisse."},
+  {id:"d1-mer-d", n:"Salade quinoa thon", e:"🥗", photoKey:"quinoa", source:"defi", semaine:1, jour:"Mercredi", repas:"midi", duree:25, difficulte:"Facile",
+    ingredients:[{alimentId:"a505", qty:120, label:"40g quinoa cru (=120g cuit)"},{alimentId:"a113", qty:100, label:"100g thon au naturel"},{alimentId:"a405", qty:100, label:"100g tomates"},{alimentId:"a407", qty:50, label:"50g concombre"}],
+    preparation:["Cuire le quinoa 12 min dans l'eau bouillante","Le rincer à l'eau froide","Couper les légumes en petits dés","Mélanger avec le thon égoutté"],
+    conseil:"Le quinoa est une protéine végétale complète."},
+  {id:"d1-mer-c", n:"Fromage blanc & chocolat noir", e:"🍫", photoKey:"chocolat", source:"defi", semaine:1, jour:"Mercredi", repas:"coll", duree:1, difficulte:"Facile",
+    ingredients:[{alimentId:"a207", qty:150, label:"150g fromage blanc 0%"}],
+    preparation:["Verser le fromage blanc dans un bol","Râper 10g de chocolat noir 70% au-dessus","Ajouter cannelle ou vanille en option"],
+    conseil:"Chocolat noir 70% min = polyphénols et anti-stress."},
+  {id:"d1-mer-s", n:"Poulet haricots verts", e:"🫛", photoKey:"poulet_haricots", source:"defi", semaine:1, jour:"Mercredi", repas:"soir", duree:25, difficulte:"Facile",
+    ingredients:[{alimentId:"a002", qty:120, label:"120g blanc de poulet"},{alimentId:"a306", qty:150, label:"150g haricots verts"}],
+    preparation:["Cuire les haricots 8 min dans l'eau salée","Les égoutter et faire revenir 2 min avec ail","Griller le poulet 5-6 min par face","Servir avec un filet d'huile d'olive"],
+    conseil:"Les haricots verts préservent leur croquant si tu les passes à l'eau froide après cuisson."},
+  // JEUDI Sem 1
+  {id:"d1-jeu-m", n:"Crêpes healthy avoine", e:"🥞", photoKey:"crepes", source:"defi", semaine:1, jour:"Jeudi", repas:"matin", duree:15, difficulte:"Facile",
+    ingredients:[{alimentId:"a200", qty:60, label:"1 œuf"},{alimentId:"a512", qty:30, label:"30g flocons d'avoine"},{alimentId:"b407", qty:80, label:"80ml lait demi-écrémé"}],
+    preparation:["Mixer œuf + avoine + lait","Laisser reposer 5 min","Cuire en crêpes fines à feu moyen","Servir avec un filet de miel"],
+    conseil:"Les flocons d'avoine apportent satiété grâce aux fibres bêta-glucanes."},
+  {id:"d1-jeu-d", n:"Lentilles saumon fumé", e:"🫘", photoKey:"lentilles", source:"defi", semaine:1, jour:"Jeudi", repas:"midi", duree:30, difficulte:"Facile",
+    ingredients:[{alimentId:"a516", qty:180, label:"60g lentilles crues"},{alimentId:"a101", qty:60, label:"60g saumon fumé"},{alimentId:"a409", qty:80, label:"80g carottes"},{alimentId:"a407", qty:70, label:"70g concombre"}],
+    preparation:["Cuire les lentilles 25 min","Égoutter et laisser tiédir","Couper le saumon en lamelles, légumes en petits dés","Mélanger avec citron + huile d'olive"],
+    conseil:"Lentilles + saumon = protéines complètes + fer + oméga-3."},
+  {id:"d1-jeu-c", n:"Yaourt cannelle", e:"🍶", photoKey:"yaourt", source:"defi", semaine:1, jour:"Jeudi", repas:"coll", duree:1, difficulte:"Facile",
+    ingredients:[{alimentId:"a211", qty:125, label:"1 yaourt nature"}],
+    preparation:["Verser le yaourt dans un bol","Saupoudrer généreusement de cannelle"],
+    conseil:"La cannelle aide à réguler la glycémie."},
+  {id:"d1-jeu-s", n:"Omelette légumes", e:"🍳", photoKey:"omelette", source:"defi", semaine:1, jour:"Jeudi", repas:"soir", duree:15, difficulte:"Facile",
+    ingredients:[{alimentId:"a200", qty:120, label:"2 œufs"},{alimentId:"a303", qty:75, label:"75g courgettes"},{alimentId:"a305", qty:75, label:"75g poivrons"}],
+    preparation:["Couper les légumes en petits dés","Les faire revenir 7 min à la poêle","Battre les œufs avec sel/poivre","Verser, laisser prendre, plier l'omelette"],
+    conseil:"Tu peux varier les légumes selon tes envies."},
+  // VENDREDI Sem 1
+  {id:"d1-ven-m", n:"Fromage blanc & fruits", e:"🥣", photoKey:"fromage_blanc", source:"defi", semaine:1, jour:"Vendredi", repas:"matin", duree:3, difficulte:"Facile",
+    ingredients:[{alimentId:"a207", qty:150, label:"150g fromage blanc 0%"},{alimentId:"a608", qty:100, label:"100g fruits rouges"}],
+    preparation:["Verser le fromage blanc dans un bol","Disposer les fruits rouges frais ou décongelés"],
+    conseil:"Un petit-déj rapide hyperprotéiné. Idéal les matins pressés."},
+  {id:"d1-ven-d", n:"Salade thon avocat", e:"🥗", photoKey:"salade_avocat", source:"defi", semaine:1, jour:"Vendredi", repas:"midi", duree:8, difficulte:"Facile",
+    ingredients:[{alimentId:"a113", qty:120, label:"120g thon au naturel"},{alimentId:"a414", qty:60, label:"60g avocat"},{alimentId:"a400", qty:80, label:"80g salade verte"},{alimentId:"a405", qty:70, label:"70g tomates cerises"}],
+    preparation:["Égoutter le thon","Couper l'avocat en lamelles + citron","Disposer sur la salade avec les tomates","Assaisonner citron + filet d'huile d'olive"],
+    conseil:"Sans féculents le midi = idéal pour un dîner plus copieux."},
+  {id:"d1-ven-c", n:"Fruit & amandes", e:"🍎", photoKey:"fruit_amandes", source:"defi", semaine:1, jour:"Vendredi", repas:"coll", duree:2, difficulte:"Facile",
+    ingredients:[{alimentId:"a600", qty:120, label:"1 fruit"},{alimentId:"a811", qty:15, label:"15g amandes"}],
+    preparation:["Laver et couper le fruit","Servir avec les amandes"],
+    conseil:"Cette combinaison stabilise la glycémie."},
+  {id:"d1-ven-s", n:"Poulet rôti & pommes de terre", e:"🍗", photoKey:"poulet", source:"defi", semaine:1, jour:"Vendredi", repas:"soir", duree:50, difficulte:"Facile",
+    ingredients:[{alimentId:"b022", qty:150, label:"150g poulet rôti"},{alimentId:"a513", qty:150, label:"150g pommes de terre"},{alimentId:"a306", qty:150, label:"150g légumes"},{alimentId:"c309", qty:40, label:"40g pain brioché"}],
+    preparation:["Préchauffer le four à 200°C","Cuire le poulet avec ail/thym/épices 40 min","Couper les pommes de terre en cubes, ajouter au four 30 min","Faire les légumes vapeur"],
+    conseil:"Plat festif idéal pour un dîner du vendredi."},
+  // SAMEDI Sem 1
+  {id:"d1-sam-m", n:"Fromage blanc fruits rouges amandes", e:"🥣", photoKey:"fruits_rouges", source:"defi", semaine:1, jour:"Samedi", repas:"matin", duree:3, difficulte:"Facile",
+    ingredients:[{alimentId:"a207", qty:150, label:"150g fromage blanc 0%"},{alimentId:"a608", qty:100, label:"100g fruits rouges"},{alimentId:"a811", qty:10, label:"10g amandes effilées"}],
+    preparation:["Disposer le fromage blanc dans un bol","Ajouter fruits rouges et amandes","Option : un trait de miel"],
+    conseil:"Petit-déj weekend chic et nutritif."},
+  {id:"d1-sam-d", n:"Veau mijoté carottes", e:"🍲", photoKey:"veau", source:"defi", semaine:1, jour:"Samedi", repas:"midi", duree:75, difficulte:"Moyen",
+    ingredients:[{alimentId:"a012", qty:150, label:"150g morceaux de veau"},{alimentId:"b502", qty:150, label:"150g carottes"},{alimentId:"c309", qty:40, label:"40g pain brioché"}],
+    preparation:["Faire revenir le veau 5 min","Ajouter les carottes en rondelles","Couvrir d'eau + bouillon, ajouter thym/laurier","Mijoter 1h à feu doux"],
+    conseil:"Plat dominical par excellence. Encore meilleur réchauffé."},
+  {id:"d1-sam-c", n:"Fruit", e:"🍎", photoKey:"pomme", source:"defi", semaine:1, jour:"Samedi", repas:"coll", duree:1, difficulte:"Facile",
+    ingredients:[{alimentId:"a600", qty:120, label:"1 pomme ou autre fruit"}],
+    preparation:["Choisir un fruit de saison","Le manger nature ou en quartiers"],
+    conseil:"Privilégier les fruits entiers aux jus."},
+  {id:"d1-sam-s", n:"Salade thon œufs", e:"🥗", photoKey:"salade_nicoise", source:"defi", semaine:1, jour:"Samedi", repas:"soir", duree:15, difficulte:"Facile",
+    ingredients:[{alimentId:"a113", qty:100, label:"100g thon au naturel"},{alimentId:"a201", qty:120, label:"2 œufs durs"},{alimentId:"a400", qty:80, label:"80g salade verte"},{alimentId:"a405", qty:70, label:"70g tomates"}],
+    preparation:["Cuire les œufs 10 min, les écaler","Égoutter le thon","Disposer salade + tomates + œufs en quartiers + thon","Assaisonner citron"],
+    conseil:"Variation de la salade niçoise classique."},
+  // DIMANCHE Sem 1
+  {id:"d1-dim-m", n:"Pancakes & fruits", e:"🥞", photoKey:"pancakes", source:"defi", semaine:1, jour:"Dimanche", repas:"matin", duree:12, difficulte:"Facile",
+    ingredients:[{alimentId:"a200", qty:60, label:"1 œuf"},{alimentId:"a512", qty:20, label:"20g flocons d'avoine"},{alimentId:"a608", qty:100, label:"100g fruits frais"}],
+    preparation:["Mixer œuf + avoine pour une pâte épaisse","Cuire en petits pancakes","Servir avec les fruits coupés","Option : filet de miel"],
+    conseil:"Petit-déj plaisir du dimanche, sans culpabilité."},
+  {id:"d1-dim-d", n:"Saumon & patate douce rôtis", e:"🐟", photoKey:"saumon_legumes", source:"defi", semaine:1, jour:"Dimanche", repas:"midi", duree:25, difficulte:"Facile",
+    ingredients:[{alimentId:"a100", qty:120, label:"120g saumon frais"},{alimentId:"a515", qty:150, label:"150g patate douce"},{alimentId:"a300", qty:150, label:"150g légumes verts"}],
+    preparation:["Préchauffer le four à 200°C","Couper la patate douce, enfourner 25 min","Ajouter le saumon les 15 dernières minutes","Assaisonner citron, aneth ou paprika"],
+    conseil:"Patate douce = féculent à index glycémique bas."},
+  {id:"d1-dim-c", n:"Fromage blanc & chocolat", e:"🍫", photoKey:"chocolat", source:"defi", semaine:1, jour:"Dimanche", repas:"coll", duree:1, difficulte:"Facile",
+    ingredients:[{alimentId:"a207", qty:150, label:"150g fromage blanc 0%"}],
+    preparation:["Verser le fromage blanc dans un bol","Râper 10g de chocolat noir 70% au-dessus"],
+    conseil:"Plaisir gourmand sans déraper."},
+  {id:"d1-dim-s", n:"Poulet & légumes poêlés", e:"🍗", photoKey:"poulet_legumes", source:"defi", semaine:1, jour:"Dimanche", repas:"soir", duree:20, difficulte:"Facile",
+    ingredients:[{alimentId:"a002", qty:120, label:"120g blanc de poulet"},{alimentId:"a303", qty:80, label:"80g courgettes"},{alimentId:"a305", qty:70, label:"70g poivrons"}],
+    preparation:["Couper le poulet en lamelles","Le faire dorer 5 min avec curry/paprika","Ajouter les légumes coupés, cuire 8 min","Servir bien chaud avec du citron"],
+    conseil:"Plat 'vide-frigo' : remplace les légumes par ce qui te reste !"},
 
-  // ========== SEMAINE 1 - MERCREDI ==========
-  {
-    id:"r009", n:"Wasa avocat œuf", e:"🥑",
-    semaine:1, jour:"Mercredi", repas:"matin", duree:10, difficulte:"Facile",
-    ingredients:[
-      {alimentId:"a706", qty:30, label:"30g pain Wasa (≈3 tranches)"},
-      {alimentId:"a414", qty:50, label:"50g avocat (1/4)"},
-      {alimentId:"a201", qty:60, label:"1 œuf mollet"}
-    ],
-    preparation:[
-      "Cuire l'œuf 6 min dans l'eau bouillante (mollet)",
-      "Écraser l'avocat à la fourchette avec citron + sel",
-      "Tartiner sur les Wasa, déposer l'œuf coupé en deux",
-      "Saupoudrer de paprika ou piment d'Espelette"
-    ],
-    conseil:"L'avocat se marie avec un peu de citron pour éviter qu'il noircisse."
-  },
-  {
-    id:"r010", n:"Salade quinoa thon", e:"🥗",
-    semaine:1, jour:"Mercredi", repas:"midi", duree:25, difficulte:"Facile",
-    ingredients:[
-      {alimentId:"a505", qty:120, label:"40g quinoa cru (=120g cuit)"},
-      {alimentId:"a113", qty:100, label:"100g thon au naturel"},
-      {alimentId:"a405", qty:100, label:"100g tomates"},
-      {alimentId:"a407", qty:50, label:"50g concombre"}
-    ],
-    preparation:[
-      "Cuire le quinoa 12 min dans l'eau bouillante salée",
-      "Le rincer à l'eau froide pour le refroidir",
-      "Couper les légumes en petits dés",
-      "Mélanger avec le thon égoutté et un trait de citron"
-    ],
-    conseil:"Le quinoa est une protéine végétale complète. Excellent pour la satiété."
-  },
-  {
-    id:"r011", n:"Fromage blanc & chocolat noir", e:"🍫",
-    semaine:1, jour:"Mercredi", repas:"coll", duree:1, difficulte:"Facile",
-    ingredients:[
-      {alimentId:"a207", qty:150, label:"150g fromage blanc 0%"},
-      {alimentId:"a800", qty:0, label:"Chocolat noir 70% (10g)"}
-    ],
-    preparation:[
-      "Verser le fromage blanc dans un bol",
-      "Râper ou émietter le chocolat noir au-dessus",
-      "Ajouter cannelle ou vanille en option"
-    ],
-    conseil:"Chocolat noir 70% min = polyphénols et anti-stress."
-  },
-  {
-    id:"r012", n:"Poulet haricots verts", e:"🫛",
-    semaine:1, jour:"Mercredi", repas:"soir", duree:25, difficulte:"Facile",
-    ingredients:[
-      {alimentId:"a002", qty:120, label:"120g blanc de poulet"},
-      {alimentId:"a306", qty:150, label:"150g haricots verts"}
-    ],
-    preparation:[
-      "Cuire les haricots dans l'eau bouillante salée 8 min",
-      "Les égoutter et les faire revenir 2 min avec ail haché",
-      "Griller le poulet 5-6 min par face avec épices au choix",
-      "Servir avec un filet d'huile d'olive et fleur de sel"
-    ],
-    conseil:"Les haricots verts préservent leur croquant si tu les passes à l'eau froide après cuisson."
-  },
+  // ============================================================
+  // === LE DÉFI 3 SEMAINES - SEMAINE 2 (28 recettes) ===
+  // ============================================================
+  // LUNDI Sem 2
+  {id:"d2-lun-m", n:"Œufs brouillés saumon fumé", e:"🍳", photoKey:"oeufs", source:"defi", semaine:2, jour:"Lundi", repas:"matin", duree:8, difficulte:"Facile",
+    ingredients:[{alimentId:"a200", qty:120, label:"2 œufs entiers"},{alimentId:"a202", qty:66, label:"2 blancs d'œuf"},{alimentId:"a101", qty:40, label:"40g saumon fumé"}],
+    preparation:["Battre les œufs avec un peu de sel","Cuire à feu doux en remuant constamment","Ajouter le saumon en lamelles à la fin","Servir tiède avec ciboulette"],
+    conseil:"Le saumon ajouté hors du feu garde toute sa saveur."},
+  {id:"d2-lun-d", n:"Salade niçoise allégée", e:"🥗", photoKey:"salade_nicoise", source:"defi", semaine:2, jour:"Lundi", repas:"midi", duree:15, difficulte:"Facile",
+    ingredients:[{alimentId:"a113", qty:120, label:"120g thon au naturel"},{alimentId:"a201", qty:60, label:"1 œuf dur"},{alimentId:"a306", qty:100, label:"100g haricots verts cuits"},{alimentId:"a405", qty:100, label:"100g tomates"}],
+    preparation:["Cuire l'œuf 10 min puis écaler","Cuire les haricots verts 8 min, refroidir","Disposer le thon, l'œuf, les haricots, les tomates","Assaisonner citron + huile d'olive"],
+    conseil:"Évite les anchois ou olives en grande quantité (très salé)."},
+  {id:"d2-lun-c", n:"Œuf dur & amandes", e:"🥚", photoKey:"oeuf_dur", source:"defi", semaine:2, jour:"Lundi", repas:"coll", duree:12, difficulte:"Facile",
+    ingredients:[{alimentId:"a201", qty:60, label:"1 œuf dur"},{alimentId:"a811", qty:15, label:"15g amandes"}],
+    preparation:["Faire bouillir l'œuf 10 min","Refroidir sous eau froide","Servir avec les amandes nature"],
+    conseil:"Combo simple et efficace pour la collation."},
+  {id:"d2-lun-s", n:"Poulet shawarma épicé", e:"🍗", photoKey:"poulet_shawarma", source:"defi", semaine:2, jour:"Lundi", repas:"soir", duree:25, difficulte:"Moyen",
+    ingredients:[{alimentId:"a002", qty:120, label:"120g blanc de poulet"},{alimentId:"a303", qty:100, label:"100g courgettes"},{alimentId:"a305", qty:100, label:"100g poivrons"}],
+    preparation:["Mariner le poulet 10 min avec cumin, paprika, ail, citron","Cuire à la poêle 5-6 min par face","Faire revenir les légumes 8 min","Servir avec sauce yaourt-citron"],
+    conseil:"La marinade dévoile toutes les saveurs du Moyen-Orient."},
+  // MARDI Sem 2
+  {id:"d2-mar-m", n:"Bowl skyr granola fruits rouges", e:"🥣", photoKey:"granola", source:"defi", semaine:2, jour:"Mardi", repas:"matin", duree:5, difficulte:"Facile",
+    ingredients:[{alimentId:"a205", qty:150, label:"150g skyr nature"},{alimentId:"a608", qty:100, label:"100g fruits rouges"},{alimentId:"a708", qty:15, label:"15g granola"}],
+    preparation:["Verser le skyr dans un bol","Disposer les fruits rouges","Saupoudrer le granola","Option : trait de miel"],
+    conseil:"Skyr = la protéine star du petit-déj. 11g protéines/100g."},
+  {id:"d2-mar-d", n:"Wrap thon-fromage frais", e:"🌯", photoKey:"wrap", source:"defi", semaine:2, jour:"Mardi", repas:"midi", duree:8, difficulte:"Facile",
+    ingredients:[{alimentId:"c305", qty:60, label:"1 wrap"},{alimentId:"a113", qty:100, label:"100g thon au naturel"},{alimentId:"a207", qty:30, label:"30g fromage frais"}],
+    preparation:["Étaler le fromage frais sur le wrap","Disposer le thon égoutté","Ajouter quelques feuilles de salade","Rouler bien serré"],
+    conseil:"Pratique en lunchbox. Coupe en deux pour le transport."},
+  {id:"d2-mar-c", n:"Pomme & amandes", e:"🍎", photoKey:"fruit_amandes", source:"defi", semaine:2, jour:"Mardi", repas:"coll", duree:2, difficulte:"Facile",
+    ingredients:[{alimentId:"a600", qty:120, label:"1 pomme"},{alimentId:"a811", qty:15, label:"15g amandes"}],
+    preparation:["Couper la pomme en quartiers","Servir avec les amandes"],
+    conseil:"Combo facile à transporter au bureau."},
+  {id:"d2-mar-s", n:"Steak haché purée patate douce", e:"🥩", photoKey:"steak", source:"defi", semaine:2, jour:"Mardi", repas:"soir", duree:25, difficulte:"Facile",
+    ingredients:[{alimentId:"a008", qty:120, label:"120g steak haché 5%"},{alimentId:"a515", qty:150, label:"150g patate douce"}],
+    preparation:["Cuire la patate douce 20 min vapeur","Écraser à la fourchette avec un peu de lait","Cuire le steak haché 4 min par face","Assaisonner et servir"],
+    conseil:"La patate douce écrasée = comfort food saine."},
+  // MERCREDI Sem 2
+  {id:"d2-mer-m", n:"Banana pancakes", e:"🥞", photoKey:"pancakes", source:"defi", semaine:2, jour:"Mercredi", repas:"matin", duree:10, difficulte:"Facile",
+    ingredients:[{alimentId:"a602", qty:100, label:"1 banane"},{alimentId:"a200", qty:60, label:"1 œuf"},{alimentId:"a512", qty:20, label:"20g flocons d'avoine"}],
+    preparation:["Écraser la banane en purée","Mélanger avec l'œuf et l'avoine","Cuire en petits pancakes 2 min par face","Servir avec un trait de miel"],
+    conseil:"Recette 3 ingrédients magique. Plus la banane est mûre, mieux c'est."},
+  {id:"d2-mer-d", n:"Riz saumon avocat", e:"🍣", photoKey:"poke_bowl", source:"defi", semaine:2, jour:"Mercredi", repas:"midi", duree:25, difficulte:"Facile",
+    ingredients:[{alimentId:"a500", qty:150, label:"50g riz cru (=150g cuit)"},{alimentId:"a100", qty:100, label:"100g saumon frais"},{alimentId:"a414", qty:50, label:"50g avocat"}],
+    preparation:["Cuire le riz 12 min","Couper le saumon en cubes","Couper l'avocat en lamelles","Disposer en bowl avec citron + soja"],
+    conseil:"Style poke bowl maison. Le saumon doit être ultra-frais."},
+  {id:"d2-mer-c", n:"Fromage blanc seul", e:"🥣", photoKey:"fromage_blanc", source:"defi", semaine:2, jour:"Mercredi", repas:"coll", duree:1, difficulte:"Facile",
+    ingredients:[{alimentId:"a207", qty:150, label:"150g fromage blanc 0%"}],
+    preparation:["Verser le fromage blanc dans un bol","Option : un peu de cannelle ou vanille"],
+    conseil:"La protéine pure pour caler la fringale."},
+  {id:"d2-mer-s", n:"Poivron farci au bœuf", e:"🫑", photoKey:"poivron_farci", source:"defi", semaine:2, jour:"Mercredi", repas:"soir", duree:35, difficulte:"Moyen",
+    ingredients:[{alimentId:"a008", qty:120, label:"120g bœuf haché 5%"},{alimentId:"a305", qty:150, label:"1 gros poivron"}],
+    preparation:["Couper le poivron en deux, retirer les graines","Mélanger le bœuf cru avec épices et herbes","Garnir les demi-poivrons","Cuire au four 25 min à 180°C"],
+    conseil:"Un classique qui en jette. Tu peux ajouter du fromage râpé sur le dessus."},
+  // JEUDI Sem 2
+  {id:"d2-jeu-m", n:"Pain seigle œufs fromage frais", e:"🍞", photoKey:"toast", source:"defi", semaine:2, jour:"Jeudi", repas:"matin", duree:10, difficulte:"Facile",
+    ingredients:[{alimentId:"a700", qty:40, label:"40g pain seigle"},{alimentId:"a200", qty:120, label:"2 œufs"},{alimentId:"a207", qty:30, label:"30g fromage frais"}],
+    preparation:["Toaster légèrement le pain","Cuire les œufs au plat","Tartiner le pain de fromage frais","Déposer les œufs dessus"],
+    conseil:"Le pain seigle a un index glycémique bas, idéal le matin."},
+  {id:"d2-jeu-d", n:"Lentilles œuf dur", e:"🫘", photoKey:"lentilles", source:"defi", semaine:2, jour:"Jeudi", repas:"midi", duree:30, difficulte:"Facile",
+    ingredients:[{alimentId:"a516", qty:180, label:"60g lentilles crues"},{alimentId:"a201", qty:60, label:"1 œuf dur"}],
+    preparation:["Cuire les lentilles 25 min","Cuire l'œuf 10 min","Mélanger lentilles + œuf coupé en deux","Assaisonner moutarde + huile + vinaigre"],
+    conseil:"Combinaison protéines complètes pour un déjeuner végétarien."},
+  {id:"d2-jeu-c", n:"Fruit & chocolat noir", e:"🍫", photoKey:"chocolat", source:"defi", semaine:2, jour:"Jeudi", repas:"coll", duree:1, difficulte:"Facile",
+    ingredients:[{alimentId:"a600", qty:120, label:"1 fruit"}],
+    preparation:["Couper le fruit en quartiers","Déguster avec 10g de chocolat noir 70%"],
+    conseil:"Le combo magique anti-fringale de l'après-midi."},
+  {id:"d2-jeu-s", n:"Saumon four & légumes", e:"🐟", photoKey:"saumon", source:"defi", semaine:2, jour:"Jeudi", repas:"soir", duree:25, difficulte:"Facile",
+    ingredients:[{alimentId:"a100", qty:120, label:"120g saumon frais"},{alimentId:"a300", qty:200, label:"200g légumes verts"}],
+    preparation:["Préchauffer le four à 200°C","Disposer saumon et légumes sur une plaque","Arroser d'huile d'olive, citron, herbes","Cuire 15 min"],
+    conseil:"Tout sur la même plaque = 1 seul lavage. Effort mini, plaisir maxi."},
+  // VENDREDI Sem 2
+  {id:"d2-ven-m", n:"Fromage blanc & fruits", e:"🥣", photoKey:"fromage_blanc", source:"defi", semaine:2, jour:"Vendredi", repas:"matin", duree:3, difficulte:"Facile",
+    ingredients:[{alimentId:"a207", qty:150, label:"150g fromage blanc 0%"},{alimentId:"a608", qty:100, label:"100g fruits"}],
+    preparation:["Verser le fromage blanc","Ajouter les fruits coupés"],
+    conseil:"Petit-déj rapide les vendredis chargés."},
+  {id:"d2-ven-d", n:"Thon avocat", e:"🥑", photoKey:"salade_avocat", source:"defi", semaine:2, jour:"Vendredi", repas:"midi", duree:5, difficulte:"Facile",
+    ingredients:[{alimentId:"a113", qty:120, label:"120g thon au naturel"},{alimentId:"a414", qty:60, label:"60g avocat"}],
+    preparation:["Égoutter le thon","Écraser l'avocat à la fourchette","Mélanger avec citron + sel/poivre","Servir tel quel ou sur du pain"],
+    conseil:"Idéal entre deux rendez-vous."},
+  {id:"d2-ven-c", n:"Fruit & amandes", e:"🍎", photoKey:"fruit_amandes", source:"defi", semaine:2, jour:"Vendredi", repas:"coll", duree:2, difficulte:"Facile",
+    ingredients:[{alimentId:"a600", qty:120, label:"1 fruit"},{alimentId:"a811", qty:15, label:"15g amandes"}],
+    preparation:["Couper le fruit","Servir avec les amandes"],
+    conseil:"Le couple parfait pour les après-midi qui durent."},
+  {id:"d2-ven-s", n:"Poulet miel-moutarde", e:"🍗", photoKey:"poulet", source:"defi", semaine:2, jour:"Vendredi", repas:"soir", duree:45, difficulte:"Moyen",
+    ingredients:[{alimentId:"a002", qty:150, label:"150g blanc de poulet"},{alimentId:"a513", qty:150, label:"150g pommes de terre"},{alimentId:"a306", qty:150, label:"150g légumes"},{alimentId:"c309", qty:40, label:"40g pain brioché"}],
+    preparation:["Mélanger 1 c.à.s miel + 1 c.à.s moutarde","Badigeonner le poulet de cette sauce","Cuire au four 35 min à 180°C en arrosant","Servir avec pommes de terre et légumes"],
+    conseil:"Le miel-moutarde est imbattable pour rendre le poulet juteux."},
+  // SAMEDI Sem 2
+  {id:"d2-sam-m", n:"Fromage blanc fruits rouges amandes", e:"🥣", photoKey:"fruits_rouges", source:"defi", semaine:2, jour:"Samedi", repas:"matin", duree:3, difficulte:"Facile",
+    ingredients:[{alimentId:"a207", qty:150, label:"150g fromage blanc 0%"},{alimentId:"a608", qty:100, label:"100g fruits rouges"},{alimentId:"a811", qty:10, label:"10g amandes"}],
+    preparation:["Mélanger le tout dans un bol joli"],
+    conseil:"Un weekend qui démarre bien."},
+  {id:"d2-sam-d", n:"Hachis veau parmentier", e:"🍲", photoKey:"hachis", source:"defi", semaine:2, jour:"Samedi", repas:"midi", duree:35, difficulte:"Moyen",
+    ingredients:[{alimentId:"a012", qty:150, label:"150g veau haché"},{alimentId:"a513", qty:150, label:"150g pommes de terre"},{alimentId:"c309", qty:40, label:"40g pain brioché"}],
+    preparation:["Cuire les pommes de terre 20 min vapeur","Les écraser en purée","Faire revenir le veau haché avec oignons","Monter en couches : viande + purée. Four 15 min"],
+    conseil:"Version raffinée du hachis avec du veau plutôt que du bœuf."},
+  {id:"d2-sam-c", n:"Fruit", e:"🍎", photoKey:"pomme", source:"defi", semaine:2, jour:"Samedi", repas:"coll", duree:1, difficulte:"Facile",
+    ingredients:[{alimentId:"a600", qty:120, label:"1 fruit"}],
+    preparation:["Manger un fruit de saison"],
+    conseil:"La simplicité parfaite."},
+  {id:"d2-sam-s", n:"Salade thon œufs", e:"🥗", photoKey:"salade_thon", source:"defi", semaine:2, jour:"Samedi", repas:"soir", duree:15, difficulte:"Facile",
+    ingredients:[{alimentId:"a113", qty:100, label:"100g thon au naturel"},{alimentId:"a201", qty:120, label:"2 œufs durs"}],
+    preparation:["Cuire les œufs 10 min","Égoutter le thon","Mélanger thon + œufs en quartiers + salade","Citron + huile d'olive"],
+    conseil:"Léger après un déjeuner copieux."},
+  // DIMANCHE Sem 2
+  {id:"d2-dim-m", n:"Pain complet beurre cacahuète banane", e:"🥜", photoKey:"toast", source:"defi", semaine:2, jour:"Dimanche", repas:"matin", duree:5, difficulte:"Facile",
+    ingredients:[{alimentId:"a700", qty:40, label:"40g pain complet"},{alimentId:"d207", qty:15, label:"15g beurre de cacahuète"},{alimentId:"a602", qty:100, label:"1 banane"}],
+    preparation:["Toaster le pain","Tartiner de beurre de cacahuète","Disposer la banane en rondelles","Saupoudrer de cannelle"],
+    conseil:"Petit-déj énergétique pour les matins de sport."},
+  {id:"d2-dim-d", n:"Poulet paprika", e:"🍗", photoKey:"poulet_paprika", source:"defi", semaine:2, jour:"Dimanche", repas:"midi", duree:25, difficulte:"Facile",
+    ingredients:[{alimentId:"a002", qty:120, label:"120g blanc de poulet"},{alimentId:"a513", qty:150, label:"150g pommes de terre"}],
+    preparation:["Cuire les pommes de terre 20 min","Assaisonner le poulet (paprika doux + ail + sel)","Cuire à la poêle 5-6 min par face","Servir bien chaud"],
+    conseil:"Le paprika doux donne une belle couleur et un goût subtil."},
+  {id:"d2-dim-c", n:"Fromage blanc & chocolat", e:"🍫", photoKey:"chocolat", source:"defi", semaine:2, jour:"Dimanche", repas:"coll", duree:1, difficulte:"Facile",
+    ingredients:[{alimentId:"a207", qty:150, label:"150g fromage blanc 0%"}],
+    preparation:["Fromage blanc dans un bol","Râper du chocolat noir au-dessus"],
+    conseil:"Plaisir gourmand sans culpabilité."},
+  {id:"d2-dim-s", n:"Tortilla espagnole", e:"🍳", photoKey:"tortilla", source:"defi", semaine:2, jour:"Dimanche", repas:"soir", duree:25, difficulte:"Moyen",
+    ingredients:[{alimentId:"a200", qty:120, label:"2 œufs"},{alimentId:"a513", qty:120, label:"120g pommes de terre"}],
+    preparation:["Couper les pommes de terre en fines lamelles","Les cuire à la poêle 10 min","Battre les œufs, verser sur les pommes de terre","Cuire à feu doux 10 min puis retourner"],
+    conseil:"La vraie tortilla espagnole se cuit doucement à feu doux."},
 
-  // ========== SEMAINE 1 - JEUDI ==========
-  {
-    id:"r013", n:"Crêpes healthy avoine", e:"🥞",
-    semaine:1, jour:"Jeudi", repas:"matin", duree:15, difficulte:"Facile",
-    ingredients:[
-      {alimentId:"a200", qty:60, label:"1 œuf"},
-      {alimentId:"a512", qty:30, label:"30g flocons d'avoine"},
-      {alimentId:"b407", qty:80, label:"80ml lait demi-écrémé"}
-    ],
-    preparation:[
-      "Mixer œuf + avoine + lait pour une pâte fluide",
-      "Laisser reposer 5 min (l'avoine va gonfler)",
-      "Cuire en crêpes fines à feu moyen (1 min par face)",
-      "Servir avec un filet de miel ou des fruits frais"
-    ],
-    conseil:"Les flocons d'avoine apportent de la satiété grâce aux fibres bêta-glucanes."
-  },
-  {
-    id:"r014", n:"Lentilles saumon fumé", e:"🫘",
-    semaine:1, jour:"Jeudi", repas:"midi", duree:30, difficulte:"Facile",
-    ingredients:[
-      {alimentId:"a516", qty:180, label:"60g lentilles crues (=180g cuites)"},
-      {alimentId:"a101", qty:60, label:"60g saumon fumé"},
-      {alimentId:"a409", qty:80, label:"80g carottes"},
-      {alimentId:"a407", qty:70, label:"70g concombre"}
-    ],
-    preparation:[
-      "Cuire les lentilles 25 min dans l'eau salée non bouillante",
-      "Égoutter et laisser tiédir",
-      "Couper le saumon en lamelles, les légumes en petits dés",
-      "Mélanger le tout avec citron + huile d'olive"
-    ],
-    conseil:"Lentilles + saumon = protéines complètes + fer + oméga-3. Idéal pour les femmes."
-  },
-  {
-    id:"r015", n:"Yaourt cannelle", e:"🍶",
-    semaine:1, jour:"Jeudi", repas:"coll", duree:1, difficulte:"Facile",
-    ingredients:[
-      {alimentId:"a211", qty:125, label:"1 yaourt nature (125g)"}
-    ],
-    preparation:[
-      "Verser le yaourt dans un bol",
-      "Saupoudrer généreusement de cannelle"
-    ],
-    conseil:"La cannelle aide à réguler la glycémie. Une petite astuce nutrition simple."
-  },
-  {
-    id:"r016", n:"Omelette légumes", e:"🍳",
-    semaine:1, jour:"Jeudi", repas:"soir", duree:15, difficulte:"Facile",
-    ingredients:[
-      {alimentId:"a200", qty:120, label:"2 œufs"},
-      {alimentId:"a303", qty:75, label:"75g courgettes"},
-      {alimentId:"a305", qty:75, label:"75g poivrons"}
-    ],
-    preparation:[
-      "Couper les légumes en petits dés",
-      "Les faire revenir 7 min à la poêle (couvert)",
-      "Battre les œufs avec sel/poivre",
-      "Verser, laisser prendre, plier l'omelette"
-    ],
-    conseil:"Tu peux varier les légumes : tomates, épinards, oignons selon tes envies."
-  },
+  // ============================================================
+  // === LE DÉFI 3 SEMAINES - SEMAINE 3 (28 recettes) ===
+  // ============================================================
+  // LUNDI Sem 3
+  {id:"d3-lun-m", n:"Omelette roulée saumon fumé", e:"🍳", photoKey:"omelette", source:"defi", semaine:3, jour:"Lundi", repas:"matin", duree:10, difficulte:"Facile",
+    ingredients:[{alimentId:"a200", qty:120, label:"2 œufs entiers"},{alimentId:"a202", qty:66, label:"2 blancs"},{alimentId:"a101", qty:50, label:"50g saumon fumé"}],
+    preparation:["Battre les œufs avec sel poivre","Cuire en fine omelette à feu doux","Disposer le saumon sur l'omelette","Rouler délicatement, couper en tronçons"],
+    conseil:"L'omelette doit rester souple pour pouvoir la rouler."},
+  {id:"d3-lun-d", n:"Salade poulet sésame croquante", e:"🥗", photoKey:"salade", source:"defi", semaine:3, jour:"Lundi", repas:"midi", duree:15, difficulte:"Facile",
+    ingredients:[{alimentId:"a002", qty:120, label:"120g blanc de poulet"},{alimentId:"a314", qty:100, label:"100g chou"},{alimentId:"a409", qty:80, label:"80g carottes"},{alimentId:"d106", qty:5, label:"1 c.à.c sauce soja"}],
+    preparation:["Cuire le poulet en lamelles","Émincer finement chou et carottes","Mélanger avec poulet + soja + citron","Saupoudrer de graines de sésame"],
+    conseil:"Le sésame torréfié à la poêle donne plus de goût."},
+  {id:"d3-lun-c", n:"Houmous & crudités", e:"🥕", photoKey:"houmous", source:"defi", semaine:3, jour:"Lundi", repas:"coll", duree:5, difficulte:"Facile",
+    ingredients:[{alimentId:"c420", qty:30, label:"30g houmous"},{alimentId:"a409", qty:100, label:"100g carottes"},{alimentId:"a407", qty:50, label:"50g concombre"}],
+    preparation:["Couper carottes et concombre en bâtonnets","Présenter avec une cuillère de houmous","Tremper et déguster"],
+    conseil:"Le houmous apporte des protéines végétales et fibres."},
+  {id:"d3-lun-s", n:"Cabillaud papillote citron", e:"🐟", photoKey:"poisson_papillote", source:"defi", semaine:3, jour:"Lundi", repas:"soir", duree:25, difficulte:"Facile",
+    ingredients:[{alimentId:"a103", qty:120, label:"120g cabillaud"},{alimentId:"a300", qty:200, label:"200g légumes"}],
+    preparation:["Disposer poisson + légumes sur du papier cuisson","Ajouter citron + herbes + sel","Refermer la papillote","Cuire 20 min à 180°C"],
+    conseil:"Texture fondante garantie. Aucune matière grasse ajoutée."},
+  // MARDI Sem 3
+  {id:"d3-mar-m", n:"French toast healthy", e:"🍞", photoKey:"french_toast", source:"defi", semaine:3, jour:"Mardi", repas:"matin", duree:10, difficulte:"Facile",
+    ingredients:[{alimentId:"a700", qty:40, label:"40g pain complet"},{alimentId:"a200", qty:60, label:"1 œuf"},{alimentId:"b407", qty:80, label:"80ml lait"}],
+    preparation:["Mélanger œuf + lait + cannelle","Tremper le pain dans ce mélange","Cuire à la poêle jusqu'à doré","Servir avec un trait de miel"],
+    conseil:"Version saine du pain perdu. Pas de sucre ajouté."},
+  {id:"d3-mar-d", n:"Poke bowl thon mangue", e:"🥗", photoKey:"poke_bowl", source:"defi", semaine:3, jour:"Mardi", repas:"midi", duree:15, difficulte:"Facile",
+    ingredients:[{alimentId:"a500", qty:150, label:"50g riz cru (=150g cuit)"},{alimentId:"a113", qty:100, label:"100g thon"},{alimentId:"a414", qty:50, label:"50g avocat"},{alimentId:"a616", qty:80, label:"80g mangue"}],
+    preparation:["Cuire le riz, refroidir","Couper avocat et mangue en cubes","Disposer joliment avec le thon","Citron + soja pour relever"],
+    conseil:"Saveurs exotiques garanties. Bowl Instagram-able !"},
+  {id:"d3-mar-c", n:"Fromage blanc miel", e:"🍯", photoKey:"fromage_blanc", source:"defi", semaine:3, jour:"Mardi", repas:"coll", duree:1, difficulte:"Facile",
+    ingredients:[{alimentId:"a207", qty:150, label:"150g fromage blanc 0%"}],
+    preparation:["Verser le fromage blanc dans un bol","Ajouter 5g de miel","Mélanger doucement"],
+    conseil:"Le miel donne de la douceur sans excès de sucre."},
+  {id:"d3-mar-s", n:"Poulet coco curry léger", e:"🍛", photoKey:"poulet_curry", source:"defi", semaine:3, jour:"Mardi", repas:"soir", duree:20, difficulte:"Moyen",
+    ingredients:[{alimentId:"a002", qty:120, label:"120g blanc de poulet"},{alimentId:"b412", qty:50, label:"50ml lait de coco"},{alimentId:"a300", qty:200, label:"200g légumes"}],
+    preparation:["Faire revenir le poulet en cubes","Ajouter les légumes","Verser le lait de coco + curry","Mijoter 10 min"],
+    conseil:"Lait de coco light pour rester en déficit calorique."},
+  // MERCREDI Sem 3
+  {id:"d3-mer-m", n:"Smoothie bowl protéiné", e:"🥣", photoKey:"smoothie_bowl", source:"defi", semaine:3, jour:"Mercredi", repas:"matin", duree:5, difficulte:"Facile",
+    ingredients:[{alimentId:"a207", qty:150, label:"150g fromage blanc 0%"},{alimentId:"a608", qty:100, label:"100g fruits rouges"},{alimentId:"a811", qty:15, label:"15g amandes"}],
+    preparation:["Mixer fromage blanc + fruits rouges","Verser dans un bol","Saupoudrer d'amandes effilées","Ajouter quelques fruits frais sur le dessus"],
+    conseil:"Mixe peu pour garder de la texture."},
+  {id:"d3-mer-d", n:"Pâtes complètes saumon citron", e:"🍝", photoKey:"pates", source:"defi", semaine:3, jour:"Mercredi", repas:"midi", duree:15, difficulte:"Facile",
+    ingredients:[{alimentId:"a504", qty:150, label:"50g pâtes crues (=150g cuites)"},{alimentId:"a100", qty:100, label:"100g saumon frais"}],
+    preparation:["Cuire les pâtes al dente","Cuire le saumon en morceaux à la poêle","Mélanger pâtes + saumon hors du feu","Citron + persil pour la fraîcheur"],
+    conseil:"Pâtes complètes = plus de fibres = meilleure satiété."},
+  {id:"d3-mer-c", n:"Fruit & chocolat", e:"🍫", photoKey:"chocolat", source:"defi", semaine:3, jour:"Mercredi", repas:"coll", duree:1, difficulte:"Facile",
+    ingredients:[{alimentId:"a600", qty:120, label:"1 fruit"}],
+    preparation:["Couper le fruit","Servir avec 10g de chocolat noir 70%"],
+    conseil:"Combo équilibre + plaisir."},
+  {id:"d3-mer-s", n:"Tian de légumes & bœuf grillé", e:"🥘", photoKey:"tian", source:"defi", semaine:3, jour:"Mercredi", repas:"soir", duree:40, difficulte:"Moyen",
+    ingredients:[{alimentId:"a008", qty:120, label:"120g bœuf haché 5%"},{alimentId:"a303", qty:100, label:"100g courgettes"},{alimentId:"a304", qty:100, label:"100g aubergine"},{alimentId:"a405", qty:100, label:"100g tomates"}],
+    preparation:["Couper les légumes en fines rondelles","Disposer en cercles dans un plat","Cuire au four 35 min à 180°C","Griller le bœuf en parallèle, servir ensemble"],
+    conseil:"Le tian provençal est aussi beau que bon."},
+  // JEUDI Sem 3
+  {id:"d3-jeu-m", n:"Toast patate douce avocat œuf", e:"🥑", photoKey:"avocat_toast", source:"defi", semaine:3, jour:"Jeudi", repas:"matin", duree:15, difficulte:"Facile",
+    ingredients:[{alimentId:"a515", qty:120, label:"120g patate douce"},{alimentId:"a414", qty:50, label:"50g avocat"},{alimentId:"a200", qty:60, label:"1 œuf"}],
+    preparation:["Couper la patate douce en tranches","Cuire au four 15 min à 200°C","Écraser l'avocat au-dessus","Cuire l'œuf au plat ou poché, déposer dessus"],
+    conseil:"Toast sans pain. Plein de fibres et bons lipides."},
+  {id:"d3-jeu-d", n:"Bowl quinoa œufs légumes", e:"🥗", photoKey:"quinoa", source:"defi", semaine:3, jour:"Jeudi", repas:"midi", duree:25, difficulte:"Facile",
+    ingredients:[{alimentId:"a505", qty:150, label:"50g quinoa cru"},{alimentId:"a200", qty:120, label:"2 œufs"},{alimentId:"a300", qty:150, label:"150g légumes"}],
+    preparation:["Cuire le quinoa 12 min","Cuire les œufs durs (10 min)","Cuire les légumes vapeur","Bowl : quinoa + œufs en quartiers + légumes"],
+    conseil:"Le quinoa apporte tous les acides aminés essentiels."},
+  {id:"d3-jeu-c", n:"Yaourt cannelle", e:"🍶", photoKey:"yaourt", source:"defi", semaine:3, jour:"Jeudi", repas:"coll", duree:1, difficulte:"Facile",
+    ingredients:[{alimentId:"a211", qty:125, label:"1 yaourt nature"}],
+    preparation:["Saupoudrer de cannelle"],
+    conseil:"Simplicité gagnante."},
+  {id:"d3-jeu-s", n:"Saumon croûte moutarde", e:"🐟", photoKey:"saumon", source:"defi", semaine:3, jour:"Jeudi", repas:"soir", duree:20, difficulte:"Facile",
+    ingredients:[{alimentId:"a100", qty:120, label:"120g saumon frais"},{alimentId:"d102", qty:10, label:"10g moutarde"},{alimentId:"a300", qty:150, label:"150g légumes verts"}],
+    preparation:["Badigeonner le saumon de moutarde","Saupoudrer d'herbes (thym, romarin)","Cuire au four 12 min à 200°C","Servir avec légumes vapeur"],
+    conseil:"La moutarde forme une croûte savoureuse en cuisson."},
+  // VENDREDI Sem 3
+  {id:"d3-ven-m", n:"Fromage blanc & fruits", e:"🥣", photoKey:"fromage_blanc", source:"defi", semaine:3, jour:"Vendredi", repas:"matin", duree:3, difficulte:"Facile",
+    ingredients:[{alimentId:"a207", qty:150, label:"150g fromage blanc 0%"},{alimentId:"a608", qty:100, label:"100g fruits"}],
+    preparation:["Mélanger fromage blanc + fruits"],
+    conseil:"Petit-déj express et protéiné."},
+  {id:"d3-ven-d", n:"Thon crudités", e:"🥗", photoKey:"thon", source:"defi", semaine:3, jour:"Vendredi", repas:"midi", duree:8, difficulte:"Facile",
+    ingredients:[{alimentId:"a113", qty:120, label:"120g thon au naturel"},{alimentId:"a409", qty:80, label:"80g carottes"},{alimentId:"a407", qty:80, label:"80g concombre"}],
+    preparation:["Égoutter le thon","Râper les carottes","Couper le concombre","Mélanger + citron + huile d'olive"],
+    conseil:"Léger pour le vendredi midi."},
+  {id:"d3-ven-c", n:"Amandes & fruit", e:"🍎", photoKey:"fruit_amandes", source:"defi", semaine:3, jour:"Vendredi", repas:"coll", duree:2, difficulte:"Facile",
+    ingredients:[{alimentId:"a811", qty:15, label:"15g amandes"},{alimentId:"a600", qty:120, label:"1 fruit"}],
+    preparation:["Servir ensemble"],
+    conseil:"Combo classique mais imbattable."},
+  {id:"d3-ven-s", n:"Poulet épices & pommes de terre rôties", e:"🍗", photoKey:"poulet", source:"defi", semaine:3, jour:"Vendredi", repas:"soir", duree:50, difficulte:"Moyen",
+    ingredients:[{alimentId:"a002", qty:150, label:"150g poulet"},{alimentId:"a513", qty:150, label:"150g pommes de terre"},{alimentId:"a306", qty:150, label:"150g légumes"}],
+    preparation:["Mélange épices : paprika, cumin, ail, thym","Badigeonner le poulet","Cuire au four 40 min avec pommes de terre","Arroser régulièrement"],
+    conseil:"Le secret : arroser régulièrement avec le jus de cuisson."},
+  // SAMEDI Sem 3
+  {id:"d3-sam-m", n:"Fromage blanc fruits rouges amandes", e:"🥣", photoKey:"fruits_rouges", source:"defi", semaine:3, jour:"Samedi", repas:"matin", duree:3, difficulte:"Facile",
+    ingredients:[{alimentId:"a207", qty:150, label:"150g fromage blanc 0%"},{alimentId:"a608", qty:100, label:"100g fruits rouges"},{alimentId:"a811", qty:10, label:"10g amandes"}],
+    preparation:["Mélanger le tout joliment"],
+    conseil:"Le petit-déj du weekend par excellence."},
+  {id:"d3-sam-d", n:"Bœuf mijoté fondant", e:"🍲", photoKey:"boeuf", source:"defi", semaine:3, jour:"Samedi", repas:"midi", duree:75, difficulte:"Moyen",
+    ingredients:[{alimentId:"a010", qty:150, label:"150g bœuf à mijoter"},{alimentId:"b502", qty:150, label:"150g carottes"}],
+    preparation:["Faire revenir le bœuf 5 min","Ajouter carottes en rondelles + épices","Couvrir d'eau + bouquet garni","Mijoter 1h à feu doux"],
+    conseil:"Plus tu mijotes longtemps, plus c'est fondant."},
+  {id:"d3-sam-c", n:"Fruit", e:"🍎", photoKey:"pomme", source:"defi", semaine:3, jour:"Samedi", repas:"coll", duree:1, difficulte:"Facile",
+    ingredients:[{alimentId:"a600", qty:120, label:"1 fruit"}],
+    preparation:["Manger un fruit de saison"],
+    conseil:"La simplicité parfaite."},
+  {id:"d3-sam-s", n:"Soupe maison & œufs durs", e:"🥣", photoKey:"soupe", source:"defi", semaine:3, jour:"Samedi", repas:"soir", duree:30, difficulte:"Facile",
+    ingredients:[{alimentId:"a300", qty:300, label:"300g légumes (carottes, courgettes...)"},{alimentId:"a201", qty:120, label:"2 œufs durs"}],
+    preparation:["Cuire les légumes 20 min dans l'eau bouillante","Mixer pour obtenir un velouté","Cuire les œufs durs 10 min","Servir le velouté avec œufs en quartiers"],
+    conseil:"Plat ultra léger pour finir la semaine."},
+  // DIMANCHE Sem 3
+  {id:"d3-dim-m", n:"Pancakes chocolat-cacao", e:"🥞", photoKey:"pancakes", source:"defi", semaine:3, jour:"Dimanche", repas:"matin", duree:12, difficulte:"Facile",
+    ingredients:[{alimentId:"a200", qty:60, label:"1 œuf"},{alimentId:"a512", qty:20, label:"20g flocons d'avoine"},{alimentId:"a608", qty:80, label:"80g fruits rouges"}],
+    preparation:["Mixer œuf + avoine + 1 c.à.c cacao non sucré","Cuire en petits pancakes","Servir avec fruits rouges","Option : trait de miel"],
+    conseil:"Cacao non sucré = chocolat sans les calories."},
+  {id:"d3-dim-d", n:"Poulet patate douce légumes", e:"🍗", photoKey:"poulet_legumes", source:"defi", semaine:3, jour:"Dimanche", repas:"midi", duree:30, difficulte:"Facile",
+    ingredients:[{alimentId:"a002", qty:120, label:"120g blanc de poulet"},{alimentId:"a515", qty:150, label:"150g patate douce"},{alimentId:"a300", qty:150, label:"150g légumes"}],
+    preparation:["Couper la patate douce en cubes","Cuire au four 25 min","Griller le poulet à la poêle","Servir avec légumes vapeur"],
+    conseil:"Repas équilibré complet."},
+  {id:"d3-dim-c", n:"Fromage blanc & fruits", e:"🥣", photoKey:"fromage_blanc", source:"defi", semaine:3, jour:"Dimanche", repas:"coll", duree:1, difficulte:"Facile",
+    ingredients:[{alimentId:"a207", qty:150, label:"150g fromage blanc 0%"},{alimentId:"a600", qty:80, label:"80g fruits"}],
+    preparation:["Mélanger fromage blanc + fruits"],
+    conseil:"Collation efficace de fin de weekend."},
+  {id:"d3-dim-s", n:"Saumon fumé & salade", e:"🐟", photoKey:"saumon_fume", source:"defi", semaine:3, jour:"Dimanche", repas:"soir", duree:8, difficulte:"Facile",
+    ingredients:[{alimentId:"a101", qty:80, label:"80g saumon fumé"},{alimentId:"a400", qty:100, label:"100g salade verte"},{alimentId:"a405", qty:100, label:"100g tomates"}],
+    preparation:["Disposer salade et tomates","Ajouter le saumon fumé en lamelles","Citron + huile d'olive","Quelques câpres en option"],
+    conseil:"Léger pour finir le weekend en douceur."},
 
-  // ========== SEMAINE 1 - VENDREDI ==========
-  {
-    id:"r017", n:"Fromage blanc & fruits", e:"🥣",
-    semaine:1, jour:"Vendredi", repas:"matin", duree:3, difficulte:"Facile",
-    ingredients:[
-      {alimentId:"a207", qty:150, label:"150g fromage blanc 0%"},
-      {alimentId:"a608", qty:100, label:"100g fruits rouges"}
-    ],
-    preparation:[
-      "Verser le fromage blanc dans un bol",
-      "Disposer les fruits rouges frais ou décongelés"
-    ],
-    conseil:"Un petit-déj rapide hyperprotéiné. Idéal les matins pressés."
-  },
-  {
-    id:"r018", n:"Salade thon avocat", e:"🥗",
-    semaine:1, jour:"Vendredi", repas:"midi", duree:8, difficulte:"Facile",
-    ingredients:[
-      {alimentId:"a113", qty:120, label:"120g thon au naturel"},
-      {alimentId:"a414", qty:60, label:"60g avocat"},
-      {alimentId:"a400", qty:80, label:"80g salade verte"},
-      {alimentId:"a405", qty:70, label:"70g tomates cerises"}
-    ],
-    preparation:[
-      "Égoutter le thon",
-      "Couper l'avocat en lamelles + citron",
-      "Disposer sur la salade avec les tomates",
-      "Assaisonner citron + filet d'huile d'olive"
-    ],
-    conseil:"Sans féculents le midi = idéal pour un dîner plus copieux le soir."
-  },
-  {
-    id:"r019", n:"Fruit & amandes", e:"🍎",
-    semaine:1, jour:"Vendredi", repas:"coll", duree:2, difficulte:"Facile",
-    ingredients:[
-      {alimentId:"a600", qty:120, label:"1 fruit (pomme/poire)"},
-      {alimentId:"a811", qty:15, label:"15g amandes"}
-    ],
-    preparation:[
-      "Laver et couper le fruit",
-      "Servir avec les amandes"
-    ],
-    conseil:"Cette combinaison stabilise la glycémie. Parfait avant un dîner tardif."
-  },
-  {
-    id:"r020", n:"Poulet rôti & pommes de terre", e:"🍗",
-    semaine:1, jour:"Vendredi", repas:"soir", duree:50, difficulte:"Facile",
-    ingredients:[
-      {alimentId:"b022", qty:150, label:"150g poulet rôti"},
-      {alimentId:"a513", qty:150, label:"150g pommes de terre"},
-      {alimentId:"a306", qty:150, label:"150g légumes (haricots/courgettes)"},
-      {alimentId:"c309", qty:40, label:"40g pain brioché"}
-    ],
-    preparation:[
-      "Préchauffer le four à 200°C",
-      "Cuire le poulet avec ail/thym/épices 40 min, arroser régulièrement",
-      "Couper les pommes de terre en cubes, les ajouter au four 30 min",
-      "Faire les légumes vapeur pendant ce temps"
-    ],
-    conseil:"Plat festif idéal pour un dîner du vendredi. Rassasiant et équilibré."
-  },
+  // ============================================================
+  // === COACH STIMBODY - Bowls et plats variés (6 recettes) ===
+  // ============================================================
+  {id:"c-001", n:"Bowl saumon & avocat", e:"🍣", photoKey:"poke_bowl", source:"coach", semaine:null, jour:null, repas:"midi", duree:10, difficulte:"Facile",
+    ingredients:[{alimentId:"a101", qty:150, label:"150g saumon fumé"},{alimentId:"a414", qty:60, label:"1/2 avocat"},{alimentId:"a407", qty:100, label:"100g concombre"},{alimentId:"a523", qty:50, label:"50g edamame"}],
+    preparation:["Trancher le saumon et l'avocat","Disposer le concombre et les edamame","Arroser de tamari et citron","Parsemer de sésame grillé"],
+    conseil:"Idéal en lunch box. Prépare tout la veille sauf l'avocat."},
+  {id:"c-002", n:"Omelette épinards feta", e:"🍳", photoKey:"omelette", source:"coach", semaine:null, jour:null, repas:"matin", duree:8, difficulte:"Facile",
+    ingredients:[{alimentId:"a200", qty:180, label:"3 oeufs"},{alimentId:"a308", qty:80, label:"80g épinards"},{alimentId:"a215", qty:30, label:"30g feta allégée"}],
+    preparation:["Faire suer les épinards","Battre les oeufs et verser","Émietter la feta, plier l'omelette"],
+    conseil:"Les épinards peuvent être remplacés par du kale."},
+  {id:"c-003", n:"Vapeur poulet légumes", e:"🥦", photoKey:"poulet_legumes", source:"coach", semaine:null, jour:null, repas:"soir", duree:20, difficulte:"Facile",
+    ingredients:[{alimentId:"a002", qty:150, label:"150g blanc de poulet"},{alimentId:"a300", qty:150, label:"150g brocolis"},{alimentId:"a303", qty:100, label:"100g courgettes"}],
+    preparation:["Couper les légumes en morceaux égaux","Cuire vapeur 20 min","Assaisonner citron et curcuma","Servir bien chaud"],
+    conseil:"La vapeur préserve 90% des vitamines."},
+  {id:"c-004", n:"Skyr bowl fruits rouges", e:"🍓", photoKey:"smoothie_bowl", source:"coach", semaine:null, jour:null, repas:"matin", duree:5, difficulte:"Facile",
+    ingredients:[{alimentId:"a205", qty:200, label:"200g skyr nature"},{alimentId:"a608", qty:80, label:"80g fruits rouges"},{alimentId:"a814", qty:10, label:"1 c.à.s graines de chia"},{alimentId:"a811", qty:5, label:"Amandes effilées"}],
+    preparation:["Verser le skyr dans un bol","Disposer les fruits rouges","Saupoudrer graines et amandes","Réfrigérer si possible 1h"],
+    conseil:"Prépare-le la veille, les graines gonflent."},
+  {id:"c-005", n:"Salade crevettes thaï", e:"🦐", photoKey:"crevettes", source:"coach", semaine:null, jour:null, repas:"midi", duree:15, difficulte:"Facile",
+    ingredients:[{alimentId:"a117", qty:200, label:"200g crevettes cuites"},{alimentId:"b600", qty:80, label:"80g salade iceberg"},{alimentId:"a616", qty:80, label:"80g mangue"},{alimentId:"a407", qty:80, label:"80g concombre"}],
+    preparation:["Préparer la sauce citron vert","Couper mangue et concombre","Assembler avec la salade","Arroser de sauce et coriandre"],
+    conseil:"Remplace la sauce poisson par du tamari."},
+  {id:"c-006", n:"Bowl quinoa poulet", e:"🥙", photoKey:"bowl", source:"coach", semaine:null, jour:null, repas:"midi", duree:25, difficulte:"Facile",
+    ingredients:[{alimentId:"a505", qty:240, label:"80g quinoa cuit"},{alimentId:"a002", qty:150, label:"150g blanc de poulet"},{alimentId:"a305", qty:100, label:"Poivrons rotis"},{alimentId:"a303", qty:100, label:"Courgettes"}],
+    preparation:["Cuire le quinoa 15 min","Rotir les légumes au four","Griller le poulet","Assembler en bowl"],
+    conseil:"Prépare en grande quantité le dimanche."},
 
-  // ========== SEMAINE 1 - SAMEDI ==========
-  {
-    id:"r021", n:"Fromage blanc fruits rouges amandes", e:"🥣",
-    semaine:1, jour:"Samedi", repas:"matin", duree:3, difficulte:"Facile",
-    ingredients:[
-      {alimentId:"a207", qty:150, label:"150g fromage blanc 0%"},
-      {alimentId:"a608", qty:100, label:"100g fruits rouges"},
-      {alimentId:"a811", qty:10, label:"10g amandes effilées"}
-    ],
-    preparation:[
-      "Disposer le fromage blanc dans un bol",
-      "Ajouter fruits rouges et amandes",
-      "Option : un trait de miel"
-    ],
-    conseil:"Petit-déj weekend chic et nutritif. Tu peux ajouter de la noix de coco râpée."
-  },
-  {
-    id:"r022", n:"Veau mijoté carottes", e:"🍲",
-    semaine:1, jour:"Samedi", repas:"midi", duree:75, difficulte:"Moyen",
-    ingredients:[
-      {alimentId:"a012", qty:150, label:"150g morceaux de veau"},
-      {alimentId:"b502", qty:150, label:"150g carottes"},
-      {alimentId:"c309", qty:40, label:"40g pain brioché"}
-    ],
-    preparation:[
-      "Faire revenir le veau 5 min dans une cocotte",
-      "Ajouter les carottes coupées en rondelles",
-      "Couvrir d'eau + bouillon, ajouter thym/laurier/épices",
-      "Mijoter 1h à feu doux jusqu'à ce que le veau soit fondant"
-    ],
-    conseil:"Plat dominical par excellence. Encore meilleur réchauffé le lendemain."
-  },
-  {
-    id:"r023", n:"Fruit", e:"🍎",
-    semaine:1, jour:"Samedi", repas:"coll", duree:1, difficulte:"Facile",
-    ingredients:[
-      {alimentId:"a600", qty:120, label:"1 pomme ou autre fruit"}
-    ],
-    preparation:[
-      "Choisir un fruit de saison",
-      "Le manger nature ou en quartiers"
-    ],
-    conseil:"Privilégier les fruits entiers aux jus (plus de fibres, moins de sucre rapide)."
-  },
-  {
-    id:"r024", n:"Salade thon œufs", e:"🥗",
-    semaine:1, jour:"Samedi", repas:"soir", duree:15, difficulte:"Facile",
-    ingredients:[
-      {alimentId:"a113", qty:100, label:"100g thon au naturel"},
-      {alimentId:"a201", qty:120, label:"2 œufs durs"},
-      {alimentId:"a400", qty:80, label:"80g salade verte"},
-      {alimentId:"a405", qty:70, label:"70g tomates"}
-    ],
-    preparation:[
-      "Cuire les œufs 10 min, les écaler",
-      "Égoutter le thon",
-      "Disposer salade + tomates + œufs coupés en quartiers + thon",
-      "Assaisonner citron + sel/poivre"
-    ],
-    conseil:"Variation de la salade niçoise classique. Très protéinée et rassasiante."
-  },
-
-  // ========== SEMAINE 1 - DIMANCHE ==========
-  {
-    id:"r025", n:"Pancakes & fruits", e:"🥞",
-    semaine:1, jour:"Dimanche", repas:"matin", duree:12, difficulte:"Facile",
-    ingredients:[
-      {alimentId:"a200", qty:60, label:"1 œuf"},
-      {alimentId:"a512", qty:20, label:"20g flocons d'avoine"},
-      {alimentId:"a608", qty:100, label:"100g fruits frais"}
-    ],
-    preparation:[
-      "Mixer œuf + avoine pour une pâte épaisse",
-      "Cuire en petits pancakes (1 min par face)",
-      "Servir avec les fruits coupés au-dessus",
-      "Option : filet de miel"
-    ],
-    conseil:"Petit-déj plaisir du dimanche, sans culpabilité."
-  },
-  {
-    id:"r026", n:"Saumon & patate douce rôtis", e:"🐟",
-    semaine:1, jour:"Dimanche", repas:"midi", duree:25, difficulte:"Facile",
-    ingredients:[
-      {alimentId:"a100", qty:120, label:"120g saumon frais"},
-      {alimentId:"a515", qty:150, label:"150g patate douce"},
-      {alimentId:"a300", qty:150, label:"150g légumes verts"}
-    ],
-    preparation:[
-      "Préchauffer le four à 200°C",
-      "Couper la patate douce en cubes, l'enfourner 25 min avec un peu d'huile",
-      "Ajouter le saumon (et les légumes) sur la même plaque les 15 dernières minutes",
-      "Assaisonner avec citron, aneth ou paprika"
-    ],
-    conseil:"Patate douce = féculent à index glycémique bas. Mieux que la pomme de terre classique."
-  },
-  {
-    id:"r027", n:"Fromage blanc & chocolat", e:"🍫",
-    semaine:1, jour:"Dimanche", repas:"coll", duree:1, difficulte:"Facile",
-    ingredients:[
-      {alimentId:"a207", qty:150, label:"150g fromage blanc 0%"}
-    ],
-    preparation:[
-      "Verser le fromage blanc dans un bol",
-      "Râper 10g de chocolat noir 70% au-dessus"
-    ],
-    conseil:"Plaisir gourmand sans déraper sur les calories."
-  },
-  {
-    id:"r028", n:"Poulet & légumes poêlés", e:"🍗",
-    semaine:1, jour:"Dimanche", repas:"soir", duree:20, difficulte:"Facile",
-    ingredients:[
-      {alimentId:"a002", qty:120, label:"120g blanc de poulet"},
-      {alimentId:"a303", qty:80, label:"80g courgettes"},
-      {alimentId:"a305", qty:70, label:"70g poivrons"}
-    ],
-    preparation:[
-      "Couper le poulet en lamelles",
-      "Le faire dorer 5 min à la poêle avec curry/paprika",
-      "Ajouter les légumes coupés, cuire 8 min en remuant",
-      "Servir bien chaud avec du citron"
-    ],
-    conseil:"Plat 'vide-frigo' : remplace les légumes par ce qui te reste !"
-  }
+  // ============================================================
+  // === COACH STIMBODY - Menu Légumes & Protéines 10 jours (30 recettes) ===
+  // ============================================================
+  {id:"m1-pd", n:"Omelette épinards-feta", e:"🥚", photoKey:"omelette", source:"menu", semaine:null, jour:"Jour 1", repas:"matin", duree:10, difficulte:"Facile",
+    ingredients:[{alimentId:"a200", qty:120, label:"2 œufs"},{alimentId:"a308", qty:80, label:"80g épinards"},{alimentId:"a215", qty:20, label:"20g feta"}],
+    preparation:["Faire suer les épinards","Battre les œufs","Verser sur les épinards","Ajouter la feta émiettée et plier"],
+    conseil:"Recette express et hyperprotéinée."},
+  {id:"m1-d", n:"Bowl poulet légumes rôtis", e:"🍗", photoKey:"bowl", source:"menu", semaine:null, jour:"Jour 1", repas:"midi", duree:25, difficulte:"Facile",
+    ingredients:[{alimentId:"a002", qty:150, label:"150g blanc de poulet"},{alimentId:"a303", qty:150, label:"150g courgettes"},{alimentId:"a305", qty:100, label:"100g poivrons"},{alimentId:"a300", qty:100, label:"100g brocoli"}],
+    preparation:["Couper les légumes en cubes","Rôtir au four 25 min à 200°C","Griller le poulet en parallèle","Assembler en bowl"],
+    conseil:"Plat complet équilibré qui rassasie."},
+  {id:"m1-s", n:"Saumon haricots verts", e:"🐟", photoKey:"saumon_legumes", source:"menu", semaine:null, jour:"Jour 1", repas:"soir", duree:20, difficulte:"Facile",
+    ingredients:[{alimentId:"a100", qty:120, label:"120g saumon"},{alimentId:"a306", qty:150, label:"150g haricots verts"},{alimentId:"a310", qty:100, label:"100g champignons"}],
+    preparation:["Cuire le saumon à la poêle 5 min par face","Cuire les haricots vapeur 8 min","Faire revenir les champignons","Servir ensemble avec citron"],
+    conseil:"Saumon = oméga-3 essentiels."},
+  {id:"m2-pd", n:"Yaourt grec graines de chia", e:"🥣", photoKey:"yaourt", source:"menu", semaine:null, jour:"Jour 2", repas:"matin", duree:5, difficulte:"Facile",
+    ingredients:[{alimentId:"a209", qty:200, label:"200g yaourt grec 0%"},{alimentId:"a814", qty:15, label:"15g graines de chia"},{alimentId:"a407", qty:80, label:"80g concombre"}],
+    preparation:["Mélanger yaourt + chia la veille","Laisser au frigo (les graines gonflent)","Ajouter le concombre en dés","Assaisonner de menthe ou aneth"],
+    conseil:"Le chia gonflé donne une texture pudding."},
+  {id:"m2-d", n:"Salade niçoise légère", e:"🥗", photoKey:"salade_nicoise", source:"menu", semaine:null, jour:"Jour 2", repas:"midi", duree:15, difficulte:"Facile",
+    ingredients:[{alimentId:"a113", qty:150, label:"150g thon au naturel"},{alimentId:"a306", qty:150, label:"150g haricots verts cuits"},{alimentId:"a405", qty:100, label:"100g tomates cerises"},{alimentId:"a201", qty:60, label:"1 œuf dur"},{alimentId:"a800", qty:8, label:"8g huile d'olive"}],
+    preparation:["Cuire l'œuf dur","Cuire les haricots verts","Mélanger thon + tomates + œuf en quartiers","Assaisonner citron + huile"],
+    conseil:"Version allégée sans olives ni anchois salés."},
+  {id:"m2-s", n:"Dinde poêlée légumes", e:"🦃", photoKey:"dinde", source:"menu", semaine:null, jour:"Jour 2", repas:"soir", duree:15, difficulte:"Facile",
+    ingredients:[{alimentId:"a004", qty:130, label:"130g escalope de dinde"},{alimentId:"a304", qty:150, label:"150g aubergine"},{alimentId:"a405", qty:100, label:"100g tomates"},{alimentId:"a303", qty:100, label:"100g courgettes"}],
+    preparation:["Cuire les légumes en cubes 10 min","Griller la dinde 5 min par face","Assembler dans l'assiette","Servir avec herbes de Provence"],
+    conseil:"La dinde est plus maigre que le poulet."},
+  {id:"m3-pd", n:"Blancs d'œuf brouillés tomates", e:"🍳", photoKey:"oeufs", source:"menu", semaine:null, jour:"Jour 3", repas:"matin", duree:5, difficulte:"Facile",
+    ingredients:[{alimentId:"a202", qty:120, label:"4 blancs d'œufs"},{alimentId:"a405", qty:150, label:"150g tomates"}],
+    preparation:["Couper les tomates en dés","Les faire revenir 3 min","Ajouter les blancs battus","Cuire en remuant"],
+    conseil:"Très peu calorique, parfait quand on veut alléger."},
+  {id:"m3-d", n:"Cabillaud ratatouille", e:"🐠", photoKey:"poisson_papillote", source:"menu", semaine:null, jour:"Jour 3", repas:"midi", duree:30, difficulte:"Moyen",
+    ingredients:[{alimentId:"a103", qty:180, label:"180g cabillaud"},{alimentId:"a304", qty:100, label:"100g aubergine"},{alimentId:"a303", qty:100, label:"100g courgette"},{alimentId:"a305", qty:100, label:"100g poivron"},{alimentId:"a405", qty:100, label:"100g tomate"}],
+    preparation:["Couper tous les légumes en cubes","Mijoter 25 min en ratatouille","Cuire le cabillaud à la poêle 8 min","Servir le poisson sur la ratatouille"],
+    conseil:"Les légumes méditerranéens sublimés."},
+  {id:"m3-s", n:"Poulet mariné épinards sautés", e:"🥬", photoKey:"poulet", source:"menu", semaine:null, jour:"Jour 3", repas:"soir", duree:20, difficulte:"Facile",
+    ingredients:[{alimentId:"a002", qty:120, label:"120g blanc de poulet"},{alimentId:"a308", qty:200, label:"200g épinards"}],
+    preparation:["Mariner le poulet 15 min (ail, citron, herbes)","Faire revenir les épinards à l'ail","Cuire le poulet 4 min par face","Servir tout chaud"],
+    conseil:"Marinade simple pour rehausser le goût."},
+  {id:"m4-pd", n:"Omelette poivrons jambon", e:"🫑", photoKey:"omelette", source:"menu", semaine:null, jour:"Jour 4", repas:"matin", duree:10, difficulte:"Facile",
+    ingredients:[{alimentId:"a200", qty:120, label:"2 œufs"},{alimentId:"a005", qty:50, label:"50g jambon blanc"},{alimentId:"a305", qty:80, label:"80g poivron rouge"}],
+    preparation:["Cuire les poivrons en dés 5 min","Ajouter le jambon en lamelles","Verser les œufs battus","Plier et servir"],
+    conseil:"Petit-déj salé qui change."},
+  {id:"m4-d", n:"Crevettes brocoli champignons", e:"🦐", photoKey:"crevettes", source:"menu", semaine:null, jour:"Jour 4", repas:"midi", duree:15, difficulte:"Facile",
+    ingredients:[{alimentId:"a117", qty:200, label:"200g crevettes décortiquées"},{alimentId:"a300", qty:200, label:"200g brocoli"},{alimentId:"a310", qty:100, label:"100g champignons"},{alimentId:"d106", qty:15, label:"15ml sauce soja"}],
+    preparation:["Faire revenir brocoli et champignons à feu vif","Ajouter les crevettes 3 min","Déglacer à la sauce soja","Servir avec sésame"],
+    conseil:"Cuisson wok = saveurs intenses préservées."},
+  {id:"m4-s", n:"Cabillaud vapeur asperges", e:"🌿", photoKey:"poisson_papillote", source:"menu", semaine:null, jour:"Jour 4", repas:"soir", duree:15, difficulte:"Facile",
+    ingredients:[{alimentId:"a103", qty:150, label:"150g cabillaud"},{alimentId:"a312", qty:200, label:"200g asperges"}],
+    preparation:["Cuire les asperges 8 min vapeur","Cuire le cabillaud 8 min vapeur","Servir avec citron + câpres","Quelques herbes fraîches"],
+    conseil:"Cuisson vapeur = ultra léger et fondant."},
+  {id:"m5-pd", n:"Fromage blanc concombre menthe", e:"🥒", photoKey:"fromage_blanc", source:"menu", semaine:null, jour:"Jour 5", repas:"matin", duree:5, difficulte:"Facile",
+    ingredients:[{alimentId:"a207", qty:200, label:"200g fromage blanc 0%"},{alimentId:"a407", qty:100, label:"100g concombre"}],
+    preparation:["Couper le concombre en dés","Mélanger avec le fromage blanc","Ajouter de la menthe ciselée","Saler très légèrement"],
+    conseil:"Saveurs orientales rafraîchissantes."},
+  {id:"m5-d", n:"Steak haché ratatouille", e:"🥩", photoKey:"steak", source:"menu", semaine:null, jour:"Jour 5", repas:"midi", duree:30, difficulte:"Moyen",
+    ingredients:[{alimentId:"a008", qty:150, label:"150g steak haché 5%"},{alimentId:"a304", qty:150, label:"150g aubergine"},{alimentId:"a405", qty:150, label:"150g tomate"},{alimentId:"a303", qty:100, label:"100g courgette"}],
+    preparation:["Mijoter la ratatouille 25 min","Cuire le steak 4 min par face","Servir chaud","Filet d'huile d'olive"],
+    conseil:"Combo français parfait."},
+  {id:"m5-s", n:"Poulet citron chou-fleur rôti", e:"🌸", photoKey:"poulet", source:"menu", semaine:null, jour:"Jour 5", repas:"soir", duree:25, difficulte:"Facile",
+    ingredients:[{alimentId:"a002", qty:120, label:"120g blanc de poulet"},{alimentId:"a301", qty:200, label:"200g chou-fleur"}],
+    preparation:["Couper le chou-fleur en bouquets","Rôtir au four 20 min avec curcuma","Cuire le poulet à la poêle","Servir avec citron"],
+    conseil:"Chou-fleur rôti = goût grillé succulent."},
+  {id:"m6-pd", n:"Omelette champignons persil", e:"🍄", photoKey:"omelette", source:"menu", semaine:null, jour:"Jour 6", repas:"matin", duree:8, difficulte:"Facile",
+    ingredients:[{alimentId:"a200", qty:120, label:"2 œufs"},{alimentId:"a310", qty:100, label:"100g champignons"}],
+    preparation:["Faire revenir les champignons à sec","Battre les œufs avec persil","Verser et cuire à feu doux","Plier et servir"],
+    conseil:"Le persil frais fait toute la différence."},
+  {id:"m6-d", n:"Thon salade verte avocat", e:"🥑", photoKey:"salade_avocat", source:"menu", semaine:null, jour:"Jour 6", repas:"midi", duree:8, difficulte:"Facile",
+    ingredients:[{alimentId:"a113", qty:130, label:"130g thon au naturel"},{alimentId:"a400", qty:80, label:"80g salade verte"},{alimentId:"a414", qty:50, label:"50g avocat"},{alimentId:"a405", qty:80, label:"80g tomates cerises"}],
+    preparation:["Mélanger salade et tomates","Ajouter thon égoutté","Avocat en lamelles dessus","Citron + sel/poivre"],
+    conseil:"Salade complète qui rassasie."},
+  {id:"m6-s", n:"Lieu noir poireaux vapeur", e:"🫛", photoKey:"poisson_papillote", source:"menu", semaine:null, jour:"Jour 6", repas:"soir", duree:20, difficulte:"Facile",
+    ingredients:[{alimentId:"a104", qty:180, label:"180g lieu noir"},{alimentId:"b500", qty:200, label:"200g poireaux"},{alimentId:"d102", qty:10, label:"10g moutarde"}],
+    preparation:["Cuire les poireaux vapeur 12 min","Cuire le lieu noir 8 min","Préparer sauce moutarde + citron","Servir ensemble"],
+    conseil:"Poisson blanc + légume vert = digestif léger."},
+  {id:"m7-pd", n:"Skyr graines de lin concombre", e:"🌱", photoKey:"skyr", source:"menu", semaine:null, jour:"Jour 7", repas:"matin", duree:5, difficulte:"Facile",
+    ingredients:[{alimentId:"a205", qty:200, label:"200g skyr nature"},{alimentId:"d206", qty:10, label:"10g graines de lin"},{alimentId:"a407", qty:80, label:"80g concombre"}],
+    preparation:["Mélanger skyr + graines de lin","Couper concombre en dés","Mélanger le tout","Ajouter sel et herbes"],
+    conseil:"Graines de lin = oméga-3 végétaux."},
+  {id:"m7-d", n:"Dinde endives braisées", e:"🥗", photoKey:"dinde", source:"menu", semaine:null, jour:"Jour 7", repas:"midi", duree:25, difficulte:"Facile",
+    ingredients:[{alimentId:"a004", qty:150, label:"150g escalope de dinde"},{alimentId:"a319", qty:200, label:"200g endives"},{alimentId:"a405", qty:100, label:"100g tomate"}],
+    preparation:["Braiser les endives 20 min","Cuire la dinde 5 min par face","Ajouter tomates en dés","Citron + huile d'olive"],
+    conseil:"Les endives apportent une légère amertume agréable."},
+  {id:"m7-s", n:"Saumon épinards tomates", e:"🍃", photoKey:"saumon", source:"menu", semaine:null, jour:"Jour 7", repas:"soir", duree:15, difficulte:"Facile",
+    ingredients:[{alimentId:"a100", qty:100, label:"100g saumon"},{alimentId:"a308", qty:200, label:"200g épinards"},{alimentId:"a405", qty:100, label:"100g tomates cerises"}],
+    preparation:["Cuire le saumon 5 min par face","Faire revenir les épinards à l'ail","Ajouter les tomates 2 min","Assembler dans l'assiette"],
+    conseil:"Combo couleurs = combo nutriments."},
+  {id:"m8-pd", n:"Œufs pochés asperges", e:"🥚", photoKey:"oeufs", source:"menu", semaine:null, jour:"Jour 8", repas:"matin", duree:15, difficulte:"Moyen",
+    ingredients:[{alimentId:"a200", qty:120, label:"2 œufs pochés"},{alimentId:"a312", qty:150, label:"150g asperges vertes"}],
+    preparation:["Cuire les asperges 8 min","Pocher les œufs 4 min dans eau frémissante avec vinaigre","Disposer asperges + œufs","Citron sur le tout"],
+    conseil:"L'œuf poché demande un peu de pratique mais c'est délicieux."},
+  {id:"m8-d", n:"Poulet tikka chou-fleur", e:"🌶", photoKey:"poulet_curry", source:"menu", semaine:null, jour:"Jour 8", repas:"midi", duree:30, difficulte:"Moyen",
+    ingredients:[{alimentId:"a002", qty:150, label:"150g blanc de poulet"},{alimentId:"a301", qty:200, label:"200g chou-fleur"},{alimentId:"a209", qty:50, label:"50g yaourt grec 0%"}],
+    preparation:["Mariner le poulet 30 min (yaourt + curry + cumin)","Cuire à la poêle 10 min","Cuire le chou-fleur vapeur 12 min","Servir bien chaud"],
+    conseil:"La marinade au yaourt rend le poulet ultra tendre."},
+  {id:"m8-s", n:"Crevettes pak-choï ail", e:"🥬", photoKey:"crevettes", source:"menu", semaine:null, jour:"Jour 8", repas:"soir", duree:12, difficulte:"Facile",
+    ingredients:[{alimentId:"a117", qty:150, label:"150g crevettes"},{alimentId:"a320", qty:200, label:"200g pak-choï"},{alimentId:"d106", qty:15, label:"15ml sauce soja"}],
+    preparation:["Faire revenir le pak-choï avec ail et gingembre","Ajouter les crevettes 3 min","Déglacer à la sauce soja","Servir bien chaud"],
+    conseil:"Cuisine asiatique express."},
+  {id:"m9-pd", n:"Cottage cheese radis ciboulette", e:"🧀", photoKey:"cottage_cheese", source:"menu", semaine:null, jour:"Jour 9", repas:"matin", duree:5, difficulte:"Facile",
+    ingredients:[{alimentId:"a212", qty:200, label:"200g cottage cheese"},{alimentId:"a408", qty:80, label:"80g radis"}],
+    preparation:["Couper les radis en rondelles","Mélanger au cottage cheese","Ajouter la ciboulette ciselée","Sel et poivre"],
+    conseil:"Cottage cheese = très protéiné et rassasiant."},
+  {id:"m9-d", n:"Thon courgettes farcies", e:"🥒", photoKey:"poivron_farci", source:"menu", semaine:null, jour:"Jour 9", repas:"midi", duree:30, difficulte:"Moyen",
+    ingredients:[{alimentId:"a113", qty:150, label:"150g thon au naturel"},{alimentId:"a303", qty:200, label:"200g courgettes"},{alimentId:"a405", qty:100, label:"100g tomates cerises"},{alimentId:"a215", qty:20, label:"20g feta"}],
+    preparation:["Évider les courgettes","Mélanger thon + tomates + feta","Garnir les courgettes","Cuire au four 20 min à 180°C"],
+    conseil:"Présentation chic et goût savoureux."},
+  {id:"m9-s", n:"Poulet fenouil rôti", e:"🌿", photoKey:"poulet", source:"menu", semaine:null, jour:"Jour 9", repas:"soir", duree:25, difficulte:"Facile",
+    ingredients:[{alimentId:"a002", qty:130, label:"130g blanc de poulet"},{alimentId:"a318", qty:200, label:"200g fenouil"}],
+    preparation:["Couper le fenouil en quartiers","Rôtir au four 20 min","Cuire le poulet en parallèle","Citron + aneth pour finir"],
+    conseil:"Le fenouil rôti caramélise et devient doux."},
+  {id:"m10-pd", n:"Omelette tomates basilic", e:"🍅", photoKey:"omelette", source:"menu", semaine:null, jour:"Jour 10", repas:"matin", duree:8, difficulte:"Facile",
+    ingredients:[{alimentId:"a200", qty:120, label:"2 œufs"},{alimentId:"a405", qty:100, label:"100g tomates"}],
+    preparation:["Cuire les tomates en dés 3 min","Battre les œufs avec basilic","Verser dans la poêle","Plier et servir"],
+    conseil:"Inspiration italienne simple et bonne."},
+  {id:"m10-d", n:"Cabillaud épinards poivrons", e:"🐟", photoKey:"poisson_papillote", source:"menu", semaine:null, jour:"Jour 10", repas:"midi", duree:20, difficulte:"Facile",
+    ingredients:[{alimentId:"a103", qty:180, label:"180g cabillaud"},{alimentId:"a308", qty:150, label:"150g épinards"},{alimentId:"a305", qty:150, label:"150g poivrons"}],
+    preparation:["Cuire poivrons et épinards 10 min","Cuire le cabillaud 8 min à la poêle","Assembler avec citron","Filet d'huile d'olive"],
+    conseil:"Très complet en vitamines."},
+  {id:"m10-s", n:"Dinde chou romanesco", e:"🥦", photoKey:"dinde", source:"menu", semaine:null, jour:"Jour 10", repas:"soir", duree:20, difficulte:"Facile",
+    ingredients:[{alimentId:"a004", qty:130, label:"130g escalope de dinde"},{alimentId:"a302", qty:200, label:"200g chou romanesco"}],
+    preparation:["Cuire le romanesco vapeur 10 min","Cuire la dinde à la poêle","Ajouter ail + curcuma","Servir bien chaud"],
+    conseil:"Le romanesco est le brocoli plus joli."}
 ];
+
+// Photo URL pour une recette (avec fallback sur default)
+function getPhotoRecette(recette){
+  return PHOTOS_RECETTES[recette.photoKey] || PHOTOS_RECETTES.default;
+}
+
 
 // Calcul automatique des valeurs nutritionnelles d'une recette
 function calcRecette(recette){
@@ -1246,10 +1408,10 @@ function calcRecette(recette){
   },{cal:0,p:0,l:0,g:0});
 }
 
-// Recherche dans les recettes
-function searchRecettes(query, semaine, repas){
-  let results=[...RECETTES_DEFI];
-  if(semaine) results=results.filter(r=>r.semaine===semaine);
+// Recherche dans la banque unifiée
+function searchRecettes(query, source, repas){
+  let results=[...BANQUE_RECETTES];
+  if(source) results=results.filter(r=>r.source===source);
   if(repas) results=results.filter(r=>r.repas===repas);
   if(query&&query.length>=2){
     const q=query.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
@@ -2066,18 +2228,30 @@ function RecetteDetailModal({recette, freeJournalDay, onAddItems, onClose}){
   };
 
   const repasLabel={matin:"petit-déjeuner",midi:"déjeuner",coll:"collation",soir:"dîner"}[recette.repas]||recette.repas;
+  const SOURCES_LABELS={defi:"📅 Le Défi 3 Sem", coach:"⚡ Coach STIMBODY", menu:"🥗 Légumes & Prot"};
+  const sourceTitle=SOURCES_LABELS[recette.source]||"";
+  const subtitleParts=[];
+  if(recette.semaine) subtitleParts.push("Semaine "+recette.semaine);
+  if(recette.jour) subtitleParts.push(recette.jour);
+  const subtitle=subtitleParts.join(" · ");
 
   return(
     <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.6)",zIndex:9999,display:"flex",alignItems:"flex-end",justifyContent:"center"}}>
-      <div style={{background:C.white,borderRadius:"20px 20px 0 0",width:"100%",maxWidth:480,maxHeight:"90vh",overflow:"auto"}}>
-        {/* Header */}
-        <div style={{position:"sticky",top:0,background:C.white,padding:"16px 18px 10px",borderBottom:"1px solid "+C.border,zIndex:2}}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
-            <div style={{fontSize:9,letterSpacing:2,color:C.muted,textTransform:"uppercase"}}>Le Défi 3 Semaines · S{recette.semaine} · {recette.jour}</div>
-            <button onClick={onClose} style={{background:"none",border:"none",color:C.muted,fontSize:22,cursor:"pointer"}}>×</button>
+      <div style={{background:C.white,borderRadius:"20px 20px 0 0",width:"100%",maxWidth:480,maxHeight:"92vh",overflow:"auto"}}>
+        {/* PHOTO grand format */}
+        <div style={{position:"relative",height:200,background:"#F5F7FF",overflow:"hidden"}}>
+          <img src={getPhotoRecette(recette)} alt={recette.n} style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}} onError={(e)=>{e.target.style.display="none";}}/>
+          <button onClick={onClose} style={{position:"absolute",top:12,right:12,background:"rgba(255,255,255,0.95)",border:"none",borderRadius:"50%",width:36,height:36,fontSize:20,cursor:"pointer",color:C.navy,fontWeight:"bold",boxShadow:"0 2px 6px rgba(0,0,0,0.2)"}}>×</button>
+          <div style={{position:"absolute",top:12,left:12,background:"rgba(13,27,75,0.85)",color:C.yellow,fontSize:9,fontWeight:"bold",padding:"4px 10px",borderRadius:6,letterSpacing:0.5}}>{sourceTitle}</div>
+          <div style={{position:"absolute",bottom:0,left:0,right:0,background:"linear-gradient(transparent,rgba(0,0,0,0.7))",padding:"30px 18px 14px",color:C.white}}>
+            <div style={{fontSize:21,fontWeight:900,marginBottom:3,lineHeight:1.2}}>{recette.e} {recette.n}</div>
+            {subtitle&&<div style={{fontSize:10,opacity:0.9}}>{subtitle}</div>}
           </div>
-          <div style={{fontSize:20,fontWeight:900,color:C.navy,marginBottom:4}}>{recette.e} {recette.n}</div>
-          <div style={{display:"flex",gap:8,fontSize:10,color:C.muted}}>
+        </div>
+
+        {/* Header avec infos rapides */}
+        <div style={{padding:"12px 18px 4px",borderBottom:"1px solid "+C.border}}>
+          <div style={{display:"flex",gap:10,fontSize:10,color:C.muted}}>
             <span>⏱ {recette.duree} min</span>
             <span>·</span>
             <span>{recette.difficulte}</span>
@@ -2168,36 +2342,37 @@ function RecetteDetailModal({recette, freeJournalDay, onAddItems, onClose}){
 // === COMPOSANT : Bibliothèque de recettes Le Défi 3 Semaines ===
 function BibliothequeRecettes({onSelectRecette}){
   const [query,setQuery]=useState("");
-  const [filterSemaine,setFilterSemaine]=useState(null);
+  const [filterSource,setFilterSource]=useState(null);
   const [filterRepas,setFilterRepas]=useState(null);
-  const results=searchRecettes(query, filterSemaine, filterRepas);
+  const results=searchRecettes(query, filterSource, filterRepas);
 
-  const REPAS_LABELS={matin:{l:"Matin",e:"🌅"},midi:{l:"Midi",e:"☀️"},coll:{l:"Collation",e:"🍎"},soir:{l:"Soir",e:"🌙"}};
+  const REPAS_LABELS={matin:{l:"Petit-déj",e:"🌅"},midi:{l:"Déjeuner",e:"☀️"},coll:{l:"Encas",e:"🍎"},soir:{l:"Dîner",e:"🌙"}};
+  const SOURCES={defi:"📅 Le Défi 3 Sem", coach:"⚡ Coach STIMBODY", menu:"🥗 Légumes & Prot"};
 
   return(
     <div style={{padding:"6px 14px 80px"}}>
       <div style={{background:"linear-gradient(135deg,"+C.navy+","+C.navyL+")",borderRadius:14,padding:"14px 16px",marginBottom:14,color:C.white}}>
         <div style={{fontSize:9,color:C.yellow,letterSpacing:2,textTransform:"uppercase",marginBottom:4}}>📚 Bibliothèque STIMBODY</div>
-        <div style={{fontSize:18,fontWeight:900,marginBottom:4}}>Le Défi 3 Semaines</div>
-        <div style={{fontSize:10,color:"rgba(255,255,255,0.7)",lineHeight:1.5}}>Recettes inspirées par Coach Dominique. Pioche tes idées de repas selon tes envies !</div>
+        <div style={{fontSize:18,fontWeight:900,marginBottom:4}}>Toutes les recettes</div>
+        <div style={{fontSize:10,color:"rgba(255,255,255,0.7)",lineHeight:1.5}}>{BANQUE_RECETTES.length} recettes inspirées par Coach Dominique. Pioche tes idées de repas !</div>
       </div>
 
       {/* Recherche */}
-      <input value={query} onChange={e=>setQuery(e.target.value)} placeholder="🔍 Rechercher une recette (ex: poulet, salade...)" style={{width:"100%",padding:"11px 14px",borderRadius:12,border:"1.5px solid "+C.border,fontSize:13,outline:"none",boxSizing:"border-box",fontFamily:"sans-serif",background:"#F5F7FF",marginBottom:10}}/>
+      <input value={query} onChange={e=>setQuery(e.target.value)} placeholder="🔍 Rechercher (ex: poulet, salade, omelette...)" style={{width:"100%",padding:"11px 14px",borderRadius:12,border:"1.5px solid "+C.border,fontSize:13,outline:"none",boxSizing:"border-box",fontFamily:"sans-serif",background:"#F5F7FF",marginBottom:10}}/>
 
-      {/* Filtres semaine */}
+      {/* Filtres repas (priorité visuelle) */}
       <div style={{display:"flex",gap:5,marginBottom:8,overflowX:"auto"}}>
-        <button onClick={()=>setFilterSemaine(null)} style={{padding:"6px 12px",borderRadius:8,border:"1px solid "+(filterSemaine===null?C.navy:C.border),background:filterSemaine===null?C.navy:"white",color:filterSemaine===null?C.yellow:C.soft,fontSize:11,fontWeight:"bold",cursor:"pointer",whiteSpace:"nowrap"}}>Toutes</button>
-        {[1,2,3].map(s=>(
-          <button key={s} onClick={()=>setFilterSemaine(filterSemaine===s?null:s)} style={{padding:"6px 12px",borderRadius:8,border:"1px solid "+(filterSemaine===s?C.navy:C.border),background:filterSemaine===s?C.navy:"white",color:filterSemaine===s?C.yellow:C.soft,fontSize:11,fontWeight:"bold",cursor:"pointer",whiteSpace:"nowrap"}}>Sem {s}</button>
+        <button onClick={()=>setFilterRepas(null)} style={{padding:"7px 12px",borderRadius:9,border:"1.5px solid "+(filterRepas===null?C.navy:C.border),background:filterRepas===null?C.navy:"white",color:filterRepas===null?C.yellow:C.soft,fontSize:11,fontWeight:"bold",cursor:"pointer",whiteSpace:"nowrap"}}>Tous</button>
+        {Object.entries(REPAS_LABELS).map(([k,v])=>(
+          <button key={k} onClick={()=>setFilterRepas(filterRepas===k?null:k)} style={{padding:"7px 12px",borderRadius:9,border:"1.5px solid "+(filterRepas===k?C.navy:C.border),background:filterRepas===k?C.navy:"white",color:filterRepas===k?C.yellow:C.soft,fontSize:11,fontWeight:"bold",cursor:"pointer",whiteSpace:"nowrap"}}>{v.e} {v.l}</button>
         ))}
       </div>
 
-      {/* Filtres repas */}
+      {/* Filtres source */}
       <div style={{display:"flex",gap:5,marginBottom:14,overflowX:"auto"}}>
-        <button onClick={()=>setFilterRepas(null)} style={{padding:"6px 10px",borderRadius:8,border:"1px solid "+(filterRepas===null?C.navy:C.border),background:filterRepas===null?C.navy:"white",color:filterRepas===null?C.yellow:C.soft,fontSize:11,fontWeight:"bold",cursor:"pointer",whiteSpace:"nowrap"}}>Tous repas</button>
-        {Object.entries(REPAS_LABELS).map(([k,v])=>(
-          <button key={k} onClick={()=>setFilterRepas(filterRepas===k?null:k)} style={{padding:"6px 10px",borderRadius:8,border:"1px solid "+(filterRepas===k?C.navy:C.border),background:filterRepas===k?C.navy:"white",color:filterRepas===k?C.yellow:C.soft,fontSize:11,fontWeight:"bold",cursor:"pointer",whiteSpace:"nowrap"}}>{v.e} {v.l}</button>
+        <button onClick={()=>setFilterSource(null)} style={{padding:"5px 10px",borderRadius:7,border:"1px solid "+(filterSource===null?C.navy:C.border),background:filterSource===null?"#F5F7FF":"white",color:filterSource===null?C.navy:C.muted,fontSize:10,cursor:"pointer",whiteSpace:"nowrap",fontWeight:filterSource===null?"bold":"normal"}}>Toutes sources</button>
+        {Object.entries(SOURCES).map(([k,v])=>(
+          <button key={k} onClick={()=>setFilterSource(filterSource===k?null:k)} style={{padding:"5px 10px",borderRadius:7,border:"1px solid "+(filterSource===k?C.navy:C.border),background:filterSource===k?"#F5F7FF":"white",color:filterSource===k?C.navy:C.muted,fontSize:10,cursor:"pointer",whiteSpace:"nowrap",fontWeight:filterSource===k?"bold":"normal"}}>{v}</button>
         ))}
       </div>
 
@@ -2209,25 +2384,29 @@ function BibliothequeRecettes({onSelectRecette}){
           <div style={{fontSize:12}}>Aucune recette trouvée</div>
         </div>
       ):(
-        <div style={{display:"flex",flexDirection:"column",gap:8}}>
+        <div style={{display:"flex",flexDirection:"column",gap:10}}>
           {results.map(r=>{
             const v=calcRecette(r);
             const repas=REPAS_LABELS[r.repas]||{l:r.repas,e:""};
+            const sourceLabel=SOURCES[r.source]||"";
+            const subtitle=r.semaine?repas.e+" "+repas.l+" · S"+r.semaine+(r.jour?" · "+r.jour:""):repas.e+" "+repas.l+(r.jour?" · "+r.jour:"");
             return(
-              <div key={r.id} onClick={()=>onSelectRecette(r)} style={{background:C.white,borderRadius:12,padding:"12px 14px",cursor:"pointer",border:"1px solid "+C.border,boxShadow:"0 2px 6px rgba(13,27,75,0.05)"}}>
-                <div style={{display:"flex",alignItems:"flex-start",gap:10,marginBottom:8}}>
-                  <span style={{fontSize:26}}>{r.e}</span>
-                  <div style={{flex:1}}>
-                    <div style={{fontSize:13,fontWeight:900,color:C.navy,marginBottom:2}}>{r.n}</div>
-                    <div style={{fontSize:9,color:C.muted}}>{repas.e} {repas.l} · S{r.semaine} · {r.jour} · ⏱ {r.duree} min</div>
-                  </div>
-                  <span style={{color:C.muted,fontSize:14}}>›</span>
+              <div key={r.id} onClick={()=>onSelectRecette(r)} style={{background:C.white,borderRadius:14,cursor:"pointer",border:"1px solid "+C.border,boxShadow:"0 2px 8px rgba(13,27,75,0.06)",overflow:"hidden"}}>
+                <div style={{position:"relative",height:140,background:"#F5F7FF",overflow:"hidden"}}>
+                  <img src={getPhotoRecette(r)} alt={r.n} style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}} loading="lazy" onError={(e)=>{e.target.style.display="none";}}/>
+                  <div style={{position:"absolute",top:8,left:8,background:"rgba(13,27,75,0.85)",color:C.yellow,fontSize:9,fontWeight:"bold",padding:"3px 8px",borderRadius:6,letterSpacing:0.5}}>{sourceLabel}</div>
+                  <div style={{position:"absolute",top:8,right:8,background:"rgba(255,255,255,0.95)",color:C.navy,fontSize:18,padding:"4px 10px",borderRadius:8}}>{r.e}</div>
+                  <div style={{position:"absolute",bottom:8,right:8,background:"rgba(245,194,0,0.95)",color:C.navy,fontSize:11,fontWeight:"bold",padding:"4px 9px",borderRadius:6}}>⏱ {r.duree} min</div>
                 </div>
-                <div style={{display:"flex",justifyContent:"space-around",background:"#F5F7FF",borderRadius:8,padding:"6px",fontSize:10}}>
-                  <span><strong style={{color:C.yellow}}>{Math.round(v.cal)}</strong> <span style={{color:C.muted}}>kcal</span></span>
-                  <span><strong style={{color:"#0AAA50"}}>{v.p.toFixed(1)}g</strong> <span style={{color:C.muted}}>P</span></span>
-                  <span><strong style={{color:"#0066CC"}}>{v.l.toFixed(1)}g</strong> <span style={{color:C.muted}}>L</span></span>
-                  <span><strong style={{color:"#7700CC"}}>{v.g.toFixed(1)}g</strong> <span style={{color:C.muted}}>G</span></span>
+                <div style={{padding:"12px 14px"}}>
+                  <div style={{fontSize:14,fontWeight:900,color:C.navy,marginBottom:3,lineHeight:1.2}}>{r.n}</div>
+                  <div style={{fontSize:9,color:C.muted,marginBottom:8}}>{subtitle} · {r.difficulte}</div>
+                  <div style={{display:"flex",justifyContent:"space-around",background:"#F5F7FF",borderRadius:8,padding:"6px",fontSize:10}}>
+                    <span><strong style={{color:C.yellow}}>{Math.round(v.cal)}</strong> <span style={{color:C.muted}}>kcal</span></span>
+                    <span><strong style={{color:"#0AAA50"}}>{v.p.toFixed(1)}g</strong> <span style={{color:C.muted}}>P</span></span>
+                    <span><strong style={{color:"#0066CC"}}>{v.l.toFixed(1)}g</strong> <span style={{color:C.muted}}>L</span></span>
+                    <span><strong style={{color:"#7700CC"}}>{v.g.toFixed(1)}g</strong> <span style={{color:C.muted}}>G</span></span>
+                  </div>
                 </div>
               </div>
             );
