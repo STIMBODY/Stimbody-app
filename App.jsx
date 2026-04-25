@@ -2342,9 +2342,8 @@ function RecetteDetailModal({recette, freeJournalDay, onAddItems, onClose}){
 // === COMPOSANT : Bibliothèque de recettes Le Défi 3 Semaines ===
 function BibliothequeRecettes({onSelectRecette}){
   const [query,setQuery]=useState("");
-  const [filterSource,setFilterSource]=useState(null);
   const [filterRepas,setFilterRepas]=useState(null);
-  const results=searchRecettes(query, filterSource, filterRepas);
+  const results=searchRecettes(query, null, filterRepas);
 
   const REPAS_LABELS={matin:{l:"Petit-déj",e:"🌅"},midi:{l:"Déjeuner",e:"☀️"},coll:{l:"Encas",e:"🍎"},soir:{l:"Dîner",e:"🌙"}};
   const SOURCES={defi:"📅 Le Défi 3 Sem", coach:"⚡ Coach STIMBODY", menu:"🥗 Légumes & Prot"};
@@ -2360,19 +2359,11 @@ function BibliothequeRecettes({onSelectRecette}){
       {/* Recherche */}
       <input value={query} onChange={e=>setQuery(e.target.value)} placeholder="🔍 Rechercher (ex: poulet, salade, omelette...)" style={{width:"100%",padding:"11px 14px",borderRadius:12,border:"1.5px solid "+C.border,fontSize:13,outline:"none",boxSizing:"border-box",fontFamily:"sans-serif",background:"#F5F7FF",marginBottom:10}}/>
 
-      {/* Filtres repas (priorité visuelle) */}
-      <div style={{display:"flex",gap:5,marginBottom:8,overflowX:"auto"}}>
+      {/* Filtres par type de repas */}
+      <div style={{display:"flex",gap:5,marginBottom:14,overflowX:"auto"}}>
         <button onClick={()=>setFilterRepas(null)} style={{padding:"7px 12px",borderRadius:9,border:"1.5px solid "+(filterRepas===null?C.navy:C.border),background:filterRepas===null?C.navy:"white",color:filterRepas===null?C.yellow:C.soft,fontSize:11,fontWeight:"bold",cursor:"pointer",whiteSpace:"nowrap"}}>Tous</button>
         {Object.entries(REPAS_LABELS).map(([k,v])=>(
           <button key={k} onClick={()=>setFilterRepas(filterRepas===k?null:k)} style={{padding:"7px 12px",borderRadius:9,border:"1.5px solid "+(filterRepas===k?C.navy:C.border),background:filterRepas===k?C.navy:"white",color:filterRepas===k?C.yellow:C.soft,fontSize:11,fontWeight:"bold",cursor:"pointer",whiteSpace:"nowrap"}}>{v.e} {v.l}</button>
-        ))}
-      </div>
-
-      {/* Filtres source */}
-      <div style={{display:"flex",gap:5,marginBottom:14,overflowX:"auto"}}>
-        <button onClick={()=>setFilterSource(null)} style={{padding:"5px 10px",borderRadius:7,border:"1px solid "+(filterSource===null?C.navy:C.border),background:filterSource===null?"#F5F7FF":"white",color:filterSource===null?C.navy:C.muted,fontSize:10,cursor:"pointer",whiteSpace:"nowrap",fontWeight:filterSource===null?"bold":"normal"}}>Toutes sources</button>
-        {Object.entries(SOURCES).map(([k,v])=>(
-          <button key={k} onClick={()=>setFilterSource(filterSource===k?null:k)} style={{padding:"5px 10px",borderRadius:7,border:"1px solid "+(filterSource===k?C.navy:C.border),background:filterSource===k?"#F5F7FF":"white",color:filterSource===k?C.navy:C.muted,fontSize:10,cursor:"pointer",whiteSpace:"nowrap",fontWeight:filterSource===k?"bold":"normal"}}>{v}</button>
         ))}
       </div>
 
